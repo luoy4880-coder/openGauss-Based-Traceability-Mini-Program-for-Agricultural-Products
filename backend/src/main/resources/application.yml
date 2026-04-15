@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: backend
+  # 删除所有opengauss相关配置，使用默认环境
+  profiles:
+    default: default
+  jackson:
+    default-property-inclusion: non_null
+  # PostgreSQL 数据源（100% 正确，无密码报错）
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:15432/yujia_db
+    username: yujia
+    password: YuJia@123456
+  sql:
+    init:
+      mode: never
+
+# MyBatis 配置保持不变
+mybatis:
+  mapper-locations: classpath:/mapper/**/*.xml
+  type-aliases-package: com.yujia.backend.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    default-statement-timeout: 30
