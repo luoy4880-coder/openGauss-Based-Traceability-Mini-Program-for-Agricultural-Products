@@ -1,0 +1,190 @@
+page {
+  min-height: 100vh;
+  background:
+    linear-gradient(180deg, #f6f1e7 0%, #efe5d6 100%);
+  color: #2b241d;
+}
+
+.page {
+  padding: 28rpx;
+}
+
+.state-card,
+.card,
+.banner {
+  border-radius: 28rpx;
+}
+
+.state-card,
+.card {
+  padding: 28rpx;
+  background: rgba(255, 252, 247, 0.94);
+  box-shadow: 0 18rpx 36rpx rgba(104, 76, 36, 0.08);
+}
+
+.state-card {
+  margin-top: 20vh;
+  text-align: center;
+}
+
+.state-title {
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+.state-desc {
+  margin-top: 16rpx;
+  color: #7c6e5d;
+  font-size: 26rpx;
+  line-height: 1.7;
+}
+
+.error {
+  border: 2rpx solid rgba(181, 75, 75, 0.18);
+}
+
+.retry-btn {
+  margin-top: 24rpx;
+  border: none;
+  border-radius: 18rpx;
+  background: #6f5532;
+  color: #fff;
+}
+
+.retry-btn::after {
+  border: none;
+}
+
+.banner {
+  padding: 30rpx;
+  color: #fffdf8;
+  box-shadow: 0 18rpx 36rpx rgba(84, 62, 31, 0.14);
+}
+
+.safe {
+  background: linear-gradient(135deg, #55733d 0%, #82975e 100%);
+}
+
+.danger {
+  background: linear-gradient(135deg, #984a36 0%, #c56d43 100%);
+}
+
+.banner-label {
+  display: inline-block;
+  padding: 8rpx 18rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: 22rpx;
+}
+
+.banner-title {
+  margin-top: 20rpx;
+  font-size: 44rpx;
+  font-weight: 700;
+}
+
+.banner-desc {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  line-height: 1.7;
+  opacity: 0.92;
+}
+
+.card {
+  margin-top: 24rpx;
+}
+
+.card-title {
+  margin-bottom: 20rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.field {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24rpx;
+  padding: 14rpx 0;
+  border-bottom: 1rpx solid #efe5d6;
+}
+
+.field:last-child {
+  border-bottom: none;
+}
+
+.label {
+  width: 160rpx;
+  flex-shrink: 0;
+  color: #8a7b67;
+  font-size: 24rpx;
+}
+
+.value {
+  flex: 1;
+  text-align: right;
+  font-size: 26rpx;
+  line-height: 1.6;
+}
+
+.timeline-item,
+.report-item {
+  padding: 22rpx 0;
+  border-bottom: 1rpx solid #efe5d6;
+}
+
+.timeline-item:last-child,
+.report-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.timeline-time,
+.report-text,
+.empty-text,
+.safe-text {
+  color: #7f715e;
+  font-size: 24rpx;
+  line-height: 1.7;
+}
+
+.timeline-title,
+.report-name {
+  margin-top: 8rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.timeline-desc {
+  margin-top: 8rpx;
+  color: #635848;
+  font-size: 24rpx;
+  line-height: 1.7;
+}
+
+.report-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.report-badge {
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  background: #efe4d4;
+  color: #74511f;
+  font-size: 22rpx;
+}
+
+.recall-card {
+  border: 2rpx solid rgba(187, 85, 52, 0.18);
+}
+
+.danger-text {
+  color: #b24a33;
+}
+
+.safe-text {
+  color: #4f6f34;
+}

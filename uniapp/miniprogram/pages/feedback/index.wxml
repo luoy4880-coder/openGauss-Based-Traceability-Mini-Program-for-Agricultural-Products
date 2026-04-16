@@ -1,0 +1,66 @@
+<view class="page">
+  <view class="feedback-header">
+    <view class="title">意见反馈</view>
+    <view class="subtitle">您的建议是我们进步的动力</view>
+  </view>
+
+  <view class="login-tip" wx:if="{{!loggedIn}}">
+    <view class="tip-title">需要登录后提交</view>
+    <view class="tip-desc">请先到“我的”页微信登录，再回来提交反馈。</view>
+    <button class="login-btn" bindtap="goToLogin">去登录</button>
+  </view>
+
+  <view class="feedback-form">
+    <view class="form-item">
+      <view class="label">反馈类型</view>
+      <picker bindchange="onTypeChange" value="{{typeIndex}}" range="{{typeOptions}}">
+        <view class="picker-box">
+          <text>{{typeOptions[typeIndex]}}</text>
+          <text class="arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <view class="label">反馈内容</view>
+      <textarea 
+        class="content-input" 
+        placeholder="请详细描述您的问题或建议（至少5个字）" 
+        bindinput="onContentInput" 
+        value="{{content}}"
+        maxlength="500"
+      ></textarea>
+      <view class="word-count">{{content.length}}/500</view>
+    </view>
+
+    <view class="form-item">
+      <view class="label">联系方式（可选）</view>
+      <input 
+        class="contact-input" 
+        placeholder="请输入您的手机号或邮箱，方便我们联系您" 
+        bindinput="onContactInput" 
+        value="{{contact}}"
+      />
+    </view>
+
+    <button 
+      class="submit-btn {{!content || content.length < 5 ? 'disabled' : ''}}" 
+      bindtap="submitFeedback" 
+      loading="{{submitting}}"
+      disabled="{{submitting || !content || content.length < 5}}"
+    >
+      提交反馈
+    </button>
+  </view>
+
+  <view class="my-feedback" wx:if="{{loggedIn}}">
+    <view class="my-title">我的最近反馈</view>
+    <view class="my-loading" wx:if="{{loadingMyFeedback}}">加载中...</view>
+    <view class="my-empty" wx:if="{{!loadingMyFeedback && myFeedback.length === 0}}">暂无反馈记录</view>
+    <view wx:for="{{myFeedback}}" wx:key="id" class="my-item">
+      <view class="my-type">{{item.type || '反馈'}}</view>
+      <view class="my-content">{{item.content}}</view>
+      <view class="my-time">{{item.createdAt ? item.createdAt.replace('T',' ').slice(0,19) : ''}}</view>
+    </view>
+  </view>
+</view>

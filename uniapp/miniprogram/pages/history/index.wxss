@@ -1,0 +1,99 @@
+page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f8f4ec 0%, #f3ecdf 100%);
+  color: #2d2419;
+}
+
+.page {
+  padding: 20rpx;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.title {
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.empty-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  margin-bottom: 10rpx;
+}
+
+.empty-desc {
+  font-size: 24rpx;
+  color: #7b6d5d;
+  margin-bottom: 24rpx;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.item-main {
+  flex: 1;
+  padding-right: 18rpx;
+}
+
+.item-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  margin-bottom: 6rpx;
+}
+
+.item-sub {
+  font-size: 24rpx;
+  color: #7b6d5d;
+  margin-bottom: 6rpx;
+}
+
+.item-time {
+  font-size: 22rpx;
+  color: #8b7a66;
+}
+
+.link-btn {
+  font-size: 24rpx;
+  color: #a74747;
+  background: transparent;
+  padding: 12rpx 16rpx;
+  line-height: 1;
+}
+
+.ghost-btn {
+  font-size: 24rpx;
+  color: #58703a;
+  background: transparent;
+  padding: 12rpx 16rpx;
+  line-height: 1;
+}
+
+.primary-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #58703a 0%, #7d9858 100%);
+  color: #ffffff;
+  border-radius: 16rpx;
+  font-size: 26rpx;
+  padding: 18rpx 0;
+}
+

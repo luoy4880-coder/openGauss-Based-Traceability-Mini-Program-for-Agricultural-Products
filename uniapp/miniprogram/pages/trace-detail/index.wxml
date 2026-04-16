@@ -1,0 +1,77 @@
+<view class="page">
+  <view wx:if="{{loading}}" class="state-card">
+    <view class="state-title">正在加载溯源信息</view>
+    <view class="state-desc">请稍候，我们正在请求后端接口。</view>
+  </view>
+
+  <view wx:elif="{{errorMessage}}" class="state-card error">
+    <view class="state-title">查询失败</view>
+    <view class="state-desc">{{errorMessage}}</view>
+    <button class="retry-btn" bindtap="retryLoad">重新加载</button>
+  </view>
+
+  <block wx:elif="{{detail}}">
+    <view class="banner {{detail.recallWarning ? 'danger' : 'safe'}}">
+      <view class="banner-label">{{detail.recallWarning ? '召回预警' : '状态正常'}}</view>
+      <view class="banner-title">{{detail.batchInfo.productName || '农产品'}}</view>
+      <view class="banner-desc">
+        批次号：{{detail.batchInfo.batchCode || '暂无'}} ｜ 追溯码：{{detail.traceCode.traceId}}
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">基地信息</view>
+      <view class="field"><text class="label">基地名称</text><text class="value">{{detail.baseInfo.baseName || '暂无'}}</text></view>
+      <view class="field"><text class="label">负责人</text><text class="value">{{detail.baseInfo.managerName || '暂无'}}</text></view>
+      <view class="field"><text class="label">联系电话</text><text class="value">{{detail.baseInfo.contactPhone || '暂无'}}</text></view>
+      <view class="field"><text class="label">基地地址</text><text class="value">{{joinAddress([detail.baseInfo.province, detail.baseInfo.city, detail.baseInfo.district, detail.baseInfo.address])}}</text></view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">产品批次</view>
+      <view class="field"><text class="label">产品名称</text><text class="value">{{detail.batchInfo.productName || '暂无'}}</text></view>
+      <view class="field"><text class="label">产品类别</text><text class="value">{{detail.batchInfo.productCategory || '暂无'}}</text></view>
+      <view class="field"><text class="label">种植日期</text><text class="value">{{formatDate(detail.batchInfo.plantingDate)}}</text></view>
+      <view class="field"><text class="label">预计采收</text><text class="value">{{formatDate(detail.batchInfo.expectedHarvestDate)}}</text></view>
+      <view class="field"><text class="label">实际采收</text><text class="value">{{formatDate(detail.batchInfo.actualHarvestDate)}}</text></view>
+      <view class="field"><text class="label">产量</text><text class="value">{{detail.batchInfo.quantity || '暂无'}} {{detail.batchInfo.unit || ''}}</text></view>
+      <view class="field"><text class="label">备注</text><text class="value">{{detail.batchInfo.remark || '暂无'}}</text></view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">生产记录</view>
+      <view wx:if="{{detail.productionRecords.length === 0}}" class="empty-text">暂无生产记录</view>
+      <view wx:for="{{detail.productionRecords}}" wx:key="id" class="timeline-item">
+        <view class="timeline-time">{{formatDateTime(item.operationTime)}}</view>
+        <view class="timeline-title">{{item.recordType || '生产记录'}}</view>
+        <view class="timeline-desc">操作人：{{item.operatorName || '暂无'}} ｜ 投入品：{{item.materialName || '暂无'}} {{item.dosage || ''}}</view>
+        <view class="timeline-desc">{{item.content || '暂无详细内容'}}</view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">检验报告</view>
+      <view wx:if="{{detail.inspectionReports.length === 0}}" class="empty-text">暂无检验报告</view>
+      <view wx:for="{{detail.inspectionReports}}" wx:key="id" class="report-item">
+        <view class="report-row">
+          <text class="report-name">{{item.reportNo || '未编号报告'}}</text>
+          <text class="report-badge">{{resultStatusText(item.resultStatus)}}</text>
+        </view>
+        <view class="report-text">机构：{{item.agencyName || '暂无'}}</view>
+        <view class="report-text">检验员：{{item.inspectorName || '暂无'}}</view>
+        <view class="report-text">检验时间：{{formatDateTime(item.inspectionTime)}}</view>
+        <view class="report-text">结论：{{item.conclusion || '暂无'}}</view>
+      </view>
+    </view>
+
+    <view class="card {{detail.recallWarning ? 'recall-card' : ''}}">
+      <view class="card-title">召回状态</view>
+      <view wx:if="{{detail.recallWarning && detail.recallRecord}}">
+        <view class="field"><text class="label">召回等级</text><text class="value danger-text">{{recallLevelText(detail.recallRecord.recallLevel)}}</text></view>
+        <view class="field"><text class="label">召回原因</text><text class="value">{{detail.recallRecord.reason || '暂无'}}</text></view>
+        <view class="field"><text class="label">通知时间</text><text class="value">{{formatDateTime(detail.recallRecord.noticeTime)}}</text></view>
+      </view>
+      <view wx:else class="safe-text">当前批次暂无召回预警，可放心查看追溯信息。</view>
+    </view>
+  </block>
+</view>

@@ -1,0 +1,38 @@
+<view class="page">
+  <view class="tabs">
+    <view class="tab {{mode === 'login' ? 'active' : ''}}" data-mode="login" bindtap="switchMode">登录</view>
+    <view class="tab {{mode === 'register' ? 'active' : ''}}" data-mode="register" bindtap="switchMode">注册</view>
+    <view class="tab {{mode === 'bind' ? 'active' : ''}}" data-mode="bind" bindtap="switchMode">绑定</view>
+  </view>
+
+  <view class="panel" wx:if="{{mode === 'bind' && !loggedIn}}">
+    <view class="tip-title">需要先登录</view>
+    <view class="tip-desc">请先使用微信登录或账号登录，再进行绑定。</view>
+    <button class="primary-btn" bindtap="goToProfile">去“我的”页登录</button>
+  </view>
+
+  <view class="panel">
+    <view class="field-title">用户名</view>
+    <input class="input" placeholder="请输入用户名" value="{{username}}" bindinput="onUsernameInput" />
+
+    <view class="field-title">密码</view>
+    <input class="input" password placeholder="请输入密码" value="{{password}}" bindinput="onPasswordInput" />
+
+    <view wx:if="{{mode !== 'login'}}">
+      <view class="field-title">姓名（可选）</view>
+      <input class="input" placeholder="请输入姓名" value="{{realName}}" bindinput="onRealNameInput" />
+
+      <view class="field-title">手机号（可选）</view>
+      <input class="input" placeholder="请输入手机号" value="{{phone}}" bindinput="onPhoneInput" />
+    </view>
+
+    <button class="primary-btn" loading="{{submitting}}" bindtap="submit">
+      {{mode === 'login' ? '登录' : (mode === 'register' ? '注册并登录' : '绑定账号')}}
+    </button>
+
+    <view class="tip" wx:if="{{mode === 'bind'}}">
+      绑定后可使用“账号密码登录”。
+    </view>
+  </view>
+</view>
+

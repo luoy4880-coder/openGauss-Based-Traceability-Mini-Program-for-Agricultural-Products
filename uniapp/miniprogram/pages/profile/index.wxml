@@ -1,0 +1,108 @@
+<view class="page">
+  <!-- 用户信息区域 -->
+  <view class="user-card">
+    <view class="user-avatar">
+      <view class="avatar-text">{{isLoggedIn ? '已' : '游'}}</view>
+    </view>
+    <view class="user-info">
+      <view class="user-name">{{displayName}}</view>
+      <view class="user-desc">{{displayDesc}}</view>
+    </view>
+    <button
+      wx:if="{{!isLoggedIn}}"
+      class="login-btn"
+      bindtap="handleLogin"
+    >微信登录</button>
+    <button
+      wx:if="{{isLoggedIn}}"
+      class="logout-btn"
+      bindtap="handleLogout"
+    >退出</button>
+  </view>
+
+  <!-- 主要功能区域 -->
+  <view class="main-section">
+    <!-- 账号能力 -->
+    <view class="feature-card" wx:if="{{!isLoggedIn}}" bindtap="goToAccountLogin">
+      <view class="feature-icon">
+        <text class="icon">🔐</text>
+      </view>
+      <view class="feature-content">
+        <view class="feature-title">账号密码登录</view>
+        <view class="feature-desc">使用用户名与密码登录</view>
+      </view>
+      <view class="feature-arrow">></view>
+    </view>
+
+    <view class="feature-card" wx:if="{{!isLoggedIn}}" bindtap="goToRegister">
+      <view class="feature-icon">
+        <text class="icon">🆕</text>
+      </view>
+      <view class="feature-content">
+        <view class="feature-title">注册账号</view>
+        <view class="feature-desc">注册后可账号密码登录</view>
+      </view>
+      <view class="feature-arrow">></view>
+    </view>
+
+    <view class="feature-card" wx:if="{{isLoggedIn && loginType === 'wechat'}}" bindtap="goToBindAccount">
+      <view class="feature-icon">
+        <text class="icon">🔗</text>
+      </view>
+      <view class="feature-content">
+        <view class="feature-title">绑定账号</view>
+        <view class="feature-desc">给当前微信登录绑定用户名密码</view>
+      </view>
+      <view class="feature-arrow">></view>
+    </view>
+
+    <!-- 查询记录 -->
+    <view class="feature-card" bindtap="goToHistory">
+      <view class="feature-icon">
+        <text class="icon">🕒</text>
+      </view>
+      <view class="feature-content">
+        <view class="feature-title">查询记录</view>
+        <view class="feature-desc">{{history.length}} 条历史记录</view>
+      </view>
+      <view class="feature-arrow">></view>
+    </view>
+
+    <!-- 意见反馈 -->
+    <view class="feature-card" bindtap="goToFeedbackPage">
+      <view class="feature-icon">
+        <text class="icon">📝</text>
+      </view>
+      <view class="feature-content">
+        <view class="feature-title">意见反馈</view>
+        <view class="feature-desc">{{isLoggedIn ? (myFeedbackCount + ' 条已提交反馈') : (feedbackList.length + ' 条本地草稿')}}</view>
+      </view>
+      <view class="feature-arrow">></view>
+    </view>
+  </view>
+
+  <!-- 开发信息区域（折叠） -->
+  <view class="dev-section" wx:if="{{showDevInfo}}">
+    <view class="panel-title">开发信息</view>
+    <view class="info-row">
+      <text class="info-label">API地址</text>
+      <text class="info-value">{{apiBaseUrl}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">局域网IP</text>
+      <text class="info-value">{{lanHint}}</text>
+    </view>
+    <view class="info-tip">提示：如需手机调试，请将 config/env.ts 中的 API_BASE_URL 改为电脑局域网IP</view>
+  </view>
+
+  <!-- 开发信息开关 -->
+  <view class="dev-toggle" bindtap="toggleDevInfo">
+    <text class="toggle-text">{{showDevInfo ? '隐藏' : '显示'}}开发信息</text>
+    <text class="toggle-icon">{{showDevInfo ? '▲' : '▼'}}</text>
+  </view>
+
+  <!-- 底部说明 -->
+  <view class="footer-note">
+    <text>农产品溯源系统 v1.0</text>
+  </view>
+</view>

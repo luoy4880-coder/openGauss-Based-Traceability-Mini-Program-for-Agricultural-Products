@@ -1,0 +1,92 @@
+page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f8f4ec 0%, #f3ecdf 100%);
+  color: #2d2419;
+}
+
+.page {
+  padding: 20rpx;
+}
+
+.tabs {
+  display: flex;
+  gap: 14rpx;
+  margin-bottom: 16rpx;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 18rpx 0;
+  border-radius: 18rpx;
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 26rpx;
+  color: #6b5b4a;
+}
+
+.tab.active {
+  background: #ffffff;
+  color: #2d2419;
+  font-weight: 700;
+}
+
+.panel {
+  margin-top: 16rpx;
+  padding: 24rpx;
+  border-radius: 20rpx;
+  background: #ffffff;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.field-title {
+  margin-top: 14rpx;
+  margin-bottom: 10rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+.field-title:first-child {
+  margin-top: 0;
+}
+
+.input {
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 18rpx;
+  border: 2rpx solid #e5d7c4;
+  background: #fffdf9;
+  color: #3d3227;
+  font-size: 26rpx;
+  height: 84rpx;
+  line-height: 84rpx;
+  padding: 0 22rpx;
+}
+
+.primary-btn {
+  margin-top: 22rpx;
+  height: 84rpx;
+  line-height: 84rpx;
+  border: none;
+  border-radius: 18rpx;
+  background: linear-gradient(135deg, #58703a 0%, #7d9858 100%);
+  color: #ffffff;
+  font-size: 28rpx;
+}
+
+.primary-btn::after {
+  border: none;
+}
+
+.tip-title {
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
+.tip-desc,
+.tip {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: #7b6d5d;
+  line-height: 1.7;
+}
+
