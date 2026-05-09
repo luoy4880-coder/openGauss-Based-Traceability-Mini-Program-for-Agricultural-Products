@@ -16,12 +16,15 @@ public interface ProductBatchMapper {
 
     @Select("""
             <script>
-            SELECT pb.id, pb.batch_code, pb.base_id, bi.base_name, pb.product_name, pb.product_category,
+            SELECT pb.id, pb.batch_code, pb.base_id, pb.company_id, bi.base_name, pb.product_name, pb.product_category,
                    pb.planting_date, pb.expected_harvest_date, pb.actual_harvest_date, pb.quantity, pb.unit,
                    pb.batch_status, pb.recall_status, pb.remark, pb.created_at, pb.updated_at
             FROM product_batch pb
             LEFT JOIN base_info bi ON pb.base_id = bi.id
             <where>
+                <if test="companyId != null">
+                    AND pb.company_id = #{companyId}
+                </if>
                 <if test="keyword != null and keyword != ''">
                     AND (pb.batch_code LIKE CONCAT('%', #{keyword}, '%')
                     OR pb.product_name LIKE CONCAT('%', #{keyword}, '%'))
@@ -36,7 +39,8 @@ public interface ProductBatchMapper {
             ORDER BY pb.id DESC
             </script>
             """)
-    List<ProductBatchVO> selectList(@Param("keyword") String keyword,
+    List<ProductBatchVO> selectList(@Param("companyId") Long companyId,
+                                    @Param("keyword") String keyword,
                                     @Param("baseId") Long baseId,
                                     @Param("batchStatus") Integer batchStatus);
 
@@ -45,6 +49,9 @@ public interface ProductBatchMapper {
             SELECT COUNT(*)
             FROM product_batch pb
             <where>
+                <if test="companyId != null">
+                    AND pb.company_id = #{companyId}
+                </if>
                 <if test="keyword != null and keyword != ''">
                     AND (pb.batch_code LIKE CONCAT('%', #{keyword}, '%')
                     OR pb.product_name LIKE CONCAT('%', #{keyword}, '%'))
@@ -58,18 +65,22 @@ public interface ProductBatchMapper {
             </where>
             </script>
             """)
-    long countList(@Param("keyword") String keyword,
+    long countList(@Param("companyId") Long companyId,
+                   @Param("keyword") String keyword,
                    @Param("baseId") Long baseId,
                    @Param("batchStatus") Integer batchStatus);
 
     @Select("""
             <script>
-            SELECT pb.id, pb.batch_code, pb.base_id, bi.base_name, pb.product_name, pb.product_category,
+            SELECT pb.id, pb.batch_code, pb.base_id, pb.company_id, bi.base_name, pb.product_name, pb.product_category,
                    pb.planting_date, pb.expected_harvest_date, pb.actual_harvest_date, pb.quantity, pb.unit,
                    pb.batch_status, pb.recall_status, pb.remark, pb.created_at, pb.updated_at
             FROM product_batch pb
             LEFT JOIN base_info bi ON pb.base_id = bi.id
             <where>
+                <if test="companyId != null">
+                    AND pb.company_id = #{companyId}
+                </if>
                 <if test="keyword != null and keyword != ''">
                     AND (pb.batch_code LIKE CONCAT('%', #{keyword}, '%')
                     OR pb.product_name LIKE CONCAT('%', #{keyword}, '%'))
@@ -85,14 +96,15 @@ public interface ProductBatchMapper {
             LIMIT #{limit} OFFSET #{offset}
             </script>
             """)
-    List<ProductBatchVO> selectPage(@Param("keyword") String keyword,
+    List<ProductBatchVO> selectPage(@Param("companyId") Long companyId,
+                                    @Param("keyword") String keyword,
                                     @Param("baseId") Long baseId,
                                     @Param("batchStatus") Integer batchStatus,
                                     @Param("offset") long offset,
                                     @Param("limit") int limit);
 
     @Select("""
-            SELECT pb.id, pb.batch_code, pb.base_id, bi.base_name, pb.product_name, pb.product_category,
+            SELECT pb.id, pb.batch_code, pb.base_id, pb.company_id, bi.base_name, pb.product_name, pb.product_category,
                    pb.planting_date, pb.expected_harvest_date, pb.actual_harvest_date, pb.quantity, pb.unit,
                    pb.batch_status, pb.recall_status, pb.remark, pb.created_at, pb.updated_at
             FROM product_batch pb
@@ -102,7 +114,7 @@ public interface ProductBatchMapper {
     ProductBatchVO selectDetailById(Long id);
 
     @Select("""
-            SELECT id, batch_code, base_id, product_name, product_category, planting_date,
+            SELECT id, batch_code, base_id, company_id, product_name, product_category, planting_date,
                    expected_harvest_date, actual_harvest_date, quantity, unit,
                    batch_status, recall_status, remark, created_at, updated_at
             FROM product_batch
@@ -112,11 +124,11 @@ public interface ProductBatchMapper {
 
     @Insert("""
             INSERT INTO product_batch (
-                batch_code, base_id, product_name, product_category, planting_date,
+                batch_code, base_id, company_id, product_name, product_category, planting_date,
                 expected_harvest_date, actual_harvest_date, quantity, unit,
                 batch_status, recall_status, remark, created_at, updated_at
             ) VALUES (
-                #{batchCode}, #{baseId}, #{productName}, #{productCategory}, #{plantingDate},
+                #{batchCode}, #{baseId}, #{companyId}, #{productName}, #{productCategory}, #{plantingDate},
                 #{expectedHarvestDate}, #{actualHarvestDate}, #{quantity}, #{unit},
                 #{batchStatus}, #{recallStatus}, #{remark}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
             )
@@ -127,6 +139,7 @@ public interface ProductBatchMapper {
     @Update("""
             UPDATE product_batch
             SET base_id = #{baseId},
+                company_id = #{companyId},
                 product_name = #{productName},
                 product_category = #{productCategory},
                 planting_date = #{plantingDate},

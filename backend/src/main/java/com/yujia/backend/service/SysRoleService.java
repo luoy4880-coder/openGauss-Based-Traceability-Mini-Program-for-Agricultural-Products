@@ -1,5 +1,6 @@
 package com.yujia.backend.service;
 
+import com.yujia.backend.common.auth.AuthPermissionService;
 import com.yujia.backend.common.exception.BusinessException;
 import com.yujia.backend.entity.SysRole;
 import com.yujia.backend.mapper.SysRoleMapper;
@@ -14,9 +15,20 @@ import java.util.List;
 public class SysRoleService {
 
     private final SysRoleMapper sysRoleMapper;
+    private final AuthPermissionService authPermissionService;
 
     public List<RoleVO> list() {
         return sysRoleMapper.selectAll().stream().map(this::toVO).toList();
+    }
+
+    public List<RoleVO> listAssignable() {
+        if (authPermissionService.isAdmin()) {
+            return list();
+        }
+        return sysRoleMapper.selectAll().stream()
+                .filter(role -> !"ADMIN".equalsIgnoreCase(role.getRoleCode()))
+                .map(this::toVO)
+                .toList();
     }
 
     public List<RoleVO> listByUserId(Long userId) {
@@ -31,6 +43,18 @@ public class SysRoleService {
         if (roles.size() != roleIds.size()) {
             throw new BusinessException("角色不存在或参数无效");
         }
+        if (!authPermissionService.isAdmin()
+                && roles.stream().anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getRoleCode()))) {
+            throw new BusinessException(403, "无权分配管理员角色");
+        }
+    }
+
+    public Long findRoleIdByCode(String roleCode) {
+        if (roleCode == null || roleCode.isBlank()) {
+            return null;
+        }
+        SysRole role = sysRoleMapper.selectByRoleCode(roleCode);
+        return role == null ? null : role.getId();
     }
 
     private RoleVO toVO(SysRole role) {

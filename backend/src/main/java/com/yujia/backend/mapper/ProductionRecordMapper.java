@@ -15,56 +15,69 @@ public interface ProductionRecordMapper {
 
     @Select("""
             <script>
-            SELECT id, batch_id, record_type, operation_time, operator_name, material_name, dosage,
-                   content, attachment_url, created_at
-            FROM production_record
+            SELECT pr.id, pr.batch_id, pr.record_type, pr.operation_time, pr.operator_name, pr.material_name, pr.dosage,
+                   pr.content, pr.attachment_url, pr.created_at
+            FROM production_record pr
+            LEFT JOIN product_batch pb ON pb.id = pr.batch_id
             <where>
+                <if test="companyId != null">
+                    AND pb.company_id = #{companyId}
+                </if>
                 <if test="batchId != null">
-                    AND batch_id = #{batchId}
+                    AND pr.batch_id = #{batchId}
                 </if>
                 <if test="recordType != null and recordType != ''">
-                    AND record_type = #{recordType}
+                    AND pr.record_type = #{recordType}
                 </if>
             </where>
-            ORDER BY operation_time DESC, id DESC
+            ORDER BY pr.operation_time DESC, pr.id DESC
             </script>
             """)
-    List<ProductionRecord> selectList(@Param("batchId") Long batchId, @Param("recordType") String recordType);
+    List<ProductionRecord> selectList(@Param("companyId") Long companyId, @Param("batchId") Long batchId, @Param("recordType") String recordType);
 
     @Select("""
             <script>
             SELECT COUNT(*)
-            FROM production_record
+            FROM production_record pr
+            LEFT JOIN product_batch pb ON pb.id = pr.batch_id
             <where>
+                <if test="companyId != null">
+                    AND pb.company_id = #{companyId}
+                </if>
                 <if test="batchId != null">
-                    AND batch_id = #{batchId}
+                    AND pr.batch_id = #{batchId}
                 </if>
                 <if test="recordType != null and recordType != ''">
-                    AND record_type = #{recordType}
+                    AND pr.record_type = #{recordType}
                 </if>
             </where>
             </script>
             """)
-    long countList(@Param("batchId") Long batchId, @Param("recordType") String recordType);
+    long countList(@Param("companyId") Long companyId, @Param("batchId") Long batchId, @Param("recordType") String recordType);
 
     @Select("""
             <script>
-            SELECT id, batch_id, record_type, operation_time, operator_name, material_name, dosage,
-                   content, attachment_url, created_at
-            FROM production_record
+            SELECT pr.id, pr.batch_id, pr.record_type, pr.operation_time, pr.operator_name, pr.material_name, pr.dosage,
+                   pr.content, pr.attachment_url, pr.created_at
+            FROM production_record pr
+            LEFT JOIN product_batch pb ON pb.id = pr.batch_id
             <where>
+                <if test="companyId != null">
+                    AND pb.company_id = #{companyId}
+                </if>
                 <if test="batchId != null">
-                    AND batch_id = #{batchId}
+                    AND pr.batch_id = #{batchId}
                 </if>
                 <if test="recordType != null and recordType != ''">
-                    AND record_type = #{recordType}
+                    AND pr.record_type = #{recordType}
                 </if>
             </where>
-            ORDER BY operation_time DESC, id DESC
+            ORDER BY pr.operation_time DESC, pr.id DESC
             LIMIT #{limit} OFFSET #{offset}
             </script>
             """)
-    List<ProductionRecord> selectPage(@Param("batchId") Long batchId,
+    List<ProductionRecord> selectPage(@Param("companyId") Long companyId,
+                                      @Param("batchId") Long batchId,
                                       @Param("recordType") String recordType,
                                       @Param("offset") long offset,
                                       @Param("limit") int limit);

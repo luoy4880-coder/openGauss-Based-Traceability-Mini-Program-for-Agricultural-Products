@@ -1,0 +1,350 @@
+/* ============================================
+   Element Plus 主题覆盖 — 融入自然绿色系设计
+   ============================================ */
+
+/* 基础色板映射到绿色系 */
+:root {
+  --el-color-primary: #4e7f57;
+  --el-color-primary-light-3: #76a463;
+  --el-color-primary-light-5: #8fb87e;
+  --el-color-primary-light-7: #b5d4a8;
+  --el-color-primary-light-8: #d1e4c8;
+  --el-color-primary-light-9: #e8f2e2;
+  --el-color-primary-dark-2: #386448;
+
+  --el-color-success: #4e7f57;
+  --el-color-warning: #d08e45;
+  --el-color-danger: #c45c3e;
+  --el-color-info: #8a9aa8;
+
+  --el-border-radius-base: 12px;
+  --el-border-radius-small: 8px;
+  --el-border-radius-round: 999px;
+
+  --el-fill-color-blank: rgba(255, 255, 255, 0.92);
+  --el-bg-color: transparent;
+  --el-bg-color-page: transparent;
+  --el-bg-color-overlay: rgba(255, 255, 255, 0.96);
+}
+
+/* ===== Button ===== */
+.el-button {
+  border-radius: 12px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+}
+
+.el-button--primary {
+  background: linear-gradient(135deg, #4e7f57 0%, #76a463 100%);
+  border: none;
+  box-shadow: 0 4px 14px rgba(78, 127, 87, 0.28);
+}
+
+.el-button--primary:hover {
+  background: linear-gradient(135deg, #44754d 0%, #6a9559 100%);
+  box-shadow: 0 6px 20px rgba(78, 127, 87, 0.38);
+  transform: translateY(-1px);
+}
+
+.el-button--primary:active {
+  transform: translateY(0);
+}
+
+.el-button--success {
+  background: linear-gradient(135deg, #5a8a3f 0%, #7aac5a 100%);
+  border: none;
+  box-shadow: 0 4px 14px rgba(90, 138, 63, 0.26);
+}
+
+.el-button--danger {
+  background: linear-gradient(135deg, #b84a32 0%, #d4735a 100%);
+  border: none;
+  box-shadow: 0 4px 14px rgba(184, 74, 50, 0.24);
+}
+
+.el-button--warning {
+  background: linear-gradient(135deg, #c47e2e 0%, #dba855 100%);
+  border: none;
+  box-shadow: 0 4px 14px rgba(196, 126, 46, 0.24);
+}
+
+.el-button.is-plain {
+  background: transparent;
+  box-shadow: none;
+}
+
+.el-button.is-plain:hover {
+  background: var(--el-color-primary-light-9);
+}
+
+.el-button.is-text:hover {
+  background: rgba(78, 127, 87, 0.08);
+  color: var(--el-color-primary);
+}
+
+/* ===== Input / Select / DatePicker ===== */
+.el-input__wrapper,
+.el-textarea__inner,
+.el-select .el-input__wrapper,
+.el-date-editor.el-input__wrapper {
+  border-radius: 12px !important;
+  box-shadow: 0 0 0 1px #dde5df inset !important;
+  background: #fafbf9;
+  transition: all 0.25s ease;
+}
+
+.el-input__wrapper:hover,
+.el-textarea__inner:hover,
+.el-select:hover .el-input__wrapper {
+  box-shadow: 0 0 0 1px #b5d4a8 inset !important;
+  background: #f5f8f3;
+}
+
+.el-input__wrapper.is-focus,
+.el-textarea__inner:focus,
+.el-select .el-input.is-focus .el-input__wrapper {
+  box-shadow: 0 0 0 1px var(--el-color-primary) inset, 0 0 0 4px rgba(78, 127, 87, 0.08) !important;
+  background: #fff;
+}
+
+.el-input__inner {
+  color: #16324f;
+}
+
+.el-input__inner::placeholder {
+  color: #9aa8b5;
+}
+
+/* ===== Card ===== */
+.el-card {
+  border-radius: 22px !important;
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(12px);
+  border: none !important;
+  box-shadow: 0 12px 36px rgba(28, 54, 84, 0.08) !important;
+  transition: box-shadow 0.3s ease;
+}
+
+.el-card:hover {
+  box-shadow: 0 16px 44px rgba(28, 54, 84, 0.12) !important;
+}
+
+.el-card__header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  padding: 18px 24px;
+  font-weight: 600;
+}
+
+.el-card__body {
+  padding: 24px;
+}
+
+/* ===== Table ===== */
+.el-table {
+  --el-table-header-bg-color: rgba(245, 248, 243, 0.8);
+  --el-table-header-text-color: #386448;
+  --el-table-row-hover-bg-color: rgba(232, 242, 226, 0.5);
+  --el-table-border-color: rgba(0, 0, 0, 0.04);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.el-table th.el-table__cell {
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+.el-table .el-table__cell {
+  padding: 14px 0;
+}
+
+.el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
+  background: rgba(250, 252, 249, 0.6);
+}
+
+/* ===== Tag ===== */
+.el-tag {
+  border-radius: 999px;
+  padding: 0 14px;
+  height: 28px;
+  font-weight: 500;
+  border: none;
+}
+
+.el-tag--success {
+  background: #e8f2e2;
+  color: #386448;
+}
+
+.el-tag--danger {
+  background: #fbe8e2;
+  color: #a33d26;
+}
+
+.el-tag--warning {
+  background: #fdf0d9;
+  color: #8a5e1a;
+}
+
+.el-tag--info {
+  background: #eef1f4;
+  color: #4a5a6a;
+}
+
+.el-tag--primary {
+  background: #e8f2e2;
+  color: #386448;
+}
+
+/* ===== Dialog ===== */
+.el-dialog {
+  border-radius: 24px !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 24px 60px rgba(22, 50, 79, 0.14) !important;
+  overflow: hidden;
+}
+
+.el-dialog__header {
+  padding: 24px 28px 0;
+  margin-right: 0;
+}
+
+.el-dialog__title {
+  font-weight: 700;
+  font-size: 18px;
+  color: #16324f;
+}
+
+.el-dialog__body {
+  padding: 20px 28px;
+}
+
+.el-dialog__footer {
+  padding: 12px 28px 24px;
+}
+
+.el-dialog__headerbtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  transition: background 0.2s;
+}
+
+.el-dialog__headerbtn:hover {
+  background: rgba(78, 127, 87, 0.08);
+}
+
+.el-dialog__headerbtn .el-dialog__close {
+  color: #8a9aa8;
+  font-size: 18px;
+}
+
+.el-dialog__headerbtn:hover .el-dialog__close {
+  color: var(--el-color-primary);
+}
+
+/* ===== Pagination ===== */
+.el-pagination.is-background .btn-prev,
+.el-pagination.is-background .btn-next,
+.el-pagination.is-background .el-pager li {
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.el-pagination.is-background .el-pager li.is-active {
+  background: linear-gradient(135deg, #4e7f57 0%, #76a463 100%);
+  box-shadow: 0 4px 12px rgba(78, 127, 87, 0.3);
+}
+
+.el-pagination.is-background .btn-prev:hover,
+.el-pagination.is-background .btn-next:hover,
+.el-pagination.is-background .el-pager li:hover {
+  background: #e8f2e2;
+  color: var(--el-color-primary);
+}
+
+/* ===== Form ===== */
+.el-form-item__label {
+  color: #3a5169;
+  font-weight: 500;
+}
+
+.el-radio__input.is-checked .el-radio__inner {
+  background: var(--el-color-primary);
+  border-color: var(--el-color-primary);
+}
+
+.el-radio__input.is-checked + .el-radio__label {
+  color: var(--el-color-primary);
+}
+
+/* ===== Select Dropdown / DatePicker Panel ===== */
+.el-popper.is-light,
+.el-picker-panel {
+  border-radius: 16px !important;
+  box-shadow: 0 12px 40px rgba(22, 50, 79, 0.12) !important;
+  border: none !important;
+  overflow: hidden;
+}
+
+.el-select-dropdown__item.selected {
+  color: var(--el-color-primary);
+  font-weight: 600;
+}
+
+.el-select-dropdown__item.hover,
+.el-select-dropdown__item:hover {
+  background: rgba(78, 127, 87, 0.06);
+}
+
+/* ===== Message / MessageBox ===== */
+.el-message {
+  border-radius: 14px;
+  box-shadow: 0 8px 28px rgba(22, 50, 79, 0.1);
+  backdrop-filter: blur(8px);
+}
+
+.el-message-box {
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.96) !important;
+  backdrop-filter: blur(16px);
+  border: none !important;
+  box-shadow: 0 24px 60px rgba(22, 50, 79, 0.14) !important;
+}
+
+.el-message-box__title {
+  font-weight: 700;
+}
+
+/* ===== Menu (if used) ===== */
+.el-menu {
+  border-right: none;
+  background: transparent;
+}
+
+/* ===== Empty ===== */
+.el-empty__description {
+  color: #8a9aa8;
+}
+
+/* ===== Loading ===== */
+.el-loading-mask {
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+/* ===== Scrollbar ===== */
+.el-scrollbar__thumb {
+  background: rgba(120, 140, 130, 0.3);
+  border-radius: 4px;
+}
+
+.el-scrollbar__thumb:hover {
+  background: rgba(120, 140, 130, 0.5);
+}

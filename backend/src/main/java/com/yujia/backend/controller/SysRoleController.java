@@ -1,5 +1,6 @@
 package com.yujia.backend.controller;
 
+import com.yujia.backend.common.auth.AuthPermissionService;
 import com.yujia.backend.common.response.ApiResponse;
 import com.yujia.backend.service.SysRoleService;
 import com.yujia.backend.vo.RoleVO;
@@ -15,10 +16,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SysRoleController {
 
+    private final AuthPermissionService authPermissionService;
     private final SysRoleService sysRoleService;
 
     @GetMapping
     public ApiResponse<List<RoleVO>> list() {
-        return ApiResponse.success(sysRoleService.list());
+        authPermissionService.requireStaff();
+        return ApiResponse.success(sysRoleService.listAssignable());
     }
 }

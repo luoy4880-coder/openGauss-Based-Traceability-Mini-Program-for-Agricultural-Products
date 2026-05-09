@@ -1,32 +1,38 @@
 <view class="page">
   <view class="tabs">
-    <view class="tab {{mode === 'login' ? 'active' : ''}}" data-mode="login" bindtap="switchMode">登录</view>
-    <view class="tab {{mode === 'register' ? 'active' : ''}}" data-mode="register" bindtap="switchMode">注册</view>
-    <view class="tab {{mode === 'bind' ? 'active' : ''}}" data-mode="bind" bindtap="switchMode">绑定</view>
+    <view class="tab {{mode === 'login' ? 'active' : ''}}" data-mode="login" bindtap="switchMode"><text>登录</text></view>
+    <view class="tab {{mode === 'register' ? 'active' : ''}}" data-mode="register" bindtap="switchMode"><text>注册</text></view>
+    <view class="tab {{mode === 'bind' ? 'active' : ''}}" data-mode="bind" bindtap="switchMode"><text>绑定</text></view>
   </view>
 
-  <view class="panel" wx:if="{{mode === 'bind' && !loggedIn}}">
+  <view class="panel yj-card" wx:if="{{mode === 'bind' && !loggedIn}}">
     <view class="tip-title">需要先登录</view>
-    <view class="tip-desc">请先使用微信登录或账号登录，再进行绑定。</view>
-    <button class="primary-btn" bindtap="goToProfile">去“我的”页登录</button>
+    <view class="tip-desc">请先使用微信登录或账号登录，再进行账号绑定。</view>
+    <button class="primary-btn yj-btn-primary" bindtap="goToProfile">前往“我的”页登录</button>
   </view>
 
-  <view class="panel">
+  <view class="panel yj-card">
     <view class="field-title">用户名</view>
-    <input class="input" placeholder="请输入用户名" value="{{username}}" bindinput="onUsernameInput" />
+    <input class="input yj-input" placeholder="请输入用户名" value="{{username}}" bindinput="onUsernameInput" />
 
     <view class="field-title">密码</view>
-    <input class="input" password placeholder="请输入密码" value="{{password}}" bindinput="onPasswordInput" />
+    <input class="input yj-input" password placeholder="请输入密码" value="{{password}}" bindinput="onPasswordInput" />
 
     <view wx:if="{{mode !== 'login'}}">
       <view class="field-title">姓名（可选）</view>
-      <input class="input" placeholder="请输入姓名" value="{{realName}}" bindinput="onRealNameInput" />
+      <input class="input yj-input" placeholder="请输入姓名" value="{{realName}}" bindinput="onRealNameInput" />
 
       <view class="field-title">手机号（可选）</view>
-      <input class="input" placeholder="请输入手机号" value="{{phone}}" bindinput="onPhoneInput" />
+      <input class="input yj-input" placeholder="请输入手机号" value="{{phone}}" bindinput="onPhoneInput" />
     </view>
 
-    <button class="primary-btn" loading="{{submitting}}" bindtap="submit">
+    <view wx:if="{{mode === 'register'}}">
+      <view class="field-title">公司名称</view>
+      <input class="input yj-input" placeholder="请输入所属公司名称" value="{{companyName}}" bindinput="onCompanyNameInput" />
+      <view class="tip">公开注册默认创建消费者账号，不授予管理后台权限。</view>
+    </view>
+
+    <button class="primary-btn yj-btn-primary" loading="{{submitting}}" bindtap="submit">
       {{mode === 'login' ? '登录' : (mode === 'register' ? '注册并登录' : '绑定账号')}}
     </button>
 
@@ -35,4 +41,3 @@
     </view>
   </view>
 </view>
-

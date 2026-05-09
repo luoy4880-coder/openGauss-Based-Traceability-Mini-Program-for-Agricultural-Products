@@ -17,18 +17,26 @@ public class ProductionRecordService {
 
     private final ProductionRecordMapper productionRecordMapper;
     private final ProductBatchService productBatchService;
+    private final CompanyScopeService companyScopeService;
 
     public List<ProductionRecord> list(Long batchId, String recordType) {
-        return productionRecordMapper.selectList(batchId, recordType);
+        if (batchId != null) {
+            productBatchService.ensureBatchExists(batchId);
+        }
+        return productionRecordMapper.selectList(companyScopeService.currentCompanyScopeOrNull(), batchId, recordType);
     }
 
     public PageResponse<ProductionRecord> page(Long batchId, String recordType,
                                                Integer pageNum, Integer pageSize) {
-        int safePageNum = normalizePageNum(pageNum);
-        int safePageSize = normalizePageSize(pageSize);
-        long total = productionRecordMapper.countList(batchId, recordType);
+        int safePageNum = pageNum == null || pageNum < 1 ? 1 : pageNum;
+        int safePageSize = pageSize == null || pageSize < 1 ? 10 : Math.min(pageSize, 100);
+        if (batchId != null) {
+            productBatchService.ensureBatchExists(batchId);
+        }
+        Long companyId = companyScopeService.currentCompanyScopeOrNull();
+        long total = productionRecordMapper.countList(companyId, batchId, recordType);
         List<ProductionRecord> records = productionRecordMapper.selectPage(
-                batchId, recordType, (long) (safePageNum - 1) * safePageSize, safePageSize);
+                companyId, batchId, recordType, (long) (safePageNum - 1) * safePageSize, safePageSize);
         return PageResponse.<ProductionRecord>builder()
                 .records(records)
                 .total(total)
@@ -42,6 +50,7 @@ public class ProductionRecordService {
         if (productionRecord == null) {
             throw new BusinessException(404, "生产记录不存在");
         }
+        productBatchService.ensureBatchExists(productionRecord.getBatchId());
         return productionRecord;
     }
 
@@ -80,16 +89,5 @@ public class ProductionRecordService {
     public void delete(Long id) {
         detail(id);
         productionRecordMapper.deleteById(id);
-    }
-
-    private int normalizePageNum(Integer pageNum) {
-        return pageNum == null || pageNum < 1 ? 1 : pageNum;
-    }
-
-    private int normalizePageSize(Integer pageSize) {
-        if (pageSize == null || pageSize < 1) {
-            return 10;
-        }
-        return Math.min(pageSize, 100);
     }
 }

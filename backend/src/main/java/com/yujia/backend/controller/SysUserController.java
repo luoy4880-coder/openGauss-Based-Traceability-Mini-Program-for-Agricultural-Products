@@ -1,5 +1,6 @@
 package com.yujia.backend.controller;
 
+import com.yujia.backend.common.auth.AuthPermissionService;
 import com.yujia.backend.common.response.ApiResponse;
 import com.yujia.backend.common.response.PageResponse;
 import com.yujia.backend.dto.user.UserCreateRequest;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class SysUserController {
 
+    private final AuthPermissionService authPermissionService;
     private final SysUserService sysUserService;
 
     @GetMapping("/page")
@@ -31,33 +33,39 @@ public class SysUserController {
                                                   @RequestParam(required = false) Integer status,
                                                   @RequestParam(required = false) Integer pageNum,
                                                   @RequestParam(required = false) Integer pageSize) {
+        authPermissionService.requireStaff();
         return ApiResponse.success(sysUserService.page(keyword, status, pageNum, pageSize));
     }
 
     @GetMapping("/{id}")
     public ApiResponse<UserVO> detail(@PathVariable Long id) {
+        authPermissionService.requireStaff();
         return ApiResponse.success(sysUserService.detail(id));
     }
 
     @PostMapping
     public ApiResponse<UserVO> create(@Valid @RequestBody UserCreateRequest request) {
+        authPermissionService.requireStaff();
         return ApiResponse.success(sysUserService.create(request));
     }
 
     @PutMapping("/{id}")
     public ApiResponse<UserVO> update(@PathVariable Long id, @Valid @RequestBody UserUpdateRequest request) {
+        authPermissionService.requireStaff();
         return ApiResponse.success(sysUserService.update(id, request));
     }
 
     @PutMapping("/{id}/password")
     public ApiResponse<Void> updatePassword(@PathVariable Long id,
                                             @Valid @RequestBody UserPasswordUpdateRequest request) {
+        authPermissionService.requireStaff();
         sysUserService.updatePassword(id, request);
         return ApiResponse.success();
     }
 
     @DeleteMapping("/{id}")
     public ApiResponse<Void> delete(@PathVariable Long id) {
+        authPermissionService.requireAdmin();
         sysUserService.delete(id);
         return ApiResponse.success();
     }

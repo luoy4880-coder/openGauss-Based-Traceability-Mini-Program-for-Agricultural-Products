@@ -11,6 +11,7 @@ public class BaseInfo {
     private Long id;
 
     private String baseCode;
+    private Long companyId;
 
     private String baseName;
 

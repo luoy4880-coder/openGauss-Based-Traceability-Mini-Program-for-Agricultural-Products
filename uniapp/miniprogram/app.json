@@ -1,11 +1,16 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/collection/index",
+    "pages/feedback/index",
     "pages/trace-detail/index",
+    "pages/quality-interpretation/index",
+    "pages/logistics-timeline/index",
+    "pages/my-feedback/index",
+    "pages/report-preview/index",
     "pages/profile/index",
     "pages/account/index",
-    "pages/history/index",
-    "pages/feedback/index"
+    "pages/history/index"
   ],
   "tabBar": {
     "color": "#7f715e",
@@ -13,14 +18,10 @@
     "backgroundColor": "#fffaf2",
     "borderStyle": "black",
     "list": [
-      {
-        "pagePath": "pages/index/index",
-        "text": "查询"
-      },
-      {
-        "pagePath": "pages/profile/index",
-        "text": "我的"
-      }
+      { "pagePath": "pages/index/index", "text": "查询" },
+      { "pagePath": "pages/collection/index", "text": "收藏" },
+      { "pagePath": "pages/feedback/index", "text": "反馈" },
+      { "pagePath": "pages/profile/index", "text": "我的" }
     ]
   },
   "window": {

@@ -2,6 +2,7 @@ package com.yujia.backend.service;
 
 import com.yujia.backend.common.exception.BusinessException;
 import com.yujia.backend.common.response.PageResponse;
+import com.yujia.backend.common.util.AddressParser;
 import com.yujia.backend.dto.base.BaseCreateRequest;
 import com.yujia.backend.dto.base.BaseUpdateRequest;
 import com.yujia.backend.entity.BaseInfo;
@@ -17,17 +18,20 @@ import java.util.List;
 public class BaseInfoService {
 
     private final BaseInfoMapper baseInfoMapper;
+    private final NumberGeneratorService numberGeneratorService;
+    private final CompanyScopeService companyScopeService;
 
     public List<BaseInfo> list(String keyword, Integer status) {
-        return baseInfoMapper.selectList(keyword, status);
+        return baseInfoMapper.selectList(companyScopeService.currentCompanyScopeOrNull(), keyword, status);
     }
 
     public PageResponse<BaseInfo> page(String keyword, Integer status, Integer pageNum, Integer pageSize) {
         int safePageNum = normalizePageNum(pageNum);
         int safePageSize = normalizePageSize(pageSize);
-        long total = baseInfoMapper.countList(keyword, status);
+        Long companyId = companyScopeService.currentCompanyScopeOrNull();
+        long total = baseInfoMapper.countList(companyId, keyword, status);
         List<BaseInfo> records = baseInfoMapper.selectPage(
-                keyword, status, (long) (safePageNum - 1) * safePageSize, safePageSize);
+                companyId, keyword, status, (long) (safePageNum - 1) * safePageSize, safePageSize);
         return PageResponse.<BaseInfo>builder()
                 .records(records)
                 .total(total)
@@ -41,6 +45,7 @@ public class BaseInfoService {
         if (baseInfo == null) {
             throw new BusinessException(404, "基地不存在");
         }
+        companyScopeService.assertAccessibleCompany(baseInfo.getCompanyId());
         return baseInfo;
     }
 
@@ -50,14 +55,17 @@ public class BaseInfoService {
             throw new BusinessException("基地编码已存在");
         }
 
+        AddressParser.ParsedAddress parsedAddress = AddressParser.parse(request.getBaseName() + " " + request.getAddress());
+
         BaseInfo baseInfo = new BaseInfo();
-        baseInfo.setBaseCode(request.getBaseCode());
+        baseInfo.setBaseCode(StringUtils.hasText(request.getBaseCode()) ? request.getBaseCode() : numberGeneratorService.baseCode());
+        baseInfo.setCompanyId(companyScopeService.requireCurrentCompanyId());
         baseInfo.setBaseName(request.getBaseName());
         baseInfo.setManagerName(request.getManagerName());
         baseInfo.setContactPhone(request.getContactPhone());
-        baseInfo.setProvince(request.getProvince());
-        baseInfo.setCity(request.getCity());
-        baseInfo.setDistrict(request.getDistrict());
+        baseInfo.setProvince(StringUtils.hasText(request.getProvince()) ? request.getProvince() : parsedAddress.getProvince());
+        baseInfo.setCity(StringUtils.hasText(request.getCity()) ? request.getCity() : parsedAddress.getCity());
+        baseInfo.setDistrict(StringUtils.hasText(request.getDistrict()) ? request.getDistrict() : parsedAddress.getDistrict());
         baseInfo.setAddress(request.getAddress());
         baseInfo.setAcreage(request.getAcreage());
         baseInfo.setStatus(request.getStatus());
@@ -81,9 +89,7 @@ public class BaseInfoService {
     }
 
     public void validateExists(Long id) {
-        if (baseInfoMapper.selectById(id) == null) {
-            throw new BusinessException(404, "基地不存在");
-        }
+        detail(id);
     }
 
     public void delete(Long id) {

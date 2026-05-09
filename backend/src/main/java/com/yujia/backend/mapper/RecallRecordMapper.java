@@ -15,54 +15,67 @@ public interface RecallRecordMapper {
 
     @Select("""
             <script>
-            SELECT id, batch_id, recall_level, reason, recall_status, notice_time, closed_at, created_at
-            FROM recall_record
+            SELECT rr.id, rr.batch_id, rr.recall_level, rr.reason, rr.recall_status, rr.notice_time, rr.closed_at, rr.created_at
+            FROM recall_record rr
+            LEFT JOIN product_batch pb ON pb.id = rr.batch_id
             <where>
+                <if test="companyId != null">
+                    AND pb.company_id = #{companyId}
+                </if>
                 <if test="batchId != null">
-                    AND batch_id = #{batchId}
+                    AND rr.batch_id = #{batchId}
                 </if>
                 <if test="recallStatus != null">
-                    AND recall_status = #{recallStatus}
+                    AND rr.recall_status = #{recallStatus}
                 </if>
             </where>
-            ORDER BY id DESC
+            ORDER BY rr.id DESC
             </script>
             """)
-    List<RecallRecord> selectList(@Param("batchId") Long batchId, @Param("recallStatus") Integer recallStatus);
+    List<RecallRecord> selectList(@Param("companyId") Long companyId, @Param("batchId") Long batchId, @Param("recallStatus") Integer recallStatus);
 
     @Select("""
             <script>
             SELECT COUNT(*)
-            FROM recall_record
+            FROM recall_record rr
+            LEFT JOIN product_batch pb ON pb.id = rr.batch_id
             <where>
+                <if test="companyId != null">
+                    AND pb.company_id = #{companyId}
+                </if>
                 <if test="batchId != null">
-                    AND batch_id = #{batchId}
+                    AND rr.batch_id = #{batchId}
                 </if>
                 <if test="recallStatus != null">
-                    AND recall_status = #{recallStatus}
+                    AND rr.recall_status = #{recallStatus}
                 </if>
             </where>
             </script>
             """)
-    long countList(@Param("batchId") Long batchId, @Param("recallStatus") Integer recallStatus);
+    long countList(@Param("companyId") Long companyId, @Param("batchId") Long batchId, @Param("recallStatus") Integer recallStatus);
 
     @Select("""
             <script>
-            SELECT id, batch_id, recall_level, reason, recall_status, notice_time, closed_at, created_at
-            FROM recall_record
+            SELECT rr.id, rr.batch_id, rr.recall_level, rr.reason, rr.recall_status, rr.notice_time, rr.closed_at, rr.created_at
+            FROM recall_record rr
+            LEFT JOIN product_batch pb ON pb.id = rr.batch_id
             <where>
+                <if test="companyId != null">
+                    AND pb.company_id = #{companyId}
+                </if>
                 <if test="batchId != null">
-                    AND batch_id = #{batchId}
+                    AND rr.batch_id = #{batchId}
                 </if>
                 <if test="recallStatus != null">
-                    AND recall_status = #{recallStatus}
+                    AND rr.recall_status = #{recallStatus}
                 </if>
             </where>
-            ORDER BY id DESC
+            ORDER BY rr.id DESC
             LIMIT #{limit} OFFSET #{offset}
             </script>
             """)
-    List<RecallRecord> selectPage(@Param("batchId") Long batchId,
+    List<RecallRecord> selectPage(@Param("companyId") Long companyId,
+                                  @Param("batchId") Long batchId,
                                   @Param("recallStatus") Integer recallStatus,
                                   @Param("offset") long offset,
                                   @Param("limit") int limit);

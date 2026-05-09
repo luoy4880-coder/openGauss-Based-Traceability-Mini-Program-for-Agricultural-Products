@@ -17,22 +17,14 @@ public class ProductBatchUpdateRequest {
     private String productName;
 
     private String productCategory;
-
     private LocalDate plantingDate;
-
     private LocalDate expectedHarvestDate;
-
     private LocalDate actualHarvestDate;
-
     private BigDecimal quantity;
-
     private String unit;
 
     @NotNull(message = "批次状态不能为空")
     private Integer batchStatus;
-
-    @NotNull(message = "召回状态不能为空")
-    private Integer recallStatus;
 
     private String remark;
 }

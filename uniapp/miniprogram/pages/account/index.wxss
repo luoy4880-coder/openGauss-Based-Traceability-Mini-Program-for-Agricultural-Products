@@ -1,13 +1,14 @@
 page {
   min-height: 100vh;
   background: linear-gradient(180deg, #f8f4ec 0%, #f3ecdf 100%);
-  color: #2d2419;
+  color: var(--yj-text-main);
 }
 
 .page {
   padding: 20rpx;
 }
 
+/* 标签页 */
 .tabs {
   display: flex;
   gap: 14rpx;
@@ -16,26 +17,43 @@ page {
 
 .tab {
   flex: 1;
+  height: 78rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  padding: 18rpx 0;
-  border-radius: 18rpx;
+  border-radius: var(--yj-radius-md);
   background: rgba(255, 255, 255, 0.7);
   font-size: 26rpx;
   color: #6b5b4a;
+  font-weight: 500;
+  border: 1rpx solid transparent;
 }
 
 .tab.active {
   background: #ffffff;
-  color: #2d2419;
+  color: var(--yj-text-main);
   font-weight: 700;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+  border-color: rgba(88, 112, 58, 0.12);
 }
 
-.panel {
-  margin-top: 16rpx;
-  padding: 24rpx;
-  border-radius: 20rpx;
-  background: #ffffff;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+.tab text {
+  line-height: 1;
+}
+
+/* 面板 */
+.tip-title {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: var(--yj-text-main);
+}
+
+.tip-desc {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: var(--yj-text-secondary);
+  line-height: 1.7;
 }
 
 .field-title {
@@ -43,50 +61,20 @@ page {
   margin-bottom: 10rpx;
   font-size: 26rpx;
   font-weight: 700;
+  color: var(--yj-text-main);
 }
 
 .field-title:first-child {
   margin-top: 0;
 }
 
-.input {
-  width: 100%;
-  box-sizing: border-box;
-  border-radius: 18rpx;
-  border: 2rpx solid #e5d7c4;
-  background: #fffdf9;
-  color: #3d3227;
-  font-size: 26rpx;
-  height: 84rpx;
-  line-height: 84rpx;
-  padding: 0 22rpx;
-}
-
 .primary-btn {
   margin-top: 22rpx;
-  height: 84rpx;
-  line-height: 84rpx;
-  border: none;
-  border-radius: 18rpx;
-  background: linear-gradient(135deg, #58703a 0%, #7d9858 100%);
-  color: #ffffff;
-  font-size: 28rpx;
 }
 
-.primary-btn::after {
-  border: none;
-}
-
-.tip-title {
-  font-size: 28rpx;
-  font-weight: 800;
-}
-
-.tip-desc,
 .tip {
   margin-top: 10rpx;
   font-size: 24rpx;
-  color: #7b6d5d;
+  color: var(--yj-text-secondary);
   line-height: 1.7;
 }
-

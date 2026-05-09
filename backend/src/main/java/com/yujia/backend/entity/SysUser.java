@@ -12,6 +12,9 @@ public class SysUser {
     private String password;
     private String realName;
     private String phone;
+    private String openid;
+    private Long companyId;
+    private String companyName;
     private Integer status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

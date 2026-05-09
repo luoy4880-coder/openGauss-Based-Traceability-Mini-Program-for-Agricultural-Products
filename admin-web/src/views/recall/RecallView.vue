@@ -1,6 +1,6 @@
 <template>
   <section class="page-section">
-    <PageHeader title="召回管理" description="召回分页、发起召回、关闭召回、删除记录已经接通。" />
+    <PageHeader title="召回管理" description="发起、跟踪和关闭问题批次召回。" />
 
     <el-card shadow="never">
       <div class="toolbar">
@@ -41,10 +41,10 @@
         <el-table-column label="操作" min-width="240" fixed="right">
           <template #default="{ row }">
             <el-space>
-              <el-button link type="warning" :disabled="row.recallStatus === 0" @click="handleClose(row)">
+              <el-button v-if="authStore.isAdmin" link type="warning" :disabled="row.recallStatus === 0" @click="handleClose(row)">
                 关闭召回
               </el-button>
-              <el-button link type="danger" @click="handleDelete(row)">删除</el-button>
+              <el-button v-if="authStore.isAdmin" link type="danger" @click="handleDelete(row)">删除</el-button>
             </el-space>
           </template>
         </el-table-column>
@@ -97,7 +97,9 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { getBatchList } from '../../api/modules/batch'
 import { closeRecall, createRecall, deleteRecall, getRecallPage } from '../../api/modules/recall'
 import PageHeader from '../../components/PageHeader.vue'
+import { useAuthStore } from '../../stores/auth'
 
+const authStore = useAuthStore()
 type BatchOption = { id: number; batchCode: string; productName: string }
 type RecallRecord = { id: number; batchId: number; recallLevel: number; reason: string; recallStatus: number; noticeTime?: string; closedAt?: string }
 

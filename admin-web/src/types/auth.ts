@@ -10,6 +10,8 @@ export type CurrentUser = {
   username: string
   realName: string
   phone?: string
+  companyId?: number
+  companyName?: string
   status: number
   roles: RoleItem[]
 }

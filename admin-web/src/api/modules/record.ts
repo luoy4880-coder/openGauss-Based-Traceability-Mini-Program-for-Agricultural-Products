@@ -41,3 +41,9 @@ export function updateProductionRecord(
 export function deleteProductionRecord(id: number) {
   return http.delete(`/api/production-records/${id}`)
 }
+
+export function uploadRecordAttachment(file: File) {
+  const formData = new FormData()
+  formData.append('file', file)
+  return http.post('/api/files/upload', formData)
+}

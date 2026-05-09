@@ -40,3 +40,9 @@ export function updateInspectionReport(
 export function deleteInspectionReport(id: number) {
   return http.delete(`/api/inspection-reports/${id}`)
 }
+
+export function uploadInspectionReportFile(file: File) {
+  const formData = new FormData()
+  formData.append('file', file)
+  return http.post('/api/files/upload', formData)
+}

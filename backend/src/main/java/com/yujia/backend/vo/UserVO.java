@@ -12,6 +12,8 @@ public class UserVO {
     private String username;
     private String realName;
     private String phone;
+    private Long companyId;
+    private String companyName;
     private Integer status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

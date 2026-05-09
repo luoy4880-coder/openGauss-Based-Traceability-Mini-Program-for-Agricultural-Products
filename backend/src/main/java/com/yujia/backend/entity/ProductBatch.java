@@ -14,6 +14,7 @@ public class ProductBatch {
     private String batchCode;
 
     private Long baseId;
+    private Long companyId;
 
     private String productName;
 

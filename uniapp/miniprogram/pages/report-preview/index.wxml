@@ -1,0 +1,19 @@
+<view class="preview-page">
+  <view wx:if="{{isImage}}" class="image-wrap">
+    <text class="close-btn" bindtap="closePreview">×</text>
+    <image class="preview-image" src="{{reportUrl}}" mode="aspectFit" />
+  </view>
+
+  <block wx:elif="{{isWeb}}">
+    <cover-view class="web-topbar">
+      <cover-view class="web-close" bindtap="closePreview">×</cover-view>
+      <cover-view class="web-title">{{reportName}}</cover-view>
+    </cover-view>
+    <web-view src="{{previewUrl}}" binderror="handleWebError"></web-view>
+  </block>
+
+  <view wx:elif="{{errorMessage}}" class="doc-wrap">
+    <text class="close-btn" bindtap="closePreview">×</text>
+    <view class="doc-status error">{{errorMessage}}</view>
+  </view>
+</view>

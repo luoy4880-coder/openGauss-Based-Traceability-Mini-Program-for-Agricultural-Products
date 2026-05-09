@@ -15,10 +15,13 @@ public interface BaseInfoMapper {
 
     @Select("""
             <script>
-            SELECT id, base_code, base_name, manager_name, contact_phone, province, city, district,
+            SELECT id, base_code, company_id, base_name, manager_name, contact_phone, province, city, district,
                    address, acreage, status, created_at, updated_at
             FROM base_info
             <where>
+                <if test="companyId != null">
+                    AND company_id = #{companyId}
+                </if>
                 <if test="keyword != null and keyword != ''">
                     AND (base_code LIKE CONCAT('%', #{keyword}, '%')
                     OR base_name LIKE CONCAT('%', #{keyword}, '%'))
@@ -30,13 +33,16 @@ public interface BaseInfoMapper {
             ORDER BY id DESC
             </script>
             """)
-    List<BaseInfo> selectList(@Param("keyword") String keyword, @Param("status") Integer status);
+    List<BaseInfo> selectList(@Param("companyId") Long companyId, @Param("keyword") String keyword, @Param("status") Integer status);
 
     @Select("""
             <script>
             SELECT COUNT(*)
             FROM base_info
             <where>
+                <if test="companyId != null">
+                    AND company_id = #{companyId}
+                </if>
                 <if test="keyword != null and keyword != ''">
                     AND (base_code LIKE CONCAT('%', #{keyword}, '%')
                     OR base_name LIKE CONCAT('%', #{keyword}, '%'))
@@ -47,14 +53,17 @@ public interface BaseInfoMapper {
             </where>
             </script>
             """)
-    long countList(@Param("keyword") String keyword, @Param("status") Integer status);
+    long countList(@Param("companyId") Long companyId, @Param("keyword") String keyword, @Param("status") Integer status);
 
     @Select("""
             <script>
-            SELECT id, base_code, base_name, manager_name, contact_phone, province, city, district,
+            SELECT id, base_code, company_id, base_name, manager_name, contact_phone, province, city, district,
                    address, acreage, status, created_at, updated_at
             FROM base_info
             <where>
+                <if test="companyId != null">
+                    AND company_id = #{companyId}
+                </if>
                 <if test="keyword != null and keyword != ''">
                     AND (base_code LIKE CONCAT('%', #{keyword}, '%')
                     OR base_name LIKE CONCAT('%', #{keyword}, '%'))
@@ -67,13 +76,14 @@ public interface BaseInfoMapper {
             LIMIT #{limit} OFFSET #{offset}
             </script>
             """)
-    List<BaseInfo> selectPage(@Param("keyword") String keyword,
+    List<BaseInfo> selectPage(@Param("companyId") Long companyId,
+                              @Param("keyword") String keyword,
                               @Param("status") Integer status,
                               @Param("offset") long offset,
                               @Param("limit") int limit);
 
     @Select("""
-            SELECT id, base_code, base_name, manager_name, contact_phone, province, city, district,
+            SELECT id, base_code, company_id, base_name, manager_name, contact_phone, province, city, district,
                    address, acreage, status, created_at, updated_at
             FROM base_info
             WHERE id = #{id}
@@ -81,7 +91,7 @@ public interface BaseInfoMapper {
     BaseInfo selectById(Long id);
 
     @Select("""
-            SELECT id, base_code, base_name, manager_name, contact_phone, province, city, district,
+            SELECT id, base_code, company_id, base_name, manager_name, contact_phone, province, city, district,
                    address, acreage, status, created_at, updated_at
             FROM base_info
             WHERE base_code = #{baseCode}
@@ -90,10 +100,10 @@ public interface BaseInfoMapper {
 
     @Insert("""
             INSERT INTO base_info (
-                base_code, base_name, manager_name, contact_phone, province, city, district,
+                base_code, company_id, base_name, manager_name, contact_phone, province, city, district,
                 address, acreage, status, created_at, updated_at
             ) VALUES (
-                #{baseCode}, #{baseName}, #{managerName}, #{contactPhone}, #{province}, #{city}, #{district},
+                #{baseCode}, #{companyId}, #{baseName}, #{managerName}, #{contactPhone}, #{province}, #{city}, #{district},
                 #{address}, #{acreage}, #{status}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
             )
             """)

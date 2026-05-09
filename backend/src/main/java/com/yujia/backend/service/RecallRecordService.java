@@ -20,18 +20,27 @@ public class RecallRecordService {
     private final RecallRecordMapper recallRecordMapper;
     private final ProductBatchService productBatchService;
     private final ProductBatchMapper productBatchMapper;
+    private final ProductItemService productItemService;
+    private final CompanyScopeService companyScopeService;
 
     public List<RecallRecord> list(Long batchId, Integer recallStatus) {
-        return recallRecordMapper.selectList(batchId, recallStatus);
+        if (batchId != null) {
+            productBatchService.ensureBatchExists(batchId);
+        }
+        return recallRecordMapper.selectList(companyScopeService.currentCompanyScopeOrNull(), batchId, recallStatus);
     }
 
     public PageResponse<RecallRecord> page(Long batchId, Integer recallStatus,
                                            Integer pageNum, Integer pageSize) {
         int safePageNum = normalizePageNum(pageNum);
         int safePageSize = normalizePageSize(pageSize);
-        long total = recallRecordMapper.countList(batchId, recallStatus);
+        if (batchId != null) {
+            productBatchService.ensureBatchExists(batchId);
+        }
+        Long companyId = companyScopeService.currentCompanyScopeOrNull();
+        long total = recallRecordMapper.countList(companyId, batchId, recallStatus);
         List<RecallRecord> records = recallRecordMapper.selectPage(
-                batchId, recallStatus, (long) (safePageNum - 1) * safePageSize, safePageSize);
+                companyId, batchId, recallStatus, (long) (safePageNum - 1) * safePageSize, safePageSize);
         return PageResponse.<RecallRecord>builder()
                 .records(records)
                 .total(total)
@@ -45,10 +54,12 @@ public class RecallRecordService {
         if (recallRecord == null) {
             throw new BusinessException(404, "召回记录不存在");
         }
+        productBatchService.ensureBatchExists(recallRecord.getBatchId());
         return recallRecord;
     }
 
     public RecallRecord latestByBatchId(Long batchId) {
+        productBatchService.ensureBatchExists(batchId);
         return recallRecordMapper.selectLatestByBatchId(batchId);
     }
 
@@ -64,7 +75,17 @@ public class RecallRecordService {
         recallRecord.setNoticeTime(LocalDateTime.now());
         recallRecordMapper.insert(recallRecord);
         productBatchMapper.updateRecallStatus(request.getBatchId(), 1);
+        productItemService.markBatchRecalled(request.getBatchId(), true);
         return detail(recallRecord.getId());
+    }
+
+    @Transactional
+    public RecallRecord createFromFeedback(Long batchId, Integer recallLevel, String reason) {
+        RecallRecordCreateRequest request = new RecallRecordCreateRequest();
+        request.setBatchId(batchId);
+        request.setRecallLevel(recallLevel == null ? 1 : recallLevel);
+        request.setReason(reason);
+        return create(request);
     }
 
     @Transactional
@@ -78,6 +99,7 @@ public class RecallRecordService {
         recallRecord.setClosedAt(LocalDateTime.now());
         recallRecordMapper.updateStatus(recallRecord);
         productBatchMapper.updateRecallStatus(recallRecord.getBatchId(), 0);
+        productItemService.markBatchRecalled(recallRecord.getBatchId(), false);
         return detail(id);
     }
 
@@ -88,6 +110,7 @@ public class RecallRecordService {
         RecallRecord latest = recallRecordMapper.selectLatestByBatchId(recallRecord.getBatchId());
         int recallStatus = latest != null && latest.getRecallStatus() != null ? latest.getRecallStatus() : 0;
         productBatchMapper.updateRecallStatus(recallRecord.getBatchId(), recallStatus);
+        productItemService.markBatchRecalled(recallRecord.getBatchId(), recallStatus == 1);
     }
 
     private int normalizePageNum(Integer pageNum) {

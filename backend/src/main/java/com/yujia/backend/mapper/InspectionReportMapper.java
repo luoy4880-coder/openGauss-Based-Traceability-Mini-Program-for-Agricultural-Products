@@ -15,56 +15,69 @@ public interface InspectionReportMapper {
 
     @Select("""
             <script>
-            SELECT id, batch_id, report_no, agency_name, inspector_name, inspection_time,
-                   result_status, conclusion, report_url, created_at
-            FROM inspection_report
+            SELECT ir.id, ir.batch_id, ir.report_no, ir.agency_name, ir.inspector_name, ir.inspection_time,
+                   ir.result_status, ir.conclusion, ir.report_url, ir.created_at
+            FROM inspection_report ir
+            LEFT JOIN product_batch pb ON pb.id = ir.batch_id
             <where>
+                <if test="companyId != null">
+                    AND pb.company_id = #{companyId}
+                </if>
                 <if test="batchId != null">
-                    AND batch_id = #{batchId}
+                    AND ir.batch_id = #{batchId}
                 </if>
                 <if test="resultStatus != null">
-                    AND result_status = #{resultStatus}
+                    AND ir.result_status = #{resultStatus}
                 </if>
             </where>
-            ORDER BY inspection_time DESC, id DESC
+            ORDER BY ir.inspection_time DESC, ir.id DESC
             </script>
             """)
-    List<InspectionReport> selectList(@Param("batchId") Long batchId, @Param("resultStatus") Integer resultStatus);
+    List<InspectionReport> selectList(@Param("companyId") Long companyId, @Param("batchId") Long batchId, @Param("resultStatus") Integer resultStatus);
 
     @Select("""
             <script>
             SELECT COUNT(*)
-            FROM inspection_report
+            FROM inspection_report ir
+            LEFT JOIN product_batch pb ON pb.id = ir.batch_id
             <where>
+                <if test="companyId != null">
+                    AND pb.company_id = #{companyId}
+                </if>
                 <if test="batchId != null">
-                    AND batch_id = #{batchId}
+                    AND ir.batch_id = #{batchId}
                 </if>
                 <if test="resultStatus != null">
-                    AND result_status = #{resultStatus}
+                    AND ir.result_status = #{resultStatus}
                 </if>
             </where>
             </script>
             """)
-    long countList(@Param("batchId") Long batchId, @Param("resultStatus") Integer resultStatus);
+    long countList(@Param("companyId") Long companyId, @Param("batchId") Long batchId, @Param("resultStatus") Integer resultStatus);
 
     @Select("""
             <script>
-            SELECT id, batch_id, report_no, agency_name, inspector_name, inspection_time,
-                   result_status, conclusion, report_url, created_at
-            FROM inspection_report
+            SELECT ir.id, ir.batch_id, ir.report_no, ir.agency_name, ir.inspector_name, ir.inspection_time,
+                   ir.result_status, ir.conclusion, ir.report_url, ir.created_at
+            FROM inspection_report ir
+            LEFT JOIN product_batch pb ON pb.id = ir.batch_id
             <where>
+                <if test="companyId != null">
+                    AND pb.company_id = #{companyId}
+                </if>
                 <if test="batchId != null">
-                    AND batch_id = #{batchId}
+                    AND ir.batch_id = #{batchId}
                 </if>
                 <if test="resultStatus != null">
-                    AND result_status = #{resultStatus}
+                    AND ir.result_status = #{resultStatus}
                 </if>
             </where>
-            ORDER BY inspection_time DESC, id DESC
+            ORDER BY ir.inspection_time DESC, ir.id DESC
             LIMIT #{limit} OFFSET #{offset}
             </script>
             """)
-    List<InspectionReport> selectPage(@Param("batchId") Long batchId,
+    List<InspectionReport> selectPage(@Param("companyId") Long companyId,
+                                      @Param("batchId") Long batchId,
                                       @Param("resultStatus") Integer resultStatus,
                                       @Param("offset") long offset,
                                       @Param("limit") int limit);

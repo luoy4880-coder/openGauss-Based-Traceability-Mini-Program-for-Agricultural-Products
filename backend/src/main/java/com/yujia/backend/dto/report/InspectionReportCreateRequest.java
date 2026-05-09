@@ -12,7 +12,6 @@ public class InspectionReportCreateRequest {
     @NotNull(message = "批次ID不能为空")
     private Long batchId;
 
-    @NotBlank(message = "报告编号不能为空")
     private String reportNo;
 
     @NotBlank(message = "检测机构不能为空")
@@ -27,6 +26,5 @@ public class InspectionReportCreateRequest {
     private Integer resultStatus;
 
     private String conclusion;
-
     private String reportUrl;
 }

@@ -4,6 +4,7 @@ import com.yujia.backend.common.exception.BusinessException;
 import com.yujia.backend.common.response.PageResponse;
 import com.yujia.backend.dto.batch.ProductBatchCreateRequest;
 import com.yujia.backend.dto.batch.ProductBatchUpdateRequest;
+import com.yujia.backend.entity.BaseInfo;
 import com.yujia.backend.entity.ProductBatch;
 import com.yujia.backend.mapper.ProductBatchMapper;
 import com.yujia.backend.vo.ProductBatchVO;
@@ -19,18 +20,21 @@ public class ProductBatchService {
 
     private final ProductBatchMapper productBatchMapper;
     private final BaseInfoService baseInfoService;
+    private final NumberGeneratorService numberGeneratorService;
+    private final CompanyScopeService companyScopeService;
 
     public List<ProductBatchVO> list(String keyword, Long baseId, Integer batchStatus) {
-        return productBatchMapper.selectList(keyword, baseId, batchStatus);
+        return productBatchMapper.selectList(companyScopeService.currentCompanyScopeOrNull(), keyword, baseId, batchStatus);
     }
 
     public PageResponse<ProductBatchVO> page(String keyword, Long baseId, Integer batchStatus,
                                              Integer pageNum, Integer pageSize) {
         int safePageNum = normalizePageNum(pageNum);
         int safePageSize = normalizePageSize(pageSize);
-        long total = productBatchMapper.countList(keyword, baseId, batchStatus);
+        Long companyId = companyScopeService.currentCompanyScopeOrNull();
+        long total = productBatchMapper.countList(companyId, keyword, baseId, batchStatus);
         List<ProductBatchVO> records = productBatchMapper.selectPage(
-                keyword, baseId, batchStatus, (long) (safePageNum - 1) * safePageSize, safePageSize);
+                companyId, keyword, baseId, batchStatus, (long) (safePageNum - 1) * safePageSize, safePageSize);
         return PageResponse.<ProductBatchVO>builder()
                 .records(records)
                 .total(total)
@@ -44,6 +48,7 @@ public class ProductBatchService {
         if (productBatchVO == null) {
             throw new BusinessException(404, "批次不存在");
         }
+        companyScopeService.assertAccessibleCompany(productBatchVO.getCompanyId());
         return productBatchVO;
     }
 
@@ -53,11 +58,12 @@ public class ProductBatchService {
             throw new BusinessException("批次编码已存在");
         }
 
-        baseInfoService.validateExists(request.getBaseId());
+        BaseInfo baseInfo = baseInfoService.detail(request.getBaseId());
 
         ProductBatch productBatch = new ProductBatch();
-        productBatch.setBatchCode(request.getBatchCode());
+        productBatch.setBatchCode(StringUtils.hasText(request.getBatchCode()) ? request.getBatchCode() : numberGeneratorService.batchCode());
         productBatch.setBaseId(request.getBaseId());
+        productBatch.setCompanyId(baseInfo.getCompanyId());
         productBatch.setProductName(request.getProductName());
         productBatch.setProductCategory(request.getProductCategory());
         productBatch.setPlantingDate(request.getPlantingDate());
@@ -66,7 +72,7 @@ public class ProductBatchService {
         productBatch.setQuantity(request.getQuantity());
         productBatch.setUnit(request.getUnit());
         productBatch.setBatchStatus(request.getBatchStatus());
-        productBatch.setRecallStatus(request.getRecallStatus());
+        productBatch.setRecallStatus(0);
         productBatch.setRemark(request.getRemark());
         productBatchMapper.insert(productBatch);
         return detail(productBatch.getId());
@@ -74,12 +80,13 @@ public class ProductBatchService {
 
     public ProductBatchVO update(Long id, ProductBatchUpdateRequest request) {
         ProductBatchVO existing = detail(id);
-        baseInfoService.validateExists(request.getBaseId());
+        BaseInfo baseInfo = baseInfoService.detail(request.getBaseId());
 
         ProductBatch productBatch = new ProductBatch();
         productBatch.setId(existing.getId());
         productBatch.setBatchCode(existing.getBatchCode());
         productBatch.setBaseId(request.getBaseId());
+        productBatch.setCompanyId(baseInfo.getCompanyId());
         productBatch.setProductName(request.getProductName());
         productBatch.setProductCategory(request.getProductCategory());
         productBatch.setPlantingDate(request.getPlantingDate());
@@ -88,7 +95,7 @@ public class ProductBatchService {
         productBatch.setQuantity(request.getQuantity());
         productBatch.setUnit(request.getUnit());
         productBatch.setBatchStatus(request.getBatchStatus());
-        productBatch.setRecallStatus(request.getRecallStatus());
+        productBatch.setRecallStatus(existing.getRecallStatus());
         productBatch.setRemark(request.getRemark());
         productBatchMapper.updateById(productBatch);
         return detail(id);

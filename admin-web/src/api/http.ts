@@ -3,13 +3,16 @@ import { ElMessage } from 'element-plus'
 import router from '../router'
 import type { ApiResponse } from '../types/api'
 
+const TOKEN_KEY = 'staff_console_token'
+const LEGACY_TOKEN_KEY = 'admin_token'
+
 const http = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080',
   timeout: 10000,
 })
 
 http.interceptors.request.use((config) => {
-  const token = localStorage.getItem('admin_token')
+  const token = localStorage.getItem(TOKEN_KEY) || localStorage.getItem(LEGACY_TOKEN_KEY)
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
@@ -27,7 +30,8 @@ http.interceptors.response.use(
   },
   (error) => {
     if (error?.response?.status === 401) {
-      localStorage.removeItem('admin_token')
+      localStorage.removeItem(TOKEN_KEY)
+      localStorage.removeItem(LEGACY_TOKEN_KEY)
       router.push('/login')
     }
     ElMessage.error(error?.response?.data?.message || error.message || '网络异常')

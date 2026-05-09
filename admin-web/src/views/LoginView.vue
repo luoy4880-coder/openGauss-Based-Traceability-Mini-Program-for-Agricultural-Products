@@ -2,9 +2,9 @@
   <div class="login-page">
     <div class="login-panel">
       <div class="login-copy">
-        <span class="eyebrow">Vue Admin</span>
-        <h1>农产品追溯管理平台</h1>
-        <p>管理端已接入登录、仪表盘、基地、批次、生产记录、质检、召回和用户管理。</p>
+        <span class="eyebrow">Traceability Admin</span>
+        <h1>农产品溯源管理平台</h1>
+        <p>仅面向管理员与业务员开放，统一管理基地、批次、生产记录、质检报告与召回流程。</p>
       </div>
 
       <el-form :model="form" class="login-form" @submit.prevent="handleSubmit">
@@ -17,6 +17,10 @@
         <el-button type="primary" size="large" class="submit-button" @click="handleSubmit">
           登录管理端
         </el-button>
+        <div class="form-switch">
+          <span>还没有账号？</span>
+          <el-link type="primary" @click="router.push('/register')">去注册</el-link>
+        </div>
       </el-form>
     </div>
   </div>
@@ -31,8 +35,8 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 const form = reactive({
-  username: 'admin',
-  password: '123456',
+  username: '',
+  password: '',
 })
 
 async function handleSubmit() {
@@ -41,3 +45,15 @@ async function handleSubmit() {
   router.push('/dashboard')
 }
 </script>
+
+<style scoped>
+.form-switch {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #64758a;
+}
+</style>

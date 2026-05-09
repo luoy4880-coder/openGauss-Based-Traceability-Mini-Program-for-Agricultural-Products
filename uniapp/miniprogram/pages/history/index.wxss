@@ -1,75 +1,181 @@
 page {
   min-height: 100vh;
-  background: linear-gradient(180deg, #f8f4ec 0%, #f3ecdf 100%);
-  color: #2d2419;
+  background:
+    radial-gradient(circle at top right, rgba(135, 162, 99, 0.16), transparent 28%),
+    linear-gradient(180deg, #f8f4ec 0%, #f2ebdf 100%);
+  color: var(--yj-text-main);
 }
 
 .page {
-  padding: 20rpx;
+  padding: 26rpx 24rpx 36rpx;
+}
+
+/* Hero 卡片 */
+.hero-card {
+  padding: 28rpx;
+  border-radius: var(--yj-radius-xl);
+  background: linear-gradient(135deg, var(--yj-primary) 0%, var(--yj-primary-light) 100%);
+  color: #ffffff;
+  box-shadow: 0 16rpx 36rpx rgba(62, 88, 41, 0.24);
+}
+
+.hero-title {
+  font-size: 38rpx;
+  font-weight: 700;
+}
+
+.hero-desc {
+  margin-top: 12rpx;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 24rpx;
+  line-height: 1.7;
+}
+
+.hero-metrics {
+  margin-top: 22rpx;
+  display: flex;
+  gap: 16rpx;
+}
+
+.metric-item {
+  flex: 1;
+  padding: 16rpx 18rpx;
+  border-radius: var(--yj-radius-md);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.metric-value {
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+.metric-label {
+  margin-top: 6rpx;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 22rpx;
+}
+
+/* 图表卡片 */
+.chart-card {
+  margin-top: 24rpx;
 }
 
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16rpx;
+  margin-bottom: 18rpx;
 }
 
 .title {
-  font-size: 34rpx;
+  font-size: 32rpx;
   font-weight: 700;
+  color: var(--yj-text-main);
 }
 
-.card {
-  background: #ffffff;
-  border-radius: 20rpx;
-  padding: 28rpx;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+.ghost-btn {
+  font-size: 24rpx;
+  color: var(--yj-primary);
+  background: transparent;
+  padding: 12rpx 16rpx;
+  line-height: 1;
 }
 
+.ghost-btn::after {
+  border: none;
+}
+
+.trend-list {
+  margin-top: 4rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+
+.trend-row {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+}
+
+.trend-day {
+  width: 84rpx;
+  flex-shrink: 0;
+  color: var(--yj-text-secondary);
+  font-size: 22rpx;
+}
+
+.trend-track {
+  flex: 1;
+  height: 18rpx;
+  border-radius: 999rpx;
+  background: #efe5d6;
+  overflow: hidden;
+}
+
+.trend-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #66884a 0%, #8fae67 100%);
+}
+
+.trend-count {
+  width: 48rpx;
+  text-align: right;
+  color: #695b49;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+/* 空状态 */
 .empty-title {
   font-size: 30rpx;
   font-weight: 700;
   margin-bottom: 10rpx;
+  color: var(--yj-text-main);
 }
 
 .empty-desc {
   font-size: 24rpx;
-  color: #7b6d5d;
+  color: var(--yj-text-secondary);
   margin-bottom: 24rpx;
 }
 
+.primary-btn {
+  width: 100%;
+}
+
+/* 列表项 */
 .item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #ffffff;
-  border-radius: 20rpx;
-  padding: 24rpx;
-  margin-bottom: 16rpx;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+  margin-bottom: 14rpx;
+}
+
+.item:last-child {
+  margin-bottom: 0;
 }
 
 .item-main {
   flex: 1;
   padding-right: 18rpx;
+  min-width: 0;
 }
 
 .item-title {
   font-size: 28rpx;
   font-weight: 700;
   margin-bottom: 6rpx;
+  color: var(--yj-text-main);
 }
 
 .item-sub {
   font-size: 24rpx;
-  color: #7b6d5d;
+  color: var(--yj-text-secondary);
   margin-bottom: 6rpx;
 }
 
 .item-time {
   font-size: 22rpx;
-  color: #8b7a66;
+  color: var(--yj-text-tertiary);
 }
 
 .link-btn {
@@ -78,22 +184,9 @@ page {
   background: transparent;
   padding: 12rpx 16rpx;
   line-height: 1;
+  font-weight: 500;
 }
 
-.ghost-btn {
-  font-size: 24rpx;
-  color: #58703a;
-  background: transparent;
-  padding: 12rpx 16rpx;
-  line-height: 1;
+.link-btn::after {
+  border: none;
 }
-
-.primary-btn {
-  width: 100%;
-  background: linear-gradient(135deg, #58703a 0%, #7d9858 100%);
-  color: #ffffff;
-  border-radius: 16rpx;
-  font-size: 26rpx;
-  padding: 18rpx 0;
-}
-

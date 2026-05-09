@@ -7,6 +7,7 @@ Page({
     password: '',
     realName: '',
     phone: '',
+    companyName: '',
     submitting: false,
     loggedIn: false,
   },
@@ -47,12 +48,16 @@ Page({
     this.setData({ phone: (e.detail.value || '').trim() })
   },
 
+  onCompanyNameInput(e) {
+    this.setData({ companyName: (e.detail.value || '').trim() })
+  },
+
   goToProfile() {
     wx.switchTab({ url: '/pages/profile/index' })
   },
 
   submit() {
-    const { mode, username, password, realName, phone } = this.data
+    const { mode, username, password, realName, phone, companyName } = this.data
 
     if (!username) {
       wx.showToast({ title: '请输入用户名', icon: 'none' })
@@ -62,7 +67,10 @@ Page({
       wx.showToast({ title: '请输入密码', icon: 'none' })
       return
     }
-
+    if (mode === 'register' && !companyName) {
+      wx.showToast({ title: '请输入公司名称', icon: 'none' })
+      return
+    }
     if (mode === 'bind' && !wx.getStorageSync('token')) {
       wx.showToast({ title: '请先登录', icon: 'none' })
       return
@@ -72,7 +80,11 @@ Page({
 
     const api = mode === 'login' ? '/api/auth/login' : mode === 'register' ? '/api/auth/register' : '/api/auth/bind'
     const method = 'POST'
-    const data = mode === 'login' ? { username, password } : { username, password, realName, phone }
+    const data = mode === 'login'
+      ? { username, password }
+      : mode === 'register'
+        ? { username, password, realName, phone, companyName }
+        : { username, password, realName, phone }
     const header = {}
 
     if (mode === 'bind') {
@@ -116,7 +128,7 @@ Page({
             }
           },
           complete: () => {
-            wx.showToast({ title: '登录成功', icon: 'success' })
+            wx.showToast({ title: mode === 'register' ? '注册成功' : '登录成功', icon: 'success' })
             setTimeout(() => wx.switchTab({ url: '/pages/profile/index' }), 300)
           },
         })

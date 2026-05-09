@@ -1,11 +1,10 @@
 <view class="page">
   <view class="hero">
-    <view class="hero-badge">YUJIA TRACE</view>
     <view class="hero-title">农产品溯源查询</view>
-    <view class="hero-desc">输入追溯码或直接扫码，快速查看基地、生产、检测与召回信息。</view>
+    <view class="hero-desc">输入追溯码或扫码，快速查看生产与检验信息。</view>
   </view>
 
-  <view class="panel query-panel">
+  <view class="query-panel yj-card">
     <view class="panel-title">查询入口</view>
     <input
       class="trace-input"
@@ -16,16 +15,24 @@
       bindconfirm="submitTraceQuery"
     />
     <view class="action-row">
-      <button class="primary-btn" loading="{{loading}}" bindtap="submitTraceQuery">立即查询</button>
-      <button class="ghost-btn" bindtap="scanTraceCode">扫码识别</button>
+      <button class="primary-btn yj-btn-primary" loading="{{loading}}" bindtap="submitTraceQuery">立即查询</button>
+      <button class="ghost-btn yj-btn-ghost" bindtap="scanTraceCode">扫码识别</button>
     </view>
-    <view class="tip">提示：开发者工具可直接输入追溯码；手机联调前请确认后端地址可访问。</view>
   </view>
 
-  <view class="panel" wx:if="{{history.length}}">
+  <view class="panel yj-card">
+    <view class="panel-head">
+      <view class="panel-title">快捷入口</view>
+    </view>
+    <view class="action-row">
+      <button class="ghost-btn yj-btn-ghost" bindtap="goToCollection">我的收藏</button>
+      <button class="ghost-btn yj-btn-ghost" bindtap="goToFeedback">意见反馈</button>
+    </view>
+  </view>
+
+  <view class="panel yj-card" wx:if="{{history.length}}">
     <view class="panel-head">
       <view class="panel-title">最近查询</view>
-      <view class="panel-subtitle">最多保留 8 条本地记录</view>
     </view>
     <view
       class="history-item"
@@ -38,7 +45,7 @@
         <view class="history-name">{{item.productName}}</view>
         <view class="history-code">{{item.traceId}}</view>
       </view>
-      <view class="history-arrow">查看</view>
+      <view class="history-arrow">查看 ›</view>
     </view>
   </view>
 </view>

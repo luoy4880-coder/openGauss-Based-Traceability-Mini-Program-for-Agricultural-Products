@@ -14,6 +14,7 @@ public class ProductBatchVO {
     private String batchCode;
 
     private Long baseId;
+    private Long companyId;
 
     private String baseName;
 

@@ -3,79 +3,55 @@ page {
   background:
     radial-gradient(circle at top right, rgba(210, 176, 109, 0.16), transparent 28%),
     linear-gradient(180deg, #f8f4ec 0%, #f3ecdf 100%);
-  color: #2d2419;
+  color: var(--yj-text-main);
 }
 
 .page {
   padding: 36rpx 28rpx 48rpx;
 }
 
+/* Hero */
 .hero {
-  padding: 28rpx 8rpx 36rpx;
-}
-
-.hero-badge {
-  display: inline-block;
-  padding: 10rpx 18rpx;
-  border-radius: 999rpx;
-  background: rgba(114, 83, 37, 0.1);
-  color: #725325;
-  font-size: 22rpx;
-  letter-spacing: 2rpx;
+  padding: 20rpx 4rpx 28rpx;
 }
 
 .hero-title {
-  margin-top: 22rpx;
-  font-size: 52rpx;
+  font-size: 48rpx;
   font-weight: 700;
   line-height: 1.2;
+  color: var(--yj-text-main);
 }
 
 .hero-desc {
   margin-top: 18rpx;
-  color: #6f6251;
+  color: var(--yj-text-secondary);
   font-size: 28rpx;
   line-height: 1.7;
 }
 
-.panel {
-  margin-top: 24rpx;
-  padding: 28rpx;
-  border-radius: 28rpx;
-  background: rgba(255, 252, 247, 0.92);
-  box-shadow: 0 18rpx 40rpx rgba(114, 83, 37, 0.08);
-}
-
+/* 查询面板 */
 .query-panel {
   margin-top: 8rpx;
-}
-
-.panel-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16rpx;
 }
 
 .panel-title {
   font-size: 32rpx;
   font-weight: 700;
-}
-
-.panel-subtitle {
-  color: #91816e;
-  font-size: 22rpx;
+  color: var(--yj-text-main);
+  margin-bottom: 20rpx;
 }
 
 .trace-input {
-  margin-top: 22rpx;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 4rpx;
   height: 92rpx;
   padding: 0 24rpx;
-  border: 2rpx solid #e0d4c1;
-  border-radius: 20rpx;
-  background: #fffdf9;
+  border: 2rpx solid var(--yj-border);
+  border-radius: var(--yj-radius-md);
+  background: var(--yj-input-bg);
   font-size: 28rpx;
-  box-sizing: border-box;
+  color: #3d3227;
 }
 
 .action-row {
@@ -84,36 +60,37 @@ page {
   margin-top: 24rpx;
 }
 
-.primary-btn,
+.primary-btn {
+  flex: 1;
+}
+
 .ghost-btn {
   flex: 1;
-  height: 88rpx;
-  line-height: 88rpx;
-  border-radius: 20rpx;
-  font-size: 28rpx;
-  border: none;
-}
-
-.primary-btn {
-  background: linear-gradient(135deg, #58703a 0%, #7d9858 100%);
-  color: #ffffff;
-}
-
-.ghost-btn {
-  background: #efe6d8;
-  color: #5f513f;
-}
-
-.primary-btn::after,
-.ghost-btn::after {
-  border: none;
 }
 
 .tip {
   margin-top: 20rpx;
-  color: #8d7c67;
+  color: var(--yj-text-tertiary);
   font-size: 22rpx;
   line-height: 1.7;
+}
+
+/* 历史记录 */
+.panel {
+  margin-top: 24rpx;
+}
+
+.panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16rpx;
+  margin-bottom: 8rpx;
+}
+
+.panel-subtitle {
+  color: var(--yj-text-tertiary);
+  font-size: 22rpx;
 }
 
 .history-item {
@@ -122,7 +99,7 @@ page {
   justify-content: space-between;
   gap: 20rpx;
   padding: 24rpx 0;
-  border-bottom: 1rpx solid #efe4d6;
+  border-bottom: 1rpx solid var(--yj-border-light);
 }
 
 .history-item:last-child {
@@ -133,16 +110,18 @@ page {
 .history-name {
   font-size: 28rpx;
   font-weight: 600;
+  color: var(--yj-text-main);
 }
 
 .history-code {
   margin-top: 8rpx;
-  color: #8b7a66;
+  color: var(--yj-text-tertiary);
   font-size: 22rpx;
 }
 
 .history-arrow {
   flex-shrink: 0;
-  color: #725325;
+  color: var(--yj-accent);
   font-size: 24rpx;
+  font-weight: 500;
 }

@@ -1,5 +1,6 @@
 package com.yujia.backend.controller;
 
+import com.yujia.backend.common.auth.AuthPermissionService;
 import com.yujia.backend.common.response.ApiResponse;
 import com.yujia.backend.service.DashboardService;
 import com.yujia.backend.vo.DashboardStatsVO;
@@ -13,10 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class DashboardController {
 
+    private final AuthPermissionService authPermissionService;
     private final DashboardService dashboardService;
 
     @GetMapping("/stats")
     public ApiResponse<DashboardStatsVO> stats() {
+        authPermissionService.requireStaff();
         return ApiResponse.success(dashboardService.stats());
     }
 }

@@ -38,4 +38,12 @@ public interface SysRoleMapper {
             ORDER BY r.id ASC
             """)
     List<SysRole> selectByUserId(Long userId);
+
+    @Select("""
+            SELECT id, role_code, role_name, remark, created_at
+            FROM sys_role
+            WHERE role_code = #{roleCode}
+            LIMIT 1
+            """)
+    SysRole selectByRoleCode(@Param("roleCode") String roleCode);
 }

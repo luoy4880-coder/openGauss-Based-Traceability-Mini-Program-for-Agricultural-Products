@@ -18,6 +18,7 @@ export function createUser(data: {
   password: string
   realName: string
   phone?: string
+  companyId: number
   status: number
   roleIds: number[]
 }) {
@@ -29,6 +30,7 @@ export function updateUser(
   data: {
     realName: string
     phone?: string
+    companyId: number
     status: number
     roleIds: number[]
   },

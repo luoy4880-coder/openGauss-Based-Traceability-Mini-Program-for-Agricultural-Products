@@ -86,19 +86,65 @@ export interface RecallRecord {
   createdAt: string
 }
 
+export interface ProductItem {
+  id: number
+  batchId: number
+  itemCode: string
+  traceId: string
+  qrContent: string
+  signValue: string
+  itemStatus: number
+  scanCount: number
+  firstScannedAt: string
+  lastScannedAt: string
+  generatedAt: string
+}
+
+export interface TraceVerifyInfo {
+  valid: boolean
+  firstScan: boolean
+  abnormal: boolean
+  scanCount: number
+  verifyMessage: string
+  riskMessage: string
+}
+
+export interface LogisticsRecord {
+  id: number
+  batchId: number
+  itemId?: number
+  logisticsCode: string
+  nodeType: string
+  nodeName: string
+  operationTime: string
+  operatorName: string
+  contactPhone: string
+  location: string
+  temperature: string
+  humidity: string
+  attachmentUrl: string
+  remark: string
+  createdAt: string
+}
+
 export interface TraceDetail {
   traceCode: TraceCode
+  productItem: ProductItem | null
   baseInfo: BaseInfo
   batchInfo: ProductBatchInfo
   productionRecords: ProductionRecord[]
   inspectionReports: InspectionReport[]
   recallRecord: RecallRecord | null
   recallWarning: boolean
+  verifyInfo: TraceVerifyInfo | null
+  logisticsRecords: LogisticsRecord[]
 }
 
 export interface TraceHistoryItem {
   traceId: string
   productName: string
+  batchId: number
+  batchCode: string
   queryTime: number
 }
 
@@ -107,6 +153,26 @@ export interface FeedbackItem {
   type: string
   content: string
   contact: string
+  traceId?: string
+  batchId?: number
   createdAt: number
   status: 'pending' | 'submitted' | 'failed'
+}
+
+export interface TraceSummary {
+  summaryTitle: string
+  summaryText: string
+  safetyLevel: 'HIGH_RISK' | 'SAFE' | 'CHECK' | 'CAUTION'
+  trustScore: number
+  highlights: string[]
+  riskTips: string[]
+  qualityInterpretation: string
+  actionTips: string[]
+}
+
+export interface FavoriteTraceItem {
+  traceId: string
+  productName: string
+  batchCode: string
+  savedAt: number
 }

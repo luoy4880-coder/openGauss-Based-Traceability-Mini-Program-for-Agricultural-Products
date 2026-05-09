@@ -1,0 +1,31 @@
+.page {
+  min-height: 100vh;
+  padding: 28rpx;
+  box-sizing: border-box;
+  background:
+    radial-gradient(circle at top right, rgba(125, 152, 88, 0.12), transparent 30%),
+    linear-gradient(180deg, #f8f4ec 0%, #f3ecdf 100%);
+}
+
+.card {
+  margin-bottom: 20rpx;
+}
+
+.timeline-time {
+  font-size: 24rpx;
+  color: var(--yj-text-tertiary);
+}
+
+.timeline-title {
+  margin-top: 10rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--yj-text-main);
+}
+
+.timeline-desc {
+  margin-top: 10rpx;
+  font-size: 26rpx;
+  line-height: 1.7;
+  color: var(--yj-text-secondary);
+}

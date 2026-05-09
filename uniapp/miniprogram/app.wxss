@@ -1,4 +1,42 @@
-/**app.wxss**/
+/* ============================================
+   全局样式系统 — 农产品溯源小程序
+   ============================================ */
+
+/* CSS 变量 */
+page {
+  --yj-primary: #58703a;
+  --yj-primary-light: #7d9858;
+  --yj-primary-dark: #3d5a28;
+  --yj-accent: #725325;
+  --yj-accent-light: #c18a42;
+  --yj-danger: #984a36;
+  --yj-danger-light: #c56d43;
+  --yj-safe: #55733d;
+  --yj-safe-light: #82975e;
+
+  --yj-bg-start: #f8f4ec;
+  --yj-bg-end: #f3ecdf;
+  --yj-card-bg: rgba(255, 252, 247, 0.94);
+  --yj-card-shadow: 0 18rpx 40rpx rgba(114, 83, 37, 0.08);
+  --yj-card-shadow-hover: 0 22rpx 48rpx rgba(114, 83, 37, 0.12);
+
+  --yj-text-main: #2d2419;
+  --yj-text-secondary: #7b6d5d;
+  --yj-text-tertiary: #8b7a66;
+  --yj-text-muted: #9a8b78;
+
+  --yj-border: #e0d4c1;
+  --yj-border-light: #efe5d6;
+  --yj-input-bg: #fffdf9;
+
+  --yj-radius-sm: 12rpx;
+  --yj-radius-md: 18rpx;
+  --yj-radius-lg: 24rpx;
+  --yj-radius-xl: 28rpx;
+  --yj-radius-pill: 999rpx;
+}
+
+/* 基础容器 */
 .container {
   height: 100%;
   display: flex;
@@ -7,4 +45,271 @@
   justify-content: space-between;
   padding: 200rpx 0;
   box-sizing: border-box;
-} 
+}
+
+/* ===== 通用工具类 ===== */
+
+/* 卡片 */
+.yj-card {
+  padding: 28rpx;
+  border-radius: var(--yj-radius-xl);
+  background: var(--yj-card-bg);
+  box-shadow: var(--yj-card-shadow);
+  border: 1rpx solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8rpx);
+}
+
+/* 按钮 */
+.yj-btn-primary {
+  height: 88rpx;
+  line-height: 88rpx;
+  border-radius: var(--yj-radius-md);
+  font-size: 28rpx;
+  font-weight: 500;
+  border: none;
+  background: linear-gradient(135deg, var(--yj-primary) 0%, var(--yj-primary-light) 100%);
+  color: #ffffff;
+  box-shadow: 0 8rpx 24rpx rgba(88, 112, 58, 0.28);
+}
+
+.yj-btn-primary::after {
+  border: none;
+}
+
+.yj-btn-ghost {
+  height: 88rpx;
+  line-height: 88rpx;
+  border-radius: var(--yj-radius-md);
+  font-size: 28rpx;
+  font-weight: 500;
+  border: none;
+  background: #efe6d8;
+  color: #5f513f;
+}
+
+.yj-btn-ghost::after {
+  border: none;
+}
+
+.yj-btn-danger {
+  height: 88rpx;
+  line-height: 88rpx;
+  border-radius: var(--yj-radius-md);
+  font-size: 28rpx;
+  font-weight: 500;
+  border: none;
+  background: linear-gradient(135deg, var(--yj-danger) 0%, var(--yj-danger-light) 100%);
+  color: #fff;
+  box-shadow: 0 8rpx 24rpx rgba(152, 74, 54, 0.24);
+}
+
+.yj-btn-danger::after {
+  border: none;
+}
+
+.yj-btn-sm {
+  height: 64rpx;
+  line-height: 64rpx;
+  font-size: 24rpx;
+  padding: 0 24rpx;
+}
+
+/* 输入框 */
+.yj-input {
+  width: 100%;
+  box-sizing: border-box;
+  height: 92rpx;
+  padding: 0 24rpx;
+  border: 2rpx solid var(--yj-border);
+  border-radius: var(--yj-radius-md);
+  background: var(--yj-input-bg);
+  font-size: 28rpx;
+  color: #3d3227;
+}
+
+.yj-textarea {
+  width: 100%;
+  min-height: 240rpx;
+  padding: 20rpx;
+  box-sizing: border-box;
+  border-radius: var(--yj-radius-md);
+  border: 2rpx solid var(--yj-border);
+  background: var(--yj-input-bg);
+  font-size: 26rpx;
+  line-height: 1.7;
+}
+
+/* 功能卡片 */
+.yj-feature-card {
+  display: flex;
+  align-items: center;
+  padding: 28rpx;
+  background: white;
+  border-radius: var(--yj-radius-lg);
+  margin-bottom: 16rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.yj-feature-card:last-child {
+  margin-bottom: 0;
+}
+
+.yj-feature-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.yj-feature-icon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 18rpx;
+  background: linear-gradient(135deg, #f0f8e8 0%, #e4f0d8 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+  font-size: 30rpx;
+}
+
+/* 用户卡片 */
+.yj-user-card {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  border-radius: var(--yj-radius-lg);
+  background: linear-gradient(135deg, var(--yj-primary) 0%, var(--yj-primary-light) 100%);
+  color: white;
+  box-shadow: 0 12rpx 32rpx rgba(88, 112, 58, 0.28);
+}
+
+.yj-user-avatar {
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+  border: 2rpx solid rgba(255, 255, 255, 0.2);
+}
+
+/* Banner */
+.yj-banner {
+  padding: 30rpx;
+  border-radius: var(--yj-radius-xl);
+  color: #fffdf8;
+  box-shadow: 0 18rpx 36rpx rgba(84, 62, 31, 0.14);
+}
+
+.yj-banner-safe {
+  background: linear-gradient(135deg, var(--yj-safe) 0%, var(--yj-safe-light) 100%);
+}
+
+.yj-banner-danger {
+  background: linear-gradient(135deg, var(--yj-danger) 0%, var(--yj-danger-light) 100%);
+}
+
+/* 列表项 */
+.yj-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid var(--yj-border-light);
+}
+
+.yj-list-item:last-child {
+  border-bottom: none;
+  padding-bottom: 6rpx;
+}
+
+/* 字段行 */
+.yj-field {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24rpx;
+  padding: 14rpx 0;
+  border-bottom: 1rpx solid var(--yj-border-light);
+}
+
+.yj-field:last-child {
+  border-bottom: none;
+}
+
+/* 时间线 */
+.yj-timeline-item {
+  position: relative;
+  padding: 22rpx 0 22rpx 28rpx;
+  border-bottom: 1rpx solid var(--yj-border-light);
+}
+
+.yj-timeline-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.yj-timeline-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 28rpx;
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: var(--yj-primary-light);
+  box-shadow: 0 0 0 4rpx rgba(125, 152, 88, 0.2);
+}
+
+/* 空状态 */
+.yj-empty {
+  text-align: center;
+  padding: 48rpx 24rpx;
+}
+
+/* 状态卡片 */
+.yj-state-card {
+  margin-top: 20vh;
+  text-align: center;
+  padding: 48rpx 36rpx;
+  border-radius: var(--yj-radius-xl);
+  background: var(--yj-card-bg);
+  box-shadow: var(--yj-card-shadow);
+}
+
+/* 图表 */
+.yj-chart-wrap {
+  height: 240rpx;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14rpx;
+}
+
+.yj-chart-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.yj-chart-bar-track {
+  width: 36rpx;
+  height: 150rpx;
+  border-radius: var(--yj-radius-pill);
+  background: #efe5d6;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+.yj-chart-bar-fill {
+  width: 100%;
+  min-height: 8rpx;
+  border-radius: var(--yj-radius-pill);
+  background: linear-gradient(180deg, #73935a 0%, #577741 100%);
+}

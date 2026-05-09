@@ -2,9 +2,57 @@ import { getTraceHistory, removeTraceHistory, clearTraceHistory } from '../../se
 import type { TraceHistoryItem } from '../../types/trace'
 import { formatTime } from '../../utils/util'
 
+type HistoryChartBar = {
+  day: string
+  shortLabel: string
+  count: number
+  percent: number
+}
+
+function buildHistoryChart(history: TraceHistoryItem[]): HistoryChartBar[] {
+  const now = new Date()
+  now.setHours(0, 0, 0, 0)
+
+  const bars: HistoryChartBar[] = []
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date(now)
+    date.setDate(now.getDate() - i)
+    const day = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(
+      date.getDate(),
+    ).padStart(2, '0')}`
+    bars.push({
+      day,
+      shortLabel: `${date.getMonth() + 1}/${date.getDate()}`,
+      count: 0,
+      percent: 0,
+    })
+  }
+
+  history.forEach((item) => {
+    const date = new Date(item.queryTime)
+    date.setHours(0, 0, 0, 0)
+    const day = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(
+      date.getDate(),
+    ).padStart(2, '0')}`
+    const target = bars.find((bar) => bar.day === day)
+    if (target) {
+      target.count += 1
+    }
+  })
+
+  const max = Math.max(...bars.map((item) => item.count), 1)
+  return bars.map((item) => ({
+    ...item,
+    percent: item.count === 0 ? 6 : Math.max(12, Math.round((item.count / max) * 100)),
+  }))
+}
+
 Component({
   data: {
     history: [] as TraceHistoryItem[],
+    chartBars: [] as HistoryChartBar[],
+    totalCount: 0,
+    weekCount: 0,
   },
   lifetimes: {
     attached() {
@@ -18,8 +66,14 @@ Component({
   },
   methods: {
     refresh() {
+      const history = getTraceHistory()
+      const chartBars = buildHistoryChart(history)
+      const weekCount = chartBars.reduce((sum, item) => sum + item.count, 0)
       this.setData({
-        history: getTraceHistory(),
+        history,
+        chartBars,
+        totalCount: history.length,
+        weekCount,
       })
     },
     formatTimestamp(value?: number) {
@@ -61,4 +115,3 @@ Component({
     },
   },
 })
-

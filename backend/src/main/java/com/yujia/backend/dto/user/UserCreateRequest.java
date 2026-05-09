@@ -21,6 +21,9 @@ public class UserCreateRequest {
 
     private String phone;
 
+    @NotNull(message = "公司不能为空")
+    private Long companyId;
+
     @NotNull(message = "状态不能为空")
     private Integer status;
 

@@ -1,6 +1,6 @@
 <template>
   <section class="page-section">
-    <PageHeader title="生产记录" description="生产记录分页、筛选、新增、编辑、删除已经接通。" />
+    <PageHeader title="生产记录" description="记录并查询种植、施肥、采收等生产过程信息。" />
 
     <el-card shadow="never">
       <div class="toolbar">
@@ -22,31 +22,58 @@
         <el-table-column prop="materialName" label="投入物" min-width="140" />
         <el-table-column prop="dosage" label="用量" min-width="120" />
         <el-table-column prop="content" label="记录内容" min-width="260" show-overflow-tooltip />
+        <el-table-column label="附件" min-width="120">
+          <template #default="{ row }">
+            <el-link v-if="row.attachmentUrl" :href="fileAccessUrl(row.attachmentUrl)" target="_blank" type="primary">查看附件</el-link>
+            <span v-else>无</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" min-width="220" fixed="right">
           <template #default="{ row }">
             <el-space>
               <el-button link type="primary" @click="openEditDialog(row)">编辑</el-button>
-              <el-button link type="danger" @click="handleDelete(row)">删除</el-button>
+              <el-button v-if="authStore.isAdmin" link type="danger" @click="handleDelete(row)">删除</el-button>
             </el-space>
           </template>
         </el-table-column>
       </el-table>
 
       <div class="pagination-wrap">
-        <el-pagination background layout="total, prev, pager, next, sizes" :total="total" :current-page="query.pageNum" :page-size="query.pageSize" :page-sizes="[10, 20, 50, 100]" @current-change="handleCurrentChange" @size-change="handleSizeChange" />
+        <el-pagination
+          background
+          layout="total, prev, pager, next, sizes"
+          :total="total"
+          :current-page="query.pageNum"
+          :page-size="query.pageSize"
+          :page-sizes="[10, 20, 50, 100]"
+          @current-change="handleCurrentChange"
+          @size-change="handleSizeChange"
+        />
       </div>
     </el-card>
 
     <el-dialog v-model="dialogVisible" :title="dialogMode === 'create' ? '新增生产记录' : '编辑生产记录'" width="820px" destroy-on-close>
       <el-form ref="formRef" :model="form" :rules="rules" label-width="90px">
         <div class="form-grid">
-          <el-form-item label="批次" prop="batchId"><el-select v-model="form.batchId" placeholder="请选择批次" style="width: 100%"><el-option v-for="item in batchOptions" :key="item.id" :label="batchLabel(item)" :value="item.id" /></el-select></el-form-item>
-          <el-form-item label="记录类型" prop="recordType"><el-input v-model="form.recordType" placeholder="如 施肥、浇水、采收" /></el-form-item>
+          <el-form-item label="批次" prop="batchId">
+            <el-select v-model="form.batchId" placeholder="请选择批次" style="width: 100%">
+              <el-option v-for="item in batchOptions" :key="item.id" :label="batchLabel(item)" :value="item.id" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="记录类型" prop="recordType"><el-input v-model="form.recordType" placeholder="如：施肥、浇水、采收" /></el-form-item>
           <el-form-item label="操作时间" prop="operationTime"><el-date-picker v-model="form.operationTime" type="datetime" value-format="YYYY-MM-DDTHH:mm:ss" style="width: 100%" /></el-form-item>
           <el-form-item label="操作人"><el-input v-model="form.operatorName" placeholder="请输入操作人" /></el-form-item>
           <el-form-item label="投入物"><el-input v-model="form.materialName" placeholder="请输入投入物名称" /></el-form-item>
           <el-form-item label="用量"><el-input v-model="form.dosage" placeholder="请输入用量说明" /></el-form-item>
-          <el-form-item label="附件链接"><el-input v-model="form.attachmentUrl" placeholder="请输入附件 URL" /></el-form-item>
+          <el-form-item label="附件上传">
+            <el-upload :auto-upload="false" :show-file-list="false" :on-change="handleAttachmentChange" :limit="1">
+              <el-button>选择文件</el-button>
+            </el-upload>
+            <div v-if="selectedFileName" style="margin-top: 8px; color: var(--el-text-color-secondary)">{{ selectedFileName }}</div>
+            <div v-if="form.attachmentUrl" style="margin-top: 8px">
+              <el-link :href="fileAccessUrl(form.attachmentUrl)" target="_blank" type="primary">查看已上传附件</el-link>
+            </div>
+          </el-form-item>
         </div>
         <el-form-item label="记录内容" prop="content"><el-input v-model="form.content" type="textarea" :rows="4" placeholder="请输入记录内容" /></el-form-item>
       </el-form>
@@ -62,11 +89,13 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import type { FormInstance, FormRules } from 'element-plus'
+import type { FormInstance, FormRules, UploadFile } from 'element-plus'
 import { getBatchList } from '../../api/modules/batch'
-import { createProductionRecord, deleteProductionRecord, getProductionRecordPage, updateProductionRecord } from '../../api/modules/record'
+import { createProductionRecord, deleteProductionRecord, getProductionRecordPage, updateProductionRecord, uploadRecordAttachment } from '../../api/modules/record'
 import PageHeader from '../../components/PageHeader.vue'
+import { useAuthStore } from '../../stores/auth'
 
+const authStore = useAuthStore()
 type BatchOption = { id: number; batchCode: string; productName: string }
 type ProductionRecord = { id: number; batchId: number; recordType: string; operationTime: string; operatorName?: string; materialName?: string; dosage?: string; content: string; attachmentUrl?: string }
 
@@ -79,6 +108,8 @@ const dialogVisible = ref(false)
 const dialogMode = ref<'create' | 'edit'>('create')
 const editingId = ref<number | null>(null)
 const formRef = ref<FormInstance>()
+const attachmentFile = ref<File | null>(null)
+const selectedFileName = ref('')
 
 const query = reactive({ batchId: null as number | null, recordType: '', pageNum: 1, pageSize: 10 })
 const form = reactive({ batchId: null as number | null, recordType: '', operationTime: '', operatorName: '', materialName: '', dosage: '', content: '', attachmentUrl: '' })
@@ -91,15 +122,114 @@ const rules: FormRules = {
 }
 
 const batchNameMap = computed(() => Object.fromEntries(batchOptions.value.map((item) => [item.id, `${item.batchCode} / ${item.productName}`])))
-function batchLabel(item: BatchOption) { return `${item.batchCode} / ${item.productName}` }
-async function loadBatchOptions() { const list = await getBatchList(); batchOptions.value = (list || []).map((item: any) => ({ id: item.id, batchCode: item.batchCode, productName: item.productName })) }
-async function loadData() { loading.value = true; try { const data = await getProductionRecordPage(query); records.value = data.records || []; total.value = data.total || 0 } finally { loading.value = false } }
-function resetForm() { form.batchId = null; form.recordType = ''; form.operationTime = ''; form.operatorName = ''; form.materialName = ''; form.dosage = ''; form.content = ''; form.attachmentUrl = ''; editingId.value = null }
-function openCreateDialog() { dialogMode.value = 'create'; resetForm(); dialogVisible.value = true }
-function openEditDialog(row: ProductionRecord) { dialogMode.value = 'edit'; editingId.value = row.id; Object.assign(form, row); dialogVisible.value = true }
-async function handleSubmit() { if (!formRef.value) return; await formRef.value.validate(); submitting.value = true; try { if (dialogMode.value === 'create') { await createProductionRecord({ ...form }); ElMessage.success('生产记录创建成功') } else if (editingId.value != null) { await updateProductionRecord(editingId.value, { ...form }); ElMessage.success('生产记录更新成功') } dialogVisible.value = false; loadData() } finally { submitting.value = false } }
-async function handleDelete(row: ProductionRecord) { await ElMessageBox.confirm('确定删除这条生产记录吗？', '删除确认', { type: 'warning' }); await deleteProductionRecord(row.id); ElMessage.success('生产记录删除成功'); if (records.value.length === 1 && query.pageNum > 1) query.pageNum -= 1; loadData() }
-function handleCurrentChange(pageNum: number) { query.pageNum = pageNum; loadData() }
-function handleSizeChange(pageSize: number) { query.pageSize = pageSize; query.pageNum = 1; loadData() }
-onMounted(async () => { await loadBatchOptions(); await loadData() })
+
+function batchLabel(item: BatchOption) {
+  return `${item.batchCode} / ${item.productName}`
+}
+
+function fileAccessUrl(url?: string) {
+  if (!url) return ''
+  if (url.startsWith('http://') || url.startsWith('https://')) return url
+  const baseURL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080').replace(/\/$/, '')
+  return `${baseURL}${url.startsWith('/') ? url : `/${url}`}`
+}
+
+async function loadBatchOptions() {
+  const list = await getBatchList()
+  batchOptions.value = (list || []).map((item: any) => ({ id: item.id, batchCode: item.batchCode, productName: item.productName }))
+}
+
+async function loadData() {
+  loading.value = true
+  try {
+    const data = await getProductionRecordPage(query)
+    records.value = data.records || []
+    total.value = data.total || 0
+  } finally {
+    loading.value = false
+  }
+}
+
+function resetForm() {
+  form.batchId = null
+  form.recordType = ''
+  form.operationTime = ''
+  form.operatorName = ''
+  form.materialName = ''
+  form.dosage = ''
+  form.content = ''
+  form.attachmentUrl = ''
+  editingId.value = null
+  attachmentFile.value = null
+  selectedFileName.value = ''
+}
+
+function openCreateDialog() {
+  dialogMode.value = 'create'
+  resetForm()
+  dialogVisible.value = true
+}
+
+function openEditDialog(row: ProductionRecord) {
+  dialogMode.value = 'edit'
+  editingId.value = row.id
+  attachmentFile.value = null
+  selectedFileName.value = ''
+  Object.assign(form, row)
+  dialogVisible.value = true
+}
+
+function handleAttachmentChange(uploadFile: UploadFile) {
+  attachmentFile.value = uploadFile.raw || null
+  selectedFileName.value = uploadFile.name
+}
+
+async function handleSubmit() {
+  if (!formRef.value) return
+  await formRef.value.validate()
+  submitting.value = true
+  try {
+    const payload = { ...form }
+    if (attachmentFile.value) {
+      const uploadResult = await uploadRecordAttachment(attachmentFile.value)
+      payload.attachmentUrl = uploadResult.url
+    }
+
+    if (dialogMode.value === 'create') {
+      await createProductionRecord(payload)
+      ElMessage.success('生产记录创建成功')
+    } else if (editingId.value != null) {
+      await updateProductionRecord(editingId.value, payload)
+      ElMessage.success('生产记录更新成功')
+    }
+    dialogVisible.value = false
+    loadData()
+  } finally {
+    submitting.value = false
+  }
+}
+
+async function handleDelete(row: ProductionRecord) {
+  await ElMessageBox.confirm('确定删除这条生产记录吗？', '删除确认', { type: 'warning' })
+  await deleteProductionRecord(row.id)
+  ElMessage.success('生产记录删除成功')
+  if (records.value.length === 1 && query.pageNum > 1) query.pageNum -= 1
+  loadData()
+}
+
+function handleCurrentChange(pageNum: number) {
+  query.pageNum = pageNum
+  loadData()
+}
+
+function handleSizeChange(pageSize: number) {
+  query.pageSize = pageSize
+  query.pageNum = 1
+  loadData()
+}
+
+onMounted(async () => {
+  await loadBatchOptions()
+  await loadData()
+})
 </script>

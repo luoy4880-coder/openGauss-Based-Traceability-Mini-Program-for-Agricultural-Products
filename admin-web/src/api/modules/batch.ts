@@ -21,7 +21,6 @@ export function createBatch(data: {
   quantity?: number | null
   unit?: string
   batchStatus: number
-  recallStatus: number
   remark?: string
 }) {
   return http.post('/api/batches', data)
@@ -39,7 +38,6 @@ export function updateBatch(
     quantity?: number | null
     unit?: string
     batchStatus: number
-    recallStatus: number
     remark?: string
   },
 ) {
@@ -56,4 +54,12 @@ export function getBatchList(params?: {
   batchStatus?: number | null
 }) {
   return http.get('/api/batches', { params })
+}
+
+export function getBatchArchive(id: number) {
+  return http.get(`/api/batches/${id}/archive`)
+}
+
+export function getBatchInsight(id: number) {
+  return http.get(`/api/batches/${id}/insight`)
 }

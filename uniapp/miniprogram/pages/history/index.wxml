@@ -1,17 +1,43 @@
 <view class="page">
-  <view class="header">
-    <view class="title">查询记录</view>
-    <button class="ghost-btn" wx:if="{{history.length}}" bindtap="clearHistory">清空</button>
+  <view class="hero-card">
+    <view class="hero-title">查询记录</view>
+    <view class="hero-desc">查看最近查询过的追溯码。</view>
+    <view class="hero-metrics">
+      <view class="metric-item">
+        <view class="metric-value">{{totalCount}}</view>
+        <view class="metric-label">总记录</view>
+      </view>
+      <view class="metric-item">
+        <view class="metric-value">{{weekCount}}</view>
+        <view class="metric-label">近7天查询</view>
+      </view>
+    </view>
   </view>
 
-  <view class="card" wx:if="{{history.length === 0}}">
+  <view class="card yj-card chart-card">
+    <view class="header">
+      <view class="title">查询趋势</view>
+      <button class="ghost-btn" wx:if="{{history.length}}" bindtap="clearHistory">清空</button>
+    </view>
+    <view class="trend-list">
+      <view class="trend-row" wx:for="{{chartBars}}" wx:key="day">
+        <view class="trend-day">{{item.shortLabel}}</view>
+        <view class="trend-track">
+          <view class="trend-fill" style="width: {{item.percent}}%;"></view>
+        </view>
+        <view class="trend-count">{{item.count}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card yj-card yj-empty" wx:if="{{history.length === 0}}">
     <view class="empty-title">暂无记录</view>
     <view class="empty-desc">你查询过的追溯码会显示在这里。</view>
-    <button class="primary-btn" bindtap="goToQuery">去查询</button>
+    <button class="primary-btn yj-btn-primary" bindtap="goToQuery">去查询</button>
   </view>
 
   <view
-    class="item"
+    class="item yj-feature-card"
     wx:for="{{history}}"
     wx:key="traceId"
     data-trace-id="{{item.traceId}}"

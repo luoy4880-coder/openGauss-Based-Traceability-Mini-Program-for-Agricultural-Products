@@ -2,6 +2,8 @@ package com.yujia.backend.common.exception;
 
 import com.yujia.backend.common.response.ApiResponse;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,6 +42,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ApiResponse<Void> handleConstraintViolationException(ConstraintViolationException exception) {
         return ApiResponse.fail(400, exception.getMessage());
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ApiResponse<Void> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException exception) {
+        return ApiResponse.fail(400, "上传文件过大，请控制在 20MB 以内");
+    }
+
+    @ExceptionHandler(MultipartException.class)
+    public ApiResponse<Void> handleMultipartException(MultipartException exception) {
+        return ApiResponse.fail(400, "文件上传失败，请检查文件大小或格式后重试");
     }
 
     @ExceptionHandler(Exception.class)
