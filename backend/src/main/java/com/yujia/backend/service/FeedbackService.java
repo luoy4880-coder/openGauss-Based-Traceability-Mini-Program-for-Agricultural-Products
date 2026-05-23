@@ -179,6 +179,9 @@ public class FeedbackService {
     }
 
     private Long pickSuggestedAssigneeUserId(Long companyId) {
+        if (companyId == null) {
+            return null;
+        }
         List<SysUser> staffs = sysUserService.listActiveStaffEntitiesByCompanyId(companyId);
         if (staffs.isEmpty()) {
             return null;
@@ -187,7 +190,7 @@ public class FeedbackService {
     }
 
     private Long pickDefaultAssigneeUserId(Long companyId) {
-        return pickSuggestedAssigneeUserId(companyId);
+        return null;
     }
 
     private boolean isAssignableStaff(Long assigneeUserId, Long companyId) {
@@ -214,7 +217,10 @@ public class FeedbackService {
         Long resolvedBatchId = batchId != null ? batchId : resolveBatchIdByTraceId(traceId);
         if (resolvedBatchId != null) {
             Long batchCompanyId = productBatchService.detail(resolvedBatchId).getCompanyId();
-            companyScopeService.assertAccessibleCompany(batchCompanyId);
+            Long currentCompanyId = companyScopeService.currentCompanyIdOrNull();
+            if (currentCompanyId != null) {
+                companyScopeService.assertAccessibleCompany(batchCompanyId);
+            }
             return batchCompanyId;
         }
 
@@ -222,7 +228,7 @@ public class FeedbackService {
         if (currentCompanyId != null) {
             return currentCompanyId;
         }
-        throw new BusinessException(400, "反馈未关联批次或公司，无法确定数据归属");
+        return null;
     }
 
     private Long resolveBatchIdByTraceId(String traceId) {
@@ -244,11 +250,9 @@ public class FeedbackService {
             existing.setDescription(buildFeedbackTaskDescription(feedback));
             existing.setPriority(1);
             existing.setStatus(existing.getStatus() != null && existing.getStatus() == 2 ? 2 : 0);
+            existing.setAssigneeUserId(existing.getStatus() != null && existing.getStatus() > 0 ? existing.getAssigneeUserId() : null);
             if (existing.getAssigneeUserId() == null) {
-                existing.setAssigneeUserId(suggestedAssigneeUserId);
-            }
-            if (existing.getAssigneeUserId() != null && existing.getClaimedAt() == null) {
-                existing.setClaimedAt(LocalDateTime.now());
+                existing.setClaimedAt(null);
             }
             existing.setSourceType("FEEDBACK_AI");
             existing.setDueAt(LocalDateTime.now().plusHours(12));
@@ -264,8 +268,8 @@ public class FeedbackService {
         task.setDescription(buildFeedbackTaskDescription(feedback));
         task.setPriority(1);
         task.setStatus(0);
-        task.setAssigneeUserId(suggestedAssigneeUserId);
-        task.setClaimedAt(suggestedAssigneeUserId == null ? null : LocalDateTime.now());
+        task.setAssigneeUserId(null);
+        task.setClaimedAt(null);
         task.setCompletedByUserId(null);
         task.setSourceType("FEEDBACK_AI");
         task.setDueAt(LocalDateTime.now().plusHours(12));

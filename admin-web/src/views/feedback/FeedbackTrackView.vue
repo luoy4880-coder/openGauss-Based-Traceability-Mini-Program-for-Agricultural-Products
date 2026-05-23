@@ -1,6 +1,9 @@
 <template>
   <section class="page-section">
-    <PageHeader title="用户反馈追踪" description="AI 自动识别分类、风险等级和优先级，并推动高风险反馈进入处理闭环。" />
+    <PageHeader
+      title="用户反馈追踪"
+      description="AI 自动识别反馈分类、风险等级和优先级，并推动高风险反馈进入处理闭环。"
+    />
 
     <el-card shadow="never" class="overview-card">
       <div class="overview-grid">
@@ -18,13 +21,18 @@
         </div>
       </div>
       <div v-if="overview.highRiskPendingCount > 0" class="overview-tip">
-        系统检测到高风险反馈尚未处理，建议优先分派并跟进。
+        系统检测到仍有高风险反馈未处理，建议优先认领并尽快跟进。
       </div>
     </el-card>
 
     <el-card shadow="never">
       <div class="toolbar">
-        <el-input v-model="query.keyword" clearable placeholder="搜索内容 / 联系方式 / 溯源码" style="width: 240px" />
+        <el-input
+          v-model="query.keyword"
+          clearable
+          placeholder="搜索内容 / 联系方式 / 溯源码"
+          style="width: 240px"
+        />
         <el-select v-model="query.category" clearable placeholder="AI 分类" style="width: 130px">
           <el-option label="质量" value="质量" />
           <el-option label="物流" value="物流" />
@@ -47,14 +55,19 @@
           <el-option label="已完成" :value="2" />
         </el-select>
         <el-select v-model="query.assigneeUserId" clearable placeholder="处理人" style="width: 180px">
-          <el-option v-for="item in assignees" :key="item.id" :label="staffLabel(item)" :value="item.id" />
+          <el-option
+            v-for="item in assignees"
+            :key="item.id"
+            :label="staffLabel(item)"
+            :value="item.id"
+          />
         </el-select>
         <el-button type="primary" @click="loadData">查询</el-button>
       </div>
 
       <el-table :data="records" stripe style="width: 100%" v-loading="loading" :row-class-name="resolveRowClassName">
         <el-table-column prop="id" label="ID" width="80" />
-        <el-table-column prop="content" label="反馈内容" min-width="280" show-overflow-tooltip />
+        <el-table-column prop="content" label="反馈内容" min-width="280" />
         <el-table-column prop="aiCategory" label="AI 分类" min-width="100">
           <template #default="{ row }">
             <el-tag>{{ row.aiCategory || '其他' }}</el-tag>
@@ -73,7 +86,7 @@
         <el-table-column prop="status" label="状态" min-width="100">
           <template #default="{ row }">
             <el-tag :type="statusType(row.status)">{{ statusText(row.status) }}</el-tag>
-            <el-tag v-if="row.linkedRecallId" type="danger" style="margin-left: 6px">已召回</el-tag>
+            <el-tag v-if="row.linkedRecallId" type="danger" style="margin-left: 6px">已发起召回</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="处理人" min-width="160">
@@ -126,11 +139,21 @@
         </el-form-item>
         <el-form-item label="分派给">
           <el-select v-model="form.assigneeUserId" clearable style="width: 100%">
-            <el-option v-for="item in assignees" :key="item.id" :label="staffLabel(item)" :value="item.id" />
+            <el-option
+              v-for="item in assignees"
+              :key="item.id"
+              :label="staffLabel(item)"
+              :value="item.id"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="处理备注">
-          <el-input v-model="form.handleNote" type="textarea" :rows="4" placeholder="记录处理结果、回访情况或后续计划" />
+          <el-input
+            v-model="form.handleNote"
+            type="textarea"
+            :rows="4"
+            placeholder="记录处理结果、回访情况或后续计划"
+          />
         </el-form-item>
         <el-form-item label="发起召回">
           <el-switch v-model="form.recallEnabled" />
@@ -139,7 +162,12 @@
         <template v-if="form.recallEnabled">
           <el-form-item label="召回批次">
             <el-select v-model="form.recallBatchId" clearable style="width: 100%" placeholder="选择召回批次">
-              <el-option v-for="item in batchOptions" :key="item.id" :label="batchNameMap[item.id]" :value="item.id" />
+              <el-option
+                v-for="item in batchOptions"
+                :key="item.id"
+                :label="batchNameMap[item.id]"
+                :value="item.id"
+              />
             </el-select>
           </el-form-item>
           <el-form-item label="召回级别">
@@ -150,7 +178,12 @@
             </el-select>
           </el-form-item>
           <el-form-item label="召回原因">
-            <el-input v-model="form.recallReason" type="textarea" :rows="3" placeholder="可补充召回原因；留空时默认带入反馈内容。" />
+            <el-input
+              v-model="form.recallReason"
+              type="textarea"
+              :rows="3"
+              placeholder="可补充召回原因；留空时默认带入反馈内容。"
+            />
           </el-form-item>
         </template>
       </el-form>
@@ -187,6 +220,7 @@ type FeedbackTask = {
   contact?: string
   traceId?: string
   createdAt?: string
+  handleNote?: string
 }
 
 type StaffOption = {
@@ -307,8 +341,9 @@ async function loadOverview(showPopup = false) {
 
   if (showPopup && overview.highRiskPendingCount > 0) {
     const first = overview.latestHighRiskRecords[0]
+    const latestText = first ? `最新一条：${first.content}` : ''
     await ElMessageBox.alert(
-      `当前有 ${overview.highRiskPendingCount} 条高风险反馈待处理。${first ? `最新一条：${first.content}` : ''}`,
+      `当前有 ${overview.highRiskPendingCount} 条高风险反馈待处理。${latestText}`,
       '高风险反馈提醒',
       { type: 'warning', confirmButtonText: '我知道了' },
     )
@@ -339,7 +374,7 @@ function openHandleDialog(row: FeedbackTask) {
   currentRow.value = row
   form.status = row.status
   form.assigneeUserId = row.assigneeUserId ?? null
-  form.handleNote = row.status === 2 ? row.aiSummary || '' : ''
+  form.handleNote = row.handleNote || ''
   form.recallEnabled = !!row.linkedRecallId
   form.recallBatchId = row.batchId ?? null
   form.recallLevel = 1

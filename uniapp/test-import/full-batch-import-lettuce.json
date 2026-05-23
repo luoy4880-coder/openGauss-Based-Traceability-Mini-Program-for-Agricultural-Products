@@ -1,0 +1,126 @@
+{
+  "base": {
+    "baseCode": "BASE-QI-LETTUCE-001",
+    "baseName": "昆明晨露叶菜基地",
+    "managerName": "李秀兰",
+    "contactPhone": "13800010002",
+    "province": "云南省",
+    "city": "昆明市",
+    "district": "呈贡区",
+    "address": "斗南街道高效农业示范区 2 号",
+    "acreage": 185.0,
+    "status": 1
+  },
+  "batch": {
+    "batchCode": "BATCH-QI-LET-20260512-001",
+    "productName": "生菜",
+    "productCategory": "叶菜类",
+    "plantingDate": "2026-03-08",
+    "expectedHarvestDate": "2026-05-14",
+    "actualHarvestDate": "2026-05-12",
+    "quantity": 4200,
+    "unit": "kg",
+    "batchStatus": 1,
+    "remark": "预冷后发往区域仓，适合测试冷链链路展示。"
+  },
+  "itemGeneration": {
+    "quantity": 18
+  },
+  "productionRecords": [
+    {
+      "recordType": "整地施肥",
+      "operationTime": "2026-03-09T08:00:00",
+      "operatorName": "李秀兰",
+      "materialName": "有机基肥",
+      "dosage": "800 kg",
+      "content": "完成叶菜区翻耕整地并施入基肥。",
+      "attachmentUrl": ""
+    },
+    {
+      "recordType": "播种育苗",
+      "operationTime": "2026-03-12T09:20:00",
+      "operatorName": "李秀兰",
+      "materialName": "奶油生菜种子",
+      "dosage": "6 kg",
+      "content": "穴盘播种后移入育苗棚，湿度保持稳定。",
+      "attachmentUrl": ""
+    },
+    {
+      "recordType": "灌溉管理",
+      "operationTime": "2026-04-08T07:50:00",
+      "operatorName": "周小燕",
+      "materialName": "净化灌溉水",
+      "dosage": "18 吨",
+      "content": "按计划进行喷灌补水，控制叶面洁净。",
+      "attachmentUrl": ""
+    },
+    {
+      "recordType": "采收预冷",
+      "operationTime": "2026-05-12T04:50:00",
+      "operatorName": "周小燕",
+      "materialName": "周转筐",
+      "dosage": "90 个",
+      "content": "采收后 30 分钟内完成预冷并装箱。",
+      "attachmentUrl": ""
+    }
+  ],
+  "logisticsRecords": [
+    {
+      "nodeType": "采后处理",
+      "nodeName": "预冷中心出库",
+      "operationTime": "2026-05-12T07:20:00",
+      "operatorName": "周小燕",
+      "contactPhone": "13800010002",
+      "location": "云南省昆明市呈贡区预冷中心",
+      "temperature": "4C",
+      "humidity": "78%",
+      "attachmentUrl": "",
+      "remark": "采后预冷达标后装入保温周转箱。"
+    },
+    {
+      "nodeType": "干线运输",
+      "nodeName": "昆明至贵阳冷链运输",
+      "operationTime": "2026-05-12T13:10:00",
+      "operatorName": "韩磊",
+      "contactPhone": "13800012001",
+      "location": "贵州省贵阳市观山湖区运输途中",
+      "temperature": "5C",
+      "humidity": "76%",
+      "attachmentUrl": "",
+      "remark": "全程冷机运行正常。"
+    },
+    {
+      "nodeType": "仓储",
+      "nodeName": "贵阳区域仓暂存",
+      "operationTime": "2026-05-12T18:35:00",
+      "operatorName": "蒋蓉",
+      "contactPhone": "13800012002",
+      "location": "贵州省贵阳市观山湖区生鲜仓",
+      "temperature": "3C",
+      "humidity": "80%",
+      "attachmentUrl": "",
+      "remark": "完成到货抽检与短暂周转。"
+    },
+    {
+      "nodeType": "商超配送",
+      "nodeName": "连锁商超上架",
+      "operationTime": "2026-05-13T06:45:00",
+      "operatorName": "蒋蓉",
+      "contactPhone": "13800012002",
+      "location": "贵州省贵阳市南明区商超门店",
+      "temperature": "7C",
+      "humidity": "72%",
+      "attachmentUrl": "",
+      "remark": "早市前完成上架补货。"
+    }
+  ],
+  "inspectionReport": {
+    "reportNo": "IR-QI-LET-20260512-001",
+    "agencyName": "云南绿色食品检测院",
+    "inspectorName": "郑雪",
+    "inspectionTime": "2026-05-12T09:40:00",
+    "resultStatus": 1,
+    "conclusion": "亚硝酸盐与农残指标合格，适合冷链流通。",
+    "reportFileName": "report-pass-sample.md"
+  }
+}

@@ -1,1 +1,17 @@
-﻿<view class="page"><view wx:if="{{list.length === 0}}" class="state-card yj-state-card"><view class="state-title">暂无反馈</view><view class="state-desc">提交反馈后，可在这里查看最近处理记录。</view></view><view wx:for="{{list}}" wx:key="id" class="card yj-card"><view class="report-row"><text class="report-name">{{item.type}}</text><text>{{item.createdAt}}</text></view><view class="report-text">{{item.content}}</view><view class="report-text">AI 分类：{{item.aiCategory || '其他'}} / 优先级：{{item.priorityText}} / 状态：{{item.statusText}}</view><view class="report-text">处理备注：{{item.handleNote || '暂无'}}</view></view></view>
+<view class="page">
+  <view wx:if="{{list.length === 0}}" class="state-card yj-state-card">
+    <view class="state-title">暂无反馈</view>
+    <view class="state-desc">提交反馈后，可在这里查看最近处理记录。</view>
+  </view>
+
+  <view wx:for="{{list}}" wx:key="id" class="card yj-card">
+    <view class="report-row">
+      <text class="report-name">{{item.type}}</text>
+      <text>{{item.createdAt}}</text>
+    </view>
+    <view class="report-text">{{item.content}}</view>
+    <view class="report-text">处理优先级：{{item.priorityText}} / 当前状态：{{item.statusText}}</view>
+    <view class="report-text">系统归类：{{item.aiCategory || '其他'}}</view>
+    <view class="report-text">处理备注：{{item.handleNote || '暂无'}}</view>
+  </view>
+</view>

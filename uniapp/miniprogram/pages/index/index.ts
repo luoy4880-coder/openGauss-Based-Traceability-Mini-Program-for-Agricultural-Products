@@ -1,9 +1,10 @@
-import { fetchTraceDetail, getTraceHistory, saveTraceHistory } from '../../services/trace'
+import { buildTraceDetailPageUrl, fetchTraceDetail, getTraceHistory, saveTraceHistory } from '../../services/trace'
 import type { TraceDetail, TraceHistoryItem } from '../../types/trace'
 
 Page({
   data: {
     traceId: '',
+    signValue: '',
     loading: false,
     history: [] as TraceHistoryItem[],
   },
@@ -25,10 +26,11 @@ Page({
   },
   async submitTraceQuery() {
     const traceId = this.data.traceId.trim()
+    const signValue = this.data.signValue.trim()
 
     if (!traceId) {
       wx.showToast({
-        title: '\u8bf7\u8f93\u5165\u8ffd\u6eaf\u7801',
+        title: '请输入追溯码',
         icon: 'none',
       })
       return
@@ -37,14 +39,14 @@ Page({
     this.setData({ loading: true })
 
     try {
-      const detail = await fetchTraceDetail(traceId)
-      this.persistHistory(detail)
+      const detail = await fetchTraceDetail(traceId, signValue)
+      this.persistHistory(detail, signValue)
       wx.navigateTo({
-        url: `/pages/trace-detail/index?traceId=${traceId}`,
+        url: buildTraceDetailPageUrl(traceId, signValue),
       })
     } catch (error) {
       wx.showToast({
-        title: error instanceof Error ? error.message : '\u67e5\u8be2\u5931\u8d25',
+        title: error instanceof Error ? error.message : '查询失败',
         icon: 'none',
         duration: 2500,
       })
@@ -56,39 +58,52 @@ Page({
     wx.scanCode({
       onlyFromCamera: false,
       success: ({ result }) => {
-        const traceId = this.extractTraceId(result)
-        this.setData({ traceId })
+        const parsed = this.extractTracePayload(result)
+        this.setData({
+          traceId: parsed.traceId,
+          signValue: parsed.signValue,
+        })
         this.submitTraceQuery()
       },
       fail: () => {
         wx.showToast({
-          title: '\u672a\u8bc6\u522b\u5230\u8ffd\u6eaf\u7801',
+          title: '未识别到追溯码',
           icon: 'none',
         })
       },
     })
   },
   useHistoryTrace(e: WechatMiniprogram.TouchEvent) {
-    const { traceId } = e.currentTarget.dataset as { traceId: string }
-    this.setData({ traceId })
+    const { traceId, signValue } = e.currentTarget.dataset as { traceId: string; signValue?: string }
+    this.setData({
+      traceId,
+      signValue: signValue || '',
+    })
     this.submitTraceQuery()
   },
-  goToCollection() {
-    wx.switchTab({ url: '/pages/collection/index' })
-  },
-  goToFeedback() {
-    wx.switchTab({ url: '/pages/feedback/index' })
-  },
-  extractTraceId(raw: string) {
+  extractTracePayload(raw: string) {
     const value = raw.trim()
-    const cleanValue = value.split('?')[0]
-    const segments = cleanValue.split('/')
-    return segments[segments.length - 1] || cleanValue
+    const [pathPart, queryPart = ''] = value.split('?')
+    const segments = pathPart.split('/')
+    const traceId = segments[segments.length - 1] || pathPart
+    const params = queryPart.split('&').reduce<Record<string, string>>((result, pair) => {
+      if (!pair) return result
+      const [key, valuePart = ''] = pair.split('=')
+      if (key) {
+        result[decodeURIComponent(key)] = decodeURIComponent(valuePart)
+      }
+      return result
+    }, {})
+    return {
+      traceId,
+      signValue: params.sign || '',
+    }
   },
-  persistHistory(detail: TraceDetail) {
+  persistHistory(detail: TraceDetail, signValue?: string) {
     saveTraceHistory({
       traceId: detail.traceCode.traceId,
-      productName: detail.batchInfo.productName || '\u672a\u77e5\u4ea7\u54c1',
+      signValue: signValue || detail.traceCode.signValue || '',
+      productName: detail.batchInfo.productName || '未知产品',
       batchId: detail.batchInfo.id,
       batchCode: detail.batchInfo.batchCode || '',
       queryTime: Date.now(),
@@ -96,5 +111,3 @@ Page({
     this.refreshHistory()
   },
 })
-
-

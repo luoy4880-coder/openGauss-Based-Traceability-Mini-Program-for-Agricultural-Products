@@ -1,6 +1,6 @@
 export function formatDateTime(value?: string | null) {
   if (!value) {
-    return 'N/A'
+    return '暂无'
   }
 
   return value.replace('T', ' ').slice(0, 19)
@@ -8,7 +8,7 @@ export function formatDateTime(value?: string | null) {
 
 export function formatDate(value?: string | null) {
   if (!value) {
-    return 'N/A'
+    return '暂无'
   }
 
   return value.slice(0, 10)
@@ -16,33 +16,33 @@ export function formatDate(value?: string | null) {
 
 export function joinAddress(parts: Array<string | undefined | null>) {
   const value = parts.filter(Boolean).join('')
-  return value || 'N/A'
+  return value || '暂无'
 }
 
 export function resultStatusText(status?: number | null) {
   if (status === 1) {
-    return 'Passed'
+    return '合格'
   }
 
   if (status === 0) {
-    return 'Failed'
+    return '不合格'
   }
 
-  return 'Pending'
+  return '待确认'
 }
 
 export function recallLevelText(level?: number | null) {
   if (level === 1) {
-    return 'Level 1'
+    return '一级召回'
   }
 
   if (level === 2) {
-    return 'Level 2'
+    return '二级召回'
   }
 
   if (level === 3) {
-    return 'Level 3'
+    return '三级召回'
   }
 
-  return 'Recall info'
+  return '召回信息'
 }

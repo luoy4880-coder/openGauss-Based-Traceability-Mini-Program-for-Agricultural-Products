@@ -1,1 +1,41 @@
-<view class="page" wx:if="{{summary}}"><view class="state-card yj-state-card"><view class="state-title">{{summary.summaryTitle}}</view><view class="state-desc">{{summary.qualityInterpretation}}</view></view><view class="card yj-card"><view class="card-title">风险提示</view><view wx:for="{{summary.riskTips}}" wx:key="*this" class="timeline-desc">{{item}}</view></view><view class="card yj-card"><view class="card-title">建议动作</view><view wx:for="{{summary.actionTips}}" wx:key="*this" class="timeline-desc">{{item}}</view></view></view>
+<view class="page">
+  <view wx:if="{{loading}}" class="state-card yj-state-card">
+    <view class="state-title">正在生成质量解读</view>
+    <view class="state-desc">请稍候，系统正在整理当前商品的公开质量信息。</view>
+  </view>
+
+  <view wx:elif="{{errorMessage}}" class="state-card yj-state-card error">
+    <view class="state-title">加载失败</view>
+    <view class="state-desc">{{errorMessage}}</view>
+    <button class="retry-btn yj-btn-danger" bindtap="retryLoad">重新加载</button>
+  </view>
+
+  <block wx:elif="{{summary}}">
+    <view class="hero yj-card">
+      <view class="hero-title">{{summary.summaryTitle}}</view>
+      <view class="hero-score">可信度 {{summary.trustScore}}</view>
+      <view class="hero-desc">{{summary.summaryText}}</view>
+    </view>
+
+    <view class="card yj-card">
+      <view class="card-title">质量解读</view>
+      <view class="card-text">{{summary.qualityInterpretation}}</view>
+    </view>
+
+    <view class="card yj-card">
+      <view class="card-title">亮点信息</view>
+      <view wx:if="{{summary.highlights.length === 0}}" class="empty-text">当前没有可展示的亮点信息。</view>
+      <view wx:for="{{summary.highlights}}" wx:key="*this" class="tag-item">{{item}}</view>
+    </view>
+
+    <view class="card yj-card">
+      <view class="card-title">风险提示</view>
+      <view wx:for="{{summary.riskTips}}" wx:key="*this" class="list-item">{{item}}</view>
+    </view>
+
+    <view class="card yj-card">
+      <view class="card-title">建议动作</view>
+      <view wx:for="{{summary.actionTips}}" wx:key="*this" class="list-item">{{item}}</view>
+    </view>
+  </block>
+</view>

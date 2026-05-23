@@ -9,7 +9,7 @@
       </view>
       <view class="metric-item">
         <view class="metric-value">{{weekCount}}</view>
-        <view class="metric-label">近7天查询</view>
+        <view class="metric-label">近 7 天查询</view>
       </view>
     </view>
   </view>
@@ -41,13 +41,21 @@
     wx:for="{{history}}"
     wx:key="traceId"
     data-trace-id="{{item.traceId}}"
+    data-sign-value="{{item.signValue}}"
     bindtap="openTraceDetail"
   >
     <view class="item-main">
       <view class="item-title">{{item.productName || '农产品'}}</view>
       <view class="item-sub">追溯码：{{item.traceId}}</view>
-      <view class="item-time">查询时间：{{formatTimestamp(item.queryTime)}}</view>
+      <view class="item-time">查询时间：{{item.queryTimeText}}</view>
     </view>
-    <button class="link-btn" data-trace-id="{{item.traceId}}" catchtap="removeHistory">删除</button>
+    <button
+      class="link-btn"
+      data-trace-id="{{item.traceId}}"
+      data-sign-value="{{item.signValue}}"
+      catchtap="removeHistory"
+    >
+      删除
+    </button>
   </view>
 </view>

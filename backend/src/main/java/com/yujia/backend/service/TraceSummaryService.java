@@ -1,5 +1,6 @@
 package com.yujia.backend.service;
 
+import com.yujia.backend.vo.TraceDetailVO;
 import com.yujia.backend.vo.TraceSummaryVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,8 +14,8 @@ public class TraceSummaryService {
 
     private final TraceCodeService traceCodeService;
 
-    public TraceSummaryVO summary(String traceId) {
-        var detail = traceCodeService.getTraceDetail(traceId);
+    public TraceSummaryVO summary(String traceId, String signValue) {
+        var detail = traceCodeService.getTraceSnapshot(traceId, signValue);
         List<String> highlights = new ArrayList<>();
         List<String> riskTips = new ArrayList<>();
         List<String> actionTips = new ArrayList<>();
@@ -74,14 +75,14 @@ public class TraceSummaryService {
         return vo;
     }
 
-    private String buildSummaryText(com.yujia.backend.vo.TraceDetailVO detail, int trustScore, List<String> riskTips) {
+    private String buildSummaryText(TraceDetailVO detail, int trustScore, List<String> riskTips) {
         String productName = detail.getBatchInfo().getProductName() == null ? "该产品" : detail.getBatchInfo().getProductName();
         return productName + " 当前追溯可信度约 " + trustScore + " 分。"
                 + (detail.isRecallWarning() ? "系统检测到召回风险。" : "暂未发现召回风险。")
                 + "重点提示：" + riskTips.get(0) + "。";
     }
 
-    private String buildQualityInterpretation(com.yujia.backend.vo.TraceDetailVO detail) {
+    private String buildQualityInterpretation(TraceDetailVO detail) {
         if (detail.getInspectionReports().isEmpty()) {
             return "暂未查询到质检报告，建议谨慎参考该批次的质量证明。";
         }

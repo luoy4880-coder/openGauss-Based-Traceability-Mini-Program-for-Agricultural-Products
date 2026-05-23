@@ -37,8 +37,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/api/trace/**",
                         "/api/auth/login",
                         "/api/auth/wechat-login",
-                        "/api/auth/register",
-                        "/api/auth/bootstrap"
+                        "/api/auth/register"
                 );
     }
 

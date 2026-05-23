@@ -34,6 +34,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CropInfoImportService {
 
+    private static final int STATUS_PENDING = 0;
+    private static final int STATUS_PROCESSING = 1;
+
     private final ObjectMapper objectMapper;
     private final BaseInfoMapper baseInfoMapper;
     private final ProductBatchMapper productBatchMapper;
@@ -232,6 +235,22 @@ public class CropInfoImportService {
             return false;
         }
 
+        SystemTask existing = systemTaskMapper.selectByUnique("IMPORT_RISK_REVIEW", "BATCH", batch.getId());
+        if (existing != null) {
+            existing.setTitle("处理异常导入批次 - " + batch.getBatchCode());
+            existing.setDescription("快速导入的批次质检结果异常，请优先复核。报告编号=" + report.getReportNo());
+            existing.setPriority(1);
+            existing.setStatus(existing.getStatus() != null && existing.getStatus() == STATUS_PROCESSING
+                    ? STATUS_PROCESSING
+                    : STATUS_PENDING);
+            existing.setSourceType("QUICK_IMPORT");
+            existing.setDueAt(LocalDateTime.now().plusHours(12));
+            existing.setCompletedByUserId(null);
+            existing.setCompletedAt(null);
+            systemTaskMapper.update(existing);
+            return false;
+        }
+
         SystemTask task = new SystemTask();
         task.setTaskType("IMPORT_RISK_REVIEW");
         task.setBizType("BATCH");
@@ -239,7 +258,7 @@ public class CropInfoImportService {
         task.setTitle("处理异常导入批次 - " + batch.getBatchCode());
         task.setDescription("快速导入的批次质检结果异常，请优先复核。报告编号=" + report.getReportNo());
         task.setPriority(1);
-        task.setStatus(0);
+        task.setStatus(STATUS_PENDING);
         task.setAssigneeUserId(null);
         task.setClaimedAt(null);
         task.setCompletedByUserId(null);

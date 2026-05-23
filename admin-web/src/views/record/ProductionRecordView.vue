@@ -7,7 +7,13 @@
         <el-select v-model="query.batchId" clearable placeholder="批次筛选" style="width: 240px">
           <el-option v-for="item in batchOptions" :key="item.id" :label="batchLabel(item)" :value="item.id" />
         </el-select>
-        <el-input v-model="query.recordType" placeholder="记录类型筛选" clearable style="max-width: 220px" @keyup.enter="loadData" />
+        <el-input
+          v-model="query.recordType"
+          placeholder="记录类型筛选"
+          clearable
+          style="max-width: 220px"
+          @keyup.enter="loadData"
+        />
         <el-button type="primary" @click="loadData">查询</el-button>
         <el-button type="success" @click="openCreateDialog">新增记录</el-button>
       </div>
@@ -21,10 +27,12 @@
         <el-table-column prop="operatorName" label="操作人" min-width="120" />
         <el-table-column prop="materialName" label="投入物" min-width="140" />
         <el-table-column prop="dosage" label="用量" min-width="120" />
-        <el-table-column prop="content" label="记录内容" min-width="260" show-overflow-tooltip />
+        <el-table-column prop="content" label="记录内容" min-width="260" />
         <el-table-column label="附件" min-width="120">
           <template #default="{ row }">
-            <el-link v-if="row.attachmentUrl" :href="fileAccessUrl(row.attachmentUrl)" target="_blank" type="primary">查看附件</el-link>
+            <el-link v-if="row.attachmentUrl" :href="fileAccessUrl(row.attachmentUrl)" target="_blank" type="primary">
+              查看附件
+            </el-link>
             <span v-else>无</span>
           </template>
         </el-table-column>
@@ -60,11 +68,21 @@
               <el-option v-for="item in batchOptions" :key="item.id" :label="batchLabel(item)" :value="item.id" />
             </el-select>
           </el-form-item>
-          <el-form-item label="记录类型" prop="recordType"><el-input v-model="form.recordType" placeholder="如：施肥、浇水、采收" /></el-form-item>
-          <el-form-item label="操作时间" prop="operationTime"><el-date-picker v-model="form.operationTime" type="datetime" value-format="YYYY-MM-DDTHH:mm:ss" style="width: 100%" /></el-form-item>
-          <el-form-item label="操作人"><el-input v-model="form.operatorName" placeholder="请输入操作人" /></el-form-item>
-          <el-form-item label="投入物"><el-input v-model="form.materialName" placeholder="请输入投入物名称" /></el-form-item>
-          <el-form-item label="用量"><el-input v-model="form.dosage" placeholder="请输入用量说明" /></el-form-item>
+          <el-form-item label="记录类型" prop="recordType">
+            <el-input v-model="form.recordType" placeholder="如：施肥、浇水、采收" />
+          </el-form-item>
+          <el-form-item label="操作时间" prop="operationTime">
+            <el-date-picker v-model="form.operationTime" type="datetime" value-format="YYYY-MM-DDTHH:mm:ss" style="width: 100%" />
+          </el-form-item>
+          <el-form-item label="操作人">
+            <el-input v-model="form.operatorName" placeholder="请输入操作人" />
+          </el-form-item>
+          <el-form-item label="投入物">
+            <el-input v-model="form.materialName" placeholder="请输入投入物名称" />
+          </el-form-item>
+          <el-form-item label="用量">
+            <el-input v-model="form.dosage" placeholder="请输入用量说明" />
+          </el-form-item>
           <el-form-item label="附件上传">
             <el-upload :auto-upload="false" :show-file-list="false" :on-change="handleAttachmentChange" :limit="1">
               <el-button>选择文件</el-button>
@@ -75,7 +93,9 @@
             </div>
           </el-form-item>
         </div>
-        <el-form-item label="记录内容" prop="content"><el-input v-model="form.content" type="textarea" :rows="4" placeholder="请输入记录内容" /></el-form-item>
+        <el-form-item label="记录内容" prop="content">
+          <el-input v-model="form.content" type="textarea" :rows="4" placeholder="请输入记录内容" />
+        </el-form-item>
       </el-form>
 
       <template #footer>

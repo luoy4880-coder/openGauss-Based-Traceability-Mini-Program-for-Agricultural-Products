@@ -142,6 +142,7 @@ export interface TraceDetail {
 
 export interface TraceHistoryItem {
   traceId: string
+  signValue?: string
   productName: string
   batchId: number
   batchCode: string
@@ -172,6 +173,7 @@ export interface TraceSummary {
 
 export interface FavoriteTraceItem {
   traceId: string
+  signValue?: string
   productName: string
   batchCode: string
   savedAt: number

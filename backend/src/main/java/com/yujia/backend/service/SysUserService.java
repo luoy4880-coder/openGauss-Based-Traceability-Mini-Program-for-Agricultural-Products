@@ -6,7 +6,6 @@ import com.yujia.backend.common.auth.AuthUser;
 import com.yujia.backend.common.auth.PasswordUtil;
 import com.yujia.backend.common.exception.BusinessException;
 import com.yujia.backend.common.response.PageResponse;
-import com.yujia.backend.dto.auth.BootstrapAdminRequest;
 import com.yujia.backend.dto.user.UserCreateRequest;
 import com.yujia.backend.dto.user.UserPasswordUpdateRequest;
 import com.yujia.backend.dto.user.UserUpdateRequest;
@@ -84,7 +83,7 @@ public class SysUserService {
         user.setPassword(PasswordUtil.encode(password));
         user.setRealName(realName == null || realName.isBlank() ? username : realName);
         user.setPhone(phone);
-        user.setCompanyId(companyService.resolveOrCreateCompanyId(companyName));
+        user.setCompanyId(resolveConsumerCompanyId(companyName));
         user.setStatus(1);
         sysUserMapper.insert(user);
         assignRoleByCode(user.getId(), "USER");
@@ -202,31 +201,6 @@ public class SysUserService {
         sysUserMapper.deleteById(id);
     }
 
-    @Transactional
-    public UserVO bootstrapAdmin(BootstrapAdminRequest request) {
-        if (sysUserMapper.countAll() > 0) {
-            throw new BusinessException("系统已初始化管理员，不能重复初始化");
-        }
-
-        List<RoleVO> roles = sysRoleService.list();
-        Long adminRoleId = roles.stream()
-                .filter(role -> "ADMIN".equalsIgnoreCase(role.getRoleCode()))
-                .map(RoleVO::getId)
-                .findFirst()
-                .orElseThrow(() -> new BusinessException("缺少ADMIN角色，请先初始化角色数据"));
-
-        SysUser sysUser = new SysUser();
-        sysUser.setUsername(request.getUsername());
-        sysUser.setPassword(PasswordUtil.encode(request.getPassword()));
-        sysUser.setRealName(request.getRealName());
-        sysUser.setPhone(request.getPhone());
-        sysUser.setCompanyId(companyService.resolveOrCreateCompanyId("默认公司"));
-        sysUser.setStatus(1);
-        sysUserMapper.insert(sysUser);
-        sysUserRoleMapper.insertBatch(sysUser.getId(), List.of(adminRoleId));
-        return detail(sysUser.getId());
-    }
-
     public AuthUser loadAuthUser(Long userId) {
         SysUser sysUser = sysUserMapper.selectById(userId);
         if (sysUser == null || sysUser.getStatus() == null || sysUser.getStatus() != 1) {
@@ -281,6 +255,13 @@ public class SysUserService {
             return;
         }
         sysUserRoleMapper.insertBatch(userId, List.of(userRoleId));
+    }
+
+    private Long resolveConsumerCompanyId(String companyName) {
+        if (companyName == null || companyName.isBlank()) {
+            return null;
+        }
+        return companyService.resolveOrCreateCompanyId(companyName);
     }
 
     private UserVO toVO(SysUser sysUser) {

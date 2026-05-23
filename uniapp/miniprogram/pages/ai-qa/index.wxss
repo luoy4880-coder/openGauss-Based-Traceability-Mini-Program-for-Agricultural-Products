@@ -1,0 +1,99 @@
+.page {
+  display: grid;
+  gap: 24rpx;
+}
+
+.hero,
+.composer,
+.empty-box,
+.chat-card {
+  border-radius: 28rpx;
+}
+
+.context-pill {
+  margin-top: 16rpx;
+  display: inline-block;
+  padding: 10rpx 18rpx;
+  border-radius: 999rpx;
+  background: #eef6e8;
+  color: #4d6b31;
+  font-size: 24rpx;
+}
+
+.clear-btn {
+  margin-top: 16rpx;
+  width: 220rpx;
+  background: #f1f5f9;
+  color: #475569;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  line-height: 2.2;
+}
+
+.hero-title,
+.empty-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #24374e;
+}
+
+.hero-desc,
+.empty-desc,
+.chat-role {
+  margin-top: 12rpx;
+  color: #6b7280;
+  line-height: 1.7;
+}
+
+.composer-label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #334155;
+}
+
+.composer-input {
+  margin-top: 16rpx;
+  min-height: 200rpx;
+}
+
+.suggest-list {
+  margin-top: 16rpx;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.suggest-chip,
+.ref-tag {
+  padding: 12rpx 20rpx;
+  border-radius: 999rpx;
+  background: #eef6e8;
+  color: #4d6b31;
+  font-size: 24rpx;
+}
+
+.ask-btn {
+  margin-top: 20rpx;
+}
+
+.chat-card.user {
+  background: #fffaf2;
+}
+
+.chat-card.assistant {
+  background: #f8fafc;
+}
+
+.chat-text {
+  margin-top: 12rpx;
+  color: #1f2937;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.ref-list {
+  margin-top: 16rpx;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}

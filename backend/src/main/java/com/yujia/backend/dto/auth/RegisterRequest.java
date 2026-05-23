@@ -16,6 +16,5 @@ public class RegisterRequest {
 
     private String phone;
 
-    @NotBlank(message = "公司名称不能为空")
     private String companyName;
 }

@@ -73,7 +73,9 @@ Page({
       method: 'GET',
       header: { Authorization: `Bearer ${token}` },
       success: (meRes: any) => {
-        if (meRes.data && meRes.data.code === 200) wx.setStorageSync('userInfo', meRes.data.data)
+        if (meRes.data && meRes.data.code === 200) {
+          wx.setStorageSync('userInfo', meRes.data.data)
+        }
         this.checkLoginStatus()
         this.refreshData()
         wx.showToast({ title: '登录成功', icon: 'success' })
@@ -102,9 +104,15 @@ Page({
     })
   },
   async refreshData() {
-    this.setData({ history: getTraceHistory(), feedbackList: getFeedbackList(), favoriteCount: getFavoriteTraces().length })
+    this.setData({
+      history: getTraceHistory(),
+      feedbackList: getFeedbackList(),
+      favoriteCount: getFavoriteTraces().length,
+    })
     const token = wx.getStorageSync('token')
-    if (!token) return this.setData({ myFeedbackCount: 0 })
+    if (!token) {
+      return this.setData({ myFeedbackCount: 0 })
+    }
     try {
       const list = await fetchMyFeedback(20)
       this.setData({ myFeedbackCount: Array.isArray(list) ? list.length : 0 })

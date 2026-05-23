@@ -34,6 +34,58 @@ public interface SystemTaskMapper {
                               @Param("bizType") String bizType,
                               @Param("bizId") Long bizId);
 
+    @Select("""
+            <script>
+            SELECT id, task_type, biz_type, biz_id, title, description, priority, status,
+                   assignee_user_id, claimed_at, completed_by_user_id, source_type, due_at,
+                   completed_at, created_at, updated_at
+            FROM system_task st
+            WHERE st.biz_type = #{bizType} AND st.source_type = #{sourceType}
+            <if test="companyId != null">
+              AND (
+                    (st.biz_type = 'BATCH' AND EXISTS (
+                        SELECT 1 FROM product_batch pb
+                        WHERE pb.id = st.biz_id AND pb.company_id = #{companyId}
+                    ))
+                    OR
+                    (st.biz_type = 'FEEDBACK' AND EXISTS (
+                        SELECT 1 FROM user_feedback uf
+                        WHERE uf.id = st.biz_id AND uf.company_id = #{companyId}
+                    ))
+                )
+            </if>
+            </script>
+            """)
+    List<SystemTask> selectByBizTypeAndSourceType(@Param("companyId") Long companyId,
+                                                  @Param("bizType") String bizType,
+                                                  @Param("sourceType") String sourceType);
+
+    @Select("""
+            <script>
+            SELECT id, task_type, biz_type, biz_id, title, description, priority, status,
+                   assignee_user_id, claimed_at, completed_by_user_id, source_type, due_at,
+                   completed_at, created_at, updated_at
+            FROM system_task st
+            WHERE st.task_type = #{taskType}
+            <if test="companyId != null">
+              AND (
+                    (st.biz_type = 'BATCH' AND EXISTS (
+                        SELECT 1 FROM product_batch pb
+                        WHERE pb.id = st.biz_id AND pb.company_id = #{companyId}
+                    ))
+                    OR
+                    (st.biz_type = 'FEEDBACK' AND EXISTS (
+                        SELECT 1 FROM user_feedback uf
+                        WHERE uf.id = st.biz_id AND uf.company_id = #{companyId}
+                    ))
+                )
+            </if>
+            ORDER BY st.id DESC
+            </script>
+            """)
+    List<SystemTask> selectByTaskType(@Param("companyId") Long companyId,
+                                      @Param("taskType") String taskType);
+
     @Insert("""
             INSERT INTO system_task (
                 task_type, biz_type, biz_id, title, description, priority, status,
@@ -159,7 +211,7 @@ public interface SystemTaskMapper {
             <script>
             SELECT COUNT(*)
             FROM system_task st
-            WHERE st.status = 0
+            WHERE st.status IN (0, 1)
             <if test="companyId != null">
               AND (
                     (st.biz_type = 'BATCH' AND EXISTS (
@@ -181,7 +233,7 @@ public interface SystemTaskMapper {
             <script>
             SELECT COUNT(*)
             FROM system_task st
-            WHERE st.status = 0 AND st.task_type = #{taskType}
+            WHERE st.status IN (0, 1) AND st.task_type = #{taskType}
             <if test="companyId != null">
               AND (
                     (st.biz_type = 'BATCH' AND EXISTS (

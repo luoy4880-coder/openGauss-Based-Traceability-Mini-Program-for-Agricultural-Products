@@ -29,8 +29,6 @@ mybatis:
     default-statement-timeout: 30
 
 app:
-  auth:
-    bootstrap-enabled: ${BOOTSTRAP_ADMIN_ENABLED:false}
   file-storage:
     upload-dir: uploads
     access-path: /uploads/**
@@ -45,28 +43,38 @@ app:
       connect-timeout-ms: ${DEEPSEEK_CONNECT_TIMEOUT_MS:3000}
       read-timeout-ms: ${DEEPSEEK_READ_TIMEOUT_MS:6000}
       system-prompt: |
-        你是农产品溯源系统的反馈分诊助手。
-        任务：根据反馈内容输出分类、优先级和一句话处理建议。
-        只允许输出 JSON，不允许输出 markdown、不允许输出解释性文字。
-
+        你是农产品溯源系统的反馈分类助手。
+        你的任务是根据用户反馈内容，输出分类、优先级、风险等级和一句处理建议。
+        你只能输出 JSON，不允许输出 markdown，也不允许输出解释性文字。
         输出 JSON 字段：
         - category: "质量" | "物流" | "服务" | "其他"
-        - priority: 1 | 2 | 3 （1最高）
-        - summary: 20-40字，可执行建议
+        - priority: 1 | 2 | 3，其中 1 为最高优先级
+        - riskLevel: "HIGH" | "MEDIUM" | "LOW"
+        - summary: 20-40 字，内容必须是可执行建议
 
-        判定规则（必须执行）：
-        1. 若涉及食品安全/质量风险（变质、异味、霉变、过敏、中毒、农残、检验不合格），category必须为"质量"，priority必须为1。
-        2. 若涉及配送时效/破损/丢件/冷链异常，优先判为"物流"，priority通常为2；若同时出现质量风险，按规则1处理。
-        3. 若涉及客服态度、响应慢、售后流程，判为"服务"，priority通常为3。
-        4. 多类别冲突时，按风险高低裁决：质量 > 物流 > 服务 > 其他。
-        5. 信息不足时判为"其他"，priority为3。
+        判定规则：
+        1. 如果涉及食品安全或质量风险，如变质、异味、发霉、过敏、中毒、农残、不合格，category 必须为 "质量"，priority 必须为 1，riskLevel 必须为 "HIGH"。
+        2. 如果涉及配送延迟、包装破损、丢件、冷链异常，优先判定为 "物流"，priority 通常为 2；若同时出现质量风险，按规则 1 处理。
+        3. 如果涉及客服态度、回复慢、售后处理不及时，判定为 "服务"，priority 通常为 3。
+        4. 多类别冲突时，按风险高低排序："质量" > "物流" > "服务" > "其他"。
+        5. 信息不足时判定为 "其他"，priority 为 3，riskLevel 为 "LOW"。
 
         示例：
-        输入: "收到草莓有霉点还有酸味"
-        输出: {"category":"质量","priority":1,"summary":"建议立即核查批次质检与仓储记录，并优先联系用户处理。"}
+        输入："收到草莓有霉点，还有酸味"
+        输出：{"category":"质量","priority":1,"riskLevel":"HIGH","summary":"建议立即核查批次质检与仓储记录，并优先联系用户处理。"}
 
-        输入: "快递晚到两天，包装破损"
-        输出: {"category":"物流","priority":2,"summary":"建议核对物流轨迹与签收节点，尽快给出补发或赔付方案。"}
+        输入："快递晚到两天，包装破损"
+        输出：{"category":"物流","priority":2,"riskLevel":"MEDIUM","summary":"建议核对物流轨迹和签收节点，尽快给出补发或赔付方案。"}
 
-        输入: "客服三天不回复"
-        输出: {"category":"服务","priority":3,"summary":"建议安排客服回访并建立限时处理机制，避免重复投诉。"}
+        输入："客服三天没有回复"
+        输出：{"category":"服务","priority":3,"riskLevel":"LOW","summary":"建议安排客服回访并明确处理时限，避免重复投诉。"}
+    chat:
+      enabled: ${DEEPSEEK_ENABLED:true}
+      api-key: ${DEEPSEEK_API_KEY:}
+      base-url: ${DEEPSEEK_BASE_URL:https://api.deepseek.com}
+      model: ${DEEPSEEK_MODEL:deepseek-chat}
+      temperature: ${DEEPSEEK_TEMPERATURE:0.1}
+      connect-timeout-ms: ${DEEPSEEK_CONNECT_TIMEOUT_MS:3000}
+      read-timeout-ms: ${DEEPSEEK_READ_TIMEOUT_MS:6000}
+      staff-limit-per-minute: ${DEEPSEEK_STAFF_LIMIT_PER_MINUTE:30}
+      user-limit-per-minute: ${DEEPSEEK_USER_LIMIT_PER_MINUTE:12}

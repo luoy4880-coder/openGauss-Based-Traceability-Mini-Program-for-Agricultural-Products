@@ -22,6 +22,9 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class InspectionReportImportService {
 
+    private static final int STATUS_PENDING = 0;
+    private static final int STATUS_PROCESSING = 1;
+
     private final ProductBatchService productBatchService;
     private final InspectionReportMapper inspectionReportMapper;
     private final ProductionRecordMapper productionRecordMapper;
@@ -170,9 +173,13 @@ public class InspectionReportImportService {
             existing.setTitle("复核异常质检报告 - " + reportNo);
             existing.setDescription(conclusion);
             existing.setPriority(1);
-            existing.setStatus(existing.getStatus() != null && existing.getStatus() == 2 ? 2 : 0);
+            existing.setStatus(existing.getStatus() != null && existing.getStatus() == STATUS_PROCESSING
+                    ? STATUS_PROCESSING
+                    : STATUS_PENDING);
             existing.setSourceType("REPORT_IMPORT");
             existing.setDueAt(LocalDateTime.now().plusHours(12));
+            existing.setCompletedByUserId(null);
+            existing.setCompletedAt(null);
             systemTaskMapper.update(existing);
             return false;
         }
@@ -184,7 +191,7 @@ public class InspectionReportImportService {
         task.setTitle("复核异常质检报告 - " + reportNo);
         task.setDescription(conclusion);
         task.setPriority(1);
-        task.setStatus(0);
+        task.setStatus(STATUS_PENDING);
         task.setAssigneeUserId(null);
         task.setClaimedAt(null);
         task.setCompletedByUserId(null);

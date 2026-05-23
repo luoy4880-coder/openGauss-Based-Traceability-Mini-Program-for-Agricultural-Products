@@ -1,0 +1,126 @@
+{
+  "base": {
+    "baseCode": "BASE-QI-RICE-001",
+    "baseName": "五常稻香标准化种植基地",
+    "managerName": "孙德昌",
+    "contactPhone": "13800010004",
+    "province": "黑龙江省",
+    "city": "哈尔滨市",
+    "district": "五常市",
+    "address": "民乐乡优质稻种植片区 6 号",
+    "acreage": 860.0,
+    "status": 1
+  },
+  "batch": {
+    "batchCode": "BATCH-QI-RICE-20260512-001",
+    "productName": "富硒大米",
+    "productCategory": "粮食类",
+    "plantingDate": "2025-10-02",
+    "expectedHarvestDate": "2026-05-15",
+    "actualHarvestDate": "2026-05-12",
+    "quantity": 18000,
+    "unit": "kg",
+    "batchStatus": 1,
+    "remark": "订单加工批次，适合演示收割、加工、仓配全链路。"
+  },
+  "itemGeneration": {
+    "quantity": 30
+  },
+  "productionRecords": [
+    {
+      "recordType": "育秧",
+      "operationTime": "2025-10-08T09:30:00",
+      "operatorName": "孙德昌",
+      "materialName": "优选稻种",
+      "dosage": "320 kg",
+      "content": "完成浸种催芽与秧盘育秧。",
+      "attachmentUrl": ""
+    },
+    {
+      "recordType": "田间管理",
+      "operationTime": "2025-12-16T08:50:00",
+      "operatorName": "马洪涛",
+      "materialName": "有机肥",
+      "dosage": "1500 kg",
+      "content": "返青期补充有机肥并巡检田块长势。",
+      "attachmentUrl": ""
+    },
+    {
+      "recordType": "收割",
+      "operationTime": "2026-05-12T06:20:00",
+      "operatorName": "孙德昌",
+      "materialName": "联合收割机",
+      "dosage": "2 台",
+      "content": "完成整块收割并运至烘干中心。",
+      "attachmentUrl": ""
+    },
+    {
+      "recordType": "加工包装",
+      "operationTime": "2026-05-12T15:00:00",
+      "operatorName": "马洪涛",
+      "materialName": "真空包装袋",
+      "dosage": "6000 个",
+      "content": "完成碾米、分级与 5kg 成品包装。",
+      "attachmentUrl": ""
+    }
+  ],
+  "logisticsRecords": [
+    {
+      "nodeType": "加工仓",
+      "nodeName": "成品仓出库",
+      "operationTime": "2026-05-12T18:10:00",
+      "operatorName": "马洪涛",
+      "contactPhone": "13800010004",
+      "location": "黑龙江省哈尔滨市五常市成品仓",
+      "temperature": "18C",
+      "humidity": "50%",
+      "attachmentUrl": "",
+      "remark": "打托缠膜后完成出库。"
+    },
+    {
+      "nodeType": "干线运输",
+      "nodeName": "五常至长春公路运输",
+      "operationTime": "2026-05-13T04:30:00",
+      "operatorName": "曹岩",
+      "contactPhone": "13800014001",
+      "location": "吉林省长春市二道区运输途中",
+      "temperature": "16C",
+      "humidity": "48%",
+      "attachmentUrl": "",
+      "remark": "包装完整，无受潮风险。"
+    },
+    {
+      "nodeType": "仓储",
+      "nodeName": "长春区域仓入库",
+      "operationTime": "2026-05-13T09:20:00",
+      "operatorName": "陶欣",
+      "contactPhone": "13800014002",
+      "location": "吉林省长春市二道区民生仓储中心",
+      "temperature": "17C",
+      "humidity": "45%",
+      "attachmentUrl": "",
+      "remark": "到仓称重正常，外箱完好。"
+    },
+    {
+      "nodeType": "零售配送",
+      "nodeName": "电商订单发货",
+      "operationTime": "2026-05-14T10:00:00",
+      "operatorName": "陶欣",
+      "contactPhone": "13800014002",
+      "location": "吉林省长春市净月区电商前置仓",
+      "temperature": "19C",
+      "humidity": "43%",
+      "attachmentUrl": "",
+      "remark": "已完成订单分拨与面单绑定。"
+    }
+  ],
+  "inspectionReport": {
+    "reportNo": "IR-QI-RICE-20260512-001",
+    "agencyName": "黑龙江粮油质量监督站",
+    "inspectorName": "吴海宁",
+    "inspectionTime": "2026-05-12T13:30:00",
+    "resultStatus": 1,
+    "conclusion": "水分、碎米率、重金属与富硒指标均符合标准。",
+    "reportFileName": "report-pass-sample.md"
+  }
+}

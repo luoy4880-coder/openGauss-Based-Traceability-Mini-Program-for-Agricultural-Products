@@ -7,7 +7,6 @@ Page({
     password: '',
     realName: '',
     phone: '',
-    companyName: '',
     submitting: false,
     loggedIn: false,
   },
@@ -48,16 +47,12 @@ Page({
     this.setData({ phone: (e.detail.value || '').trim() })
   },
 
-  onCompanyNameInput(e) {
-    this.setData({ companyName: (e.detail.value || '').trim() })
-  },
-
   goToProfile() {
     wx.switchTab({ url: '/pages/profile/index' })
   },
 
   submit() {
-    const { mode, username, password, realName, phone, companyName } = this.data
+    const { mode, username, password, realName, phone } = this.data
 
     if (!username) {
       wx.showToast({ title: '请输入用户名', icon: 'none' })
@@ -65,10 +60,6 @@ Page({
     }
     if (!password) {
       wx.showToast({ title: '请输入密码', icon: 'none' })
-      return
-    }
-    if (mode === 'register' && !companyName) {
-      wx.showToast({ title: '请输入公司名称', icon: 'none' })
       return
     }
     if (mode === 'bind' && !wx.getStorageSync('token')) {
@@ -82,9 +73,7 @@ Page({
     const method = 'POST'
     const data = mode === 'login'
       ? { username, password }
-      : mode === 'register'
-        ? { username, password, realName, phone, companyName }
-        : { username, password, realName, phone }
+      : { username, password, realName, phone }
     const header = {}
 
     if (mode === 'bind') {

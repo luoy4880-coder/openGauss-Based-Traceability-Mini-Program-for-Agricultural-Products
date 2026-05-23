@@ -1,7 +1,6 @@
 package com.yujia.backend.controller;
 
 import com.yujia.backend.common.response.ApiResponse;
-import com.yujia.backend.dto.auth.BootstrapAdminRequest;
 import com.yujia.backend.dto.auth.BindAccountRequest;
 import com.yujia.backend.dto.auth.LoginRequest;
 import com.yujia.backend.dto.auth.ProfileUpdateRequest;
@@ -44,11 +43,6 @@ public class AuthController {
     @PostMapping("/bind")
     public ApiResponse<UserVO> bind(@Valid @RequestBody BindAccountRequest request) {
         return ApiResponse.success(authService.bindAccount(request));
-    }
-
-    @PostMapping("/bootstrap")
-    public ApiResponse<UserVO> bootstrap(@Valid @RequestBody BootstrapAdminRequest request) {
-        return ApiResponse.success(authService.bootstrapAdmin(request));
     }
 
     @GetMapping("/me")

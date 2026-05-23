@@ -1,14 +1,176 @@
-﻿<view class="page">
-  <view wx:if="{{loading}}" class="state-card yj-state-card"><view class="state-title">Loading trace details</view><view class="state-desc">Please wait while data is being fetched.</view></view>
-  <view wx:elif="{{errorMessage}}" class="state-card yj-state-card error"><view class="state-title">Load failed</view><view class="state-desc">{{errorMessage}}</view><button class="retry-btn yj-btn-danger" bindtap="retryLoad">Retry</button></view>
+<view class="page">
+  <view wx:if="{{loading}}" class="state-card yj-state-card">
+    <view class="state-title">正在加载溯源详情</view>
+    <view class="state-desc">请稍候，系统正在获取当前溯源信息。</view>
+  </view>
+
+  <view wx:elif="{{errorMessage}}" class="state-card yj-state-card error">
+    <view class="state-title">加载失败</view>
+    <view class="state-desc">{{errorMessage}}</view>
+    <button class="retry-btn yj-btn-danger" bindtap="retryLoad">重新加载</button>
+  </view>
+
   <block wx:elif="{{detail}}">
-    <view class="banner yj-banner {{detail.recallWarning ? 'danger yj-banner-danger' : 'safe yj-banner-safe'}}"><view class="banner-label">{{detail.recallWarning ? 'Recall warning' : 'Normal status'}}</view><view class="banner-title">{{detail.batchInfo.productName || 'Product'}}</view><view class="banner-desc">Batch: {{detail.batchInfo.batchCode || 'N/A'}} | Trace: {{detail.traceCode.traceId}}</view></view>
-    <view wx:if="{{summary}}" class="card yj-card ai-summary-card"><view class="card-title">AI Summary</view><view class="summary-head"><view class="summary-title">{{summary.summaryTitle}}</view><view class="summary-score">Trust {{summary.trustScore}}</view></view><view class="summary-text">{{summary.summaryText}}</view><view class="summary-tags"><view wx:for="{{summary.highlights}}" wx:key="*this" class="summary-tag">{{item}}</view></view><view class="summary-actions"><button class="mini-action-btn" bindtap="openQualityInterpretation">Quality View</button><button class="mini-action-btn" bindtap="openLogisticsTimeline">Logistics</button><button class="mini-action-btn plain" bindtap="saveCurrentFavorite">Collect</button></view></view>
-    <view wx:if="{{detail.verifyInfo}}" class="card yj-card verify-card {{detail.verifyInfo && detail.verifyInfo.abnormal ? 'verify-danger' : 'verify-safe'}}"><view class="card-title">Verification</view><view class="verify-title">{{detail.verifyInfo.verifyMessage}}</view><view class="field yj-field"><text class="label">Scan count</text><text class="value">#{{detail.verifyInfo.scanCount}}</text></view><view class="field yj-field"><text class="label">First scan</text><text class="value">{{detail.verifyInfo.firstScan ? 'Yes' : 'No'}}</text></view><view wx:if="{{detail.verifyInfo.riskMessage}}" class="verify-risk">{{detail.verifyInfo.riskMessage}}</view></view>
-    <view class="card yj-card chart-card"><view class="chart-head"><view class="card-title">Trace overview</view><view class="integrity-pill">Integrity {{integrityRate}}%</view></view><view class="chart-wrap"><view class="chart-item" wx:for="{{detailChart}}" wx:key="label"><view class="chart-value">{{item.value}}</view><view class="chart-bar-track"><view class="chart-bar-fill" style="height: {{item.percent}}%;"></view></view><view class="chart-label">{{item.label}}</view></view></view></view>
-    <view class="card yj-card"><view class="card-title">Base info</view><view class="field yj-field"><text class="label">Base name</text><text class="value">{{detail.baseInfo.baseName || 'N/A'}}</text></view><view class="field yj-field"><text class="label">Manager</text><text class="value">{{detail.baseInfo.managerName || 'N/A'}}</text></view><view class="field yj-field"><text class="label">Phone</text><text class="value">{{detail.baseInfo.contactPhone || 'N/A'}}</text></view><view class="field yj-field"><text class="label">Address</text><text class="value">{{detail.baseInfo.fullAddress}}</text></view></view>
-    <view class="card yj-card"><view class="card-title">Batch info</view><view class="field yj-field"><text class="label">Product</text><text class="value">{{detail.batchInfo.productName || 'N/A'}}</text></view><view class="field yj-field"><text class="label">Category</text><text class="value">{{detail.batchInfo.productCategory || 'N/A'}}</text></view><view class="field yj-field"><text class="label">Planting</text><text class="value">{{detail.batchInfo.plantingDateText}}</text></view><view class="field yj-field"><text class="label">Expected harvest</text><text class="value">{{detail.batchInfo.expectedHarvestDateText}}</text></view><view class="field yj-field"><text class="label">Actual harvest</text><text class="value">{{detail.batchInfo.actualHarvestDateText}}</text></view><view class="field yj-field"><text class="label">Quantity</text><text class="value">{{detail.batchInfo.quantity || 'N/A'}} {{detail.batchInfo.unit || ''}}</text></view></view>
-    <view class="card yj-card"><view class="card-title">Inspection reports</view><view wx:if="{{detail.inspectionReports.length === 0}}" class="empty-text">No inspection reports</view><view wx:for="{{detail.inspectionReports}}" wx:key="id" class="report-item"><view class="report-row"><text class="report-name">{{item.reportName}}</text><text class="report-badge">{{item.resultStatusLabel}}</text></view><view class="report-text">Agency: {{item.agencyName || 'N/A'}}</view><view class="report-text">Time: {{item.inspectionTimeText}}</view><view class="report-text">Conclusion: {{item.conclusion || 'N/A'}}</view><view class="report-actions"><text wx:if="{{item.reportUrl}}" class="report-preview-link" data-url="{{item.reportUrl}}" data-name="{{item.reportName}}" bindtap="previewReportFile">Preview report</text></view></view></view>
-    <view class="card yj-card"><view class="card-title">Logistics</view><view wx:if="{{!detail.logisticsRecords || detail.logisticsRecords.length === 0}}" class="empty-text">No logistics records</view><view wx:for="{{detail.logisticsRecords.slice(0, 2)}}" wx:key="id" class="timeline-item yj-timeline-item logistics-item"><view class="timeline-time">{{item.operationTimeText}}</view><view class="timeline-title">{{item.nodeType}} / {{item.nodeName}}</view><view class="timeline-desc">Location: {{item.location || 'N/A'}} | Operator: {{item.operatorName || 'N/A'}}</view><view class="timeline-desc">Temp/Humidity: {{item.temperature || '-'}} / {{item.humidity || '-'}}</view></view><view wx:if="{{detail.logisticsRecords.length > 2}}" class="report-actions"><text class="report-preview-link" bindtap="openLogisticsTimeline">查看完整物流时间线</text></view></view>
+    <view class="banner yj-banner {{detail.recallWarning ? 'danger yj-banner-danger' : 'safe yj-banner-safe'}}">
+      <view class="banner-label">{{detail.recallWarning ? '召回预警' : '状态正常'}}</view>
+      <view class="banner-title">{{detail.batchInfo.productName || '产品信息待完善'}}</view>
+      <view class="banner-desc">批次：{{detail.batchInfo.batchCode || '暂无'}} | 溯源码：{{detail.traceCode.traceId}}</view>
+    </view>
+
+    <view wx:if="{{summary}}" class="card yj-card ai-summary-card {{summary.themeClass}}">
+      <view class="summary-top">
+        <view class="summary-top-main">
+          <view class="summary-eyebrow">智能摘要</view>
+          <view class="summary-title">{{summary.summaryTitle}}</view>
+          <view class="summary-desc">{{summary.safetyDesc}}</view>
+        </view>
+        <view class="summary-status-chip">{{summary.safetyLabel}}</view>
+      </view>
+      <view class="summary-score-panel">
+        <view class="summary-score-copy">
+          <view class="summary-score-label">可信度评分</view>
+          <view class="summary-score-value">{{summary.trustScore}}</view>
+        </view>
+        <view class="summary-score-track">
+          <view class="summary-score-fill" style="width: {{summary.scorePercent}}%;"></view>
+        </view>
+      </view>
+      <view class="summary-section">
+        <view class="summary-section-title">摘要结论</view>
+        <view class="summary-text">{{summary.summaryText}}</view>
+      </view>
+      <view class="summary-section" wx:if="{{summary.highlights.length}}">
+        <view class="summary-section-title">关键信号</view>
+        <view class="summary-tags">
+          <view wx:for="{{summary.highlights}}" wx:key="*this" class="summary-tag">{{item}}</view>
+        </view>
+      </view>
+      <view class="summary-dual">
+        <view class="summary-info-block" wx:if="{{summary.riskTips.length}}">
+          <view class="summary-section-title">风险提醒</view>
+          <view wx:for="{{summary.riskTips}}" wx:key="*this" class="summary-list-item summary-list-risk">{{item}}</view>
+        </view>
+        <view class="summary-info-block" wx:if="{{summary.actionTips.length}}">
+          <view class="summary-section-title">建议动作</view>
+          <view wx:for="{{summary.actionTips}}" wx:key="*this" class="summary-list-item summary-list-action">{{item}}</view>
+        </view>
+      </view>
+      <view class="summary-actions">
+        <button class="mini-action-btn" bindtap="openQualityInterpretation">质量解读</button>
+        <button class="mini-action-btn" bindtap="openLogisticsTimeline">物流时间线</button>
+        <button class="mini-action-btn" bindtap="openAiQa">AI问答</button>
+        <button class="mini-action-btn plain" bindtap="toggleCurrentFavorite">{{isFavorite ? '取消收藏' : '加入收藏'}}</button>
+      </view>
+    </view>
+
+    <view wx:if="{{detail.verifyInfo}}" class="card yj-card verify-card {{detail.verifyInfo && detail.verifyInfo.abnormal ? 'verify-danger' : 'verify-safe'}}">
+      <view class="card-title">验真结果</view>
+      <view class="verify-title">{{detail.verifyInfo.verifyMessage}}</view>
+      <view class="field yj-field">
+        <text class="label">扫码次数</text>
+        <text class="value">#{{detail.verifyInfo.scanCount}}</text>
+      </view>
+      <view class="field yj-field">
+        <text class="label">是否首次扫码</text>
+        <text class="value">{{detail.verifyInfo.firstScan ? '是' : '否'}}</text>
+      </view>
+      <view wx:if="{{detail.verifyInfo.riskMessage}}" class="verify-risk">{{detail.verifyInfo.riskMessage}}</view>
+    </view>
+
+    <view class="card yj-card chart-card">
+      <view class="chart-head">
+        <view class="card-title">溯源概览</view>
+        <view class="integrity-pill">完整度 {{integrityRate}}%</view>
+      </view>
+      <view class="chart-wrap">
+        <view class="chart-item" wx:for="{{detailChart}}" wx:key="label">
+          <view class="chart-value">{{item.value}}</view>
+          <view class="chart-bar-track">
+            <view class="chart-bar-fill" style="height: {{item.percent}}%;"></view>
+          </view>
+          <view class="chart-label">{{item.label}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="card yj-card">
+      <view class="card-title">基地信息</view>
+      <view class="field yj-field">
+        <text class="label">基地名称</text>
+        <text class="value">{{detail.baseInfo.baseName || '暂无'}}</text>
+      </view>
+      <view class="field yj-field">
+        <text class="label">负责人</text>
+        <text class="value">{{detail.baseInfo.managerName || '暂无'}}</text>
+      </view>
+      <view class="field yj-field">
+        <text class="label">联系电话</text>
+        <text class="value">{{detail.baseInfo.contactPhone || '暂无'}}</text>
+      </view>
+      <view class="field yj-field">
+        <text class="label">基地地址</text>
+        <text class="value">{{detail.baseInfo.fullAddress || '暂无'}}</text>
+      </view>
+    </view>
+
+    <view class="card yj-card">
+      <view class="card-title">批次信息</view>
+      <view class="field yj-field">
+        <text class="label">产品名称</text>
+        <text class="value">{{detail.batchInfo.productName || '暂无'}}</text>
+      </view>
+      <view class="field yj-field">
+        <text class="label">产品品类</text>
+        <text class="value">{{detail.batchInfo.productCategory || '暂无'}}</text>
+      </view>
+      <view class="field yj-field">
+        <text class="label">种植日期</text>
+        <text class="value">{{detail.batchInfo.plantingDateText}}</text>
+      </view>
+      <view class="field yj-field">
+        <text class="label">预计采收</text>
+        <text class="value">{{detail.batchInfo.expectedHarvestDateText}}</text>
+      </view>
+      <view class="field yj-field">
+        <text class="label">实际采收</text>
+        <text class="value">{{detail.batchInfo.actualHarvestDateText}}</text>
+      </view>
+      <view class="field yj-field">
+        <text class="label">数量</text>
+        <text class="value">{{detail.batchInfo.quantity || '暂无'}} {{detail.batchInfo.unit || ''}}</text>
+      </view>
+    </view>
+
+    <view class="card yj-card">
+      <view class="card-title">质检报告</view>
+      <view wx:if="{{detail.inspectionReports.length === 0}}" class="empty-text">暂无质检报告</view>
+      <view wx:for="{{detail.inspectionReports}}" wx:key="id" class="report-item">
+        <view class="report-row">
+          <text class="report-name">{{item.reportName}}</text>
+          <text class="report-badge">{{item.resultStatusLabel}}</text>
+        </view>
+        <view class="report-text">检测机构：{{item.agencyName || '暂无'}}</view>
+        <view class="report-text">检测时间：{{item.inspectionTimeText}}</view>
+        <view class="report-text">检测结论：{{item.conclusion || '暂无'}}</view>
+        <view class="report-actions">
+          <text wx:if="{{item.reportUrl}}" class="report-preview-link" data-url="{{item.reportUrl}}" data-name="{{item.reportName}}" bindtap="previewReportFile">查看报告</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="card yj-card">
+      <view class="card-title">物流信息</view>
+      <view wx:if="{{!detail.logisticsRecords || detail.logisticsRecords.length === 0}}" class="empty-text">暂无物流记录</view>
+      <view wx:for="{{detail.logisticsRecords.slice(0, 2)}}" wx:key="id" class="timeline-item yj-timeline-item logistics-item">
+        <view class="timeline-time">{{item.operationTimeText}}</view>
+        <view class="timeline-title">{{item.nodeType}} / {{item.nodeName}}</view>
+        <view class="timeline-desc">地点：{{item.location || '暂无'}}</view>
+        <view class="timeline-desc">操作人：{{item.operatorName || '暂无'}}</view>
+        <view class="timeline-desc">温湿度：{{item.temperature || '-'}} / {{item.humidity || '-'}}</view>
+      </view>
+      <view wx:if="{{detail.logisticsRecords.length > 2}}" class="report-actions">
+        <text class="report-preview-link" bindtap="openLogisticsTimeline">查看完整物流时间线</text>
+      </view>
+    </view>
   </block>
 </view>

@@ -1,12 +1,12 @@
 <view class="page">
   <view class="feedback-header">
     <view class="title">意见反馈</view>
-    <view class="subtitle">提交使用问题或优化建议。</view>
+    <view class="subtitle">提交使用问题、商品投诉、物流异常或功能建议</view>
   </view>
 
   <view class="login-tip yj-card" wx:if="{{!loggedIn}}">
-    <view class="tip-title">需要登录后提交</view>
-    <view class="tip-desc">请先到“我的”页微信登录，再回来提交反馈。</view>
+    <view class="tip-title">登录后才能提交反馈</view>
+    <view class="tip-desc">请先到“我的”页面登录，再回来继续提交。</view>
     <button class="login-btn yj-btn-primary" bindtap="goToLogin">去登录</button>
   </view>
 
@@ -22,23 +22,23 @@
     </view>
 
     <view class="form-item">
-      <view class="label">关联已查询批次（可选）</view>
+      <view class="label">关联最近查询记录（可选）</view>
       <picker bindchange="onTraceChange" value="{{traceIndex}}" range="{{traceOptions}}" range-key="productName">
         <view class="picker-box">
-          <text wx:if="{{traceIndex < 0}}">请选择您查询过的批次后再反馈</text>
+          <text wx:if="{{traceIndex < 0}}">可直接提交，也可关联最近查过的商品</text>
           <text wx:else>{{traceOptions[traceIndex].productName}} / {{traceOptions[traceIndex].batchCode}}</text>
           <text class="arrow">▼</text>
         </view>
       </picker>
-      <view class="word-count" wx:if="{{traceOptions.length === 0}}">请先查询过商品后，再回来选择对应批次。</view>
+      <view class="word-count" wx:if="{{traceOptions.length === 0}}">当前还没有查询记录，也可以直接提交反馈。</view>
     </view>
 
     <view class="form-item">
       <view class="label">反馈内容</view>
-      <textarea 
-        class="content-input yj-textarea" 
-        placeholder="请详细描述您的问题或建议（至少5个字）" 
-        bindinput="onContentInput" 
+      <textarea
+        class="content-input yj-textarea"
+        placeholder="请详细描述问题或建议，至少 5 个字"
+        bindinput="onContentInput"
         value="{{content}}"
         maxlength="500"
       ></textarea>
@@ -47,17 +47,17 @@
 
     <view class="form-item">
       <view class="label">联系方式（可选）</view>
-      <input 
-        class="contact-input yj-input" 
-        placeholder="请输入您的手机号或邮箱，方便我们联系您" 
-        bindinput="onContactInput" 
+      <input
+        class="contact-input yj-input"
+        placeholder="请输入手机号或邮箱，方便我们联系您"
+        bindinput="onContactInput"
         value="{{contact}}"
       />
     </view>
 
-    <button 
-      class="submit-btn {{!content || content.length < 5 ? 'disabled' : ''}}" 
-      bindtap="submitFeedback" 
+    <button
+      class="submit-btn {{!content || content.length < 5 ? 'disabled' : ''}}"
+      bindtap="submitFeedback"
       loading="{{submitting}}"
       disabled="{{submitting || !content || content.length < 5}}"
     >
@@ -66,7 +66,7 @@
   </view>
 
   <view class="my-feedback yj-card" wx:if="{{loggedIn}}">
-    <view class="my-title">我的最近反馈</view>
+    <view class="my-title">我最近的反馈</view>
     <view class="my-loading" wx:if="{{loadingMyFeedback}}">加载中...</view>
     <view class="my-empty" wx:if="{{!loadingMyFeedback && myFeedback.length === 0}}">暂无反馈记录</view>
     <view wx:for="{{myFeedback}}" wx:key="id" class="my-item">

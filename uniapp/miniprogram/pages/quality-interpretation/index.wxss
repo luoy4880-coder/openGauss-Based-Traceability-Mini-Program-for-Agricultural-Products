@@ -1,1 +1,48 @@
+.page {
+  min-height: 100vh;
+  padding: 28rpx;
+  box-sizing: border-box;
+  background:
+    radial-gradient(circle at top left, rgba(116, 156, 96, 0.14), transparent 28%),
+    linear-gradient(180deg, #f8f4ec 0%, #f2eadb 100%);
+}
 
+.hero,
+.card {
+  margin-bottom: 22rpx;
+}
+
+.hero-title {
+  font-size: 38rpx;
+  font-weight: 700;
+  color: #234031;
+}
+
+.hero-score {
+  margin-top: 14rpx;
+  display: inline-block;
+  padding: 10rpx 20rpx;
+  border-radius: 999rpx;
+  background: #edf6e7;
+  color: #4e6c35;
+  font-size: 24rpx;
+}
+
+.hero-desc,
+.card-text,
+.list-item,
+.empty-text {
+  margin-top: 14rpx;
+  line-height: 1.8;
+  color: var(--yj-text-secondary);
+  font-size: 28rpx;
+}
+
+.tag-item {
+  margin-top: 14rpx;
+  padding: 16rpx 18rpx;
+  border-radius: 20rpx;
+  background: #f7fbf2;
+  color: #38532a;
+  font-size: 26rpx;
+}

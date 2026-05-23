@@ -7,25 +7,33 @@
     linear-gradient(180deg, #f8f4ec 0%, #f3ecdf 100%);
 }
 
+.hero,
 .card {
   margin-bottom: 20rpx;
 }
 
-.timeline-time {
-  font-size: 24rpx;
-  color: var(--yj-text-tertiary);
-}
-
-.timeline-title {
-  margin-top: 10rpx;
-  font-size: 32rpx;
+.hero-title {
+  font-size: 36rpx;
   font-weight: 700;
   color: var(--yj-text-main);
 }
 
+.hero-desc,
+.timeline-time,
 .timeline-desc {
   margin-top: 10rpx;
   font-size: 26rpx;
   line-height: 1.7;
   color: var(--yj-text-secondary);
+}
+
+.timeline-title {
+  margin-top: 12rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--yj-text-main);
+}
+
+.timeline-actions {
+  margin-top: 18rpx;
 }

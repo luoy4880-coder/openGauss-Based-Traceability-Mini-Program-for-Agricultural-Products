@@ -1,7 +1,7 @@
 <view class="page">
   <view class="hero">
     <view class="hero-title">农产品溯源查询</view>
-    <view class="hero-desc">输入追溯码或扫码，快速查看生产与检验信息。</view>
+    <view class="hero-desc">输入追溯码或直接扫码，快速查看生产、质检与物流信息。</view>
   </view>
 
   <view class="query-panel yj-card">
@@ -20,16 +20,6 @@
     </view>
   </view>
 
-  <view class="panel yj-card">
-    <view class="panel-head">
-      <view class="panel-title">快捷入口</view>
-    </view>
-    <view class="action-row">
-      <button class="ghost-btn yj-btn-ghost" bindtap="goToCollection">我的收藏</button>
-      <button class="ghost-btn yj-btn-ghost" bindtap="goToFeedback">意见反馈</button>
-    </view>
-  </view>
-
   <view class="panel yj-card" wx:if="{{history.length}}">
     <view class="panel-head">
       <view class="panel-title">最近查询</view>
@@ -39,13 +29,14 @@
       wx:for="{{history}}"
       wx:key="traceId"
       data-trace-id="{{item.traceId}}"
+      data-sign-value="{{item.signValue}}"
       bindtap="useHistoryTrace"
     >
       <view class="history-main">
         <view class="history-name">{{item.productName}}</view>
         <view class="history-code">{{item.traceId}}</view>
       </view>
-      <view class="history-arrow">查看 ›</view>
+      <view class="history-arrow">查看详情</view>
     </view>
   </view>
 </view>

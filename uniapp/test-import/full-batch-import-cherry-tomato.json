@@ -1,0 +1,126 @@
+{
+  "base": {
+    "baseCode": "BASE-QI-CHERRY-001",
+    "baseName": "寿光绿源智慧农场",
+    "managerName": "王建国",
+    "contactPhone": "13800010001",
+    "province": "山东省",
+    "city": "潍坊市",
+    "district": "寿光市",
+    "address": "稻田镇现代农业产业园 8 号",
+    "acreage": 320.0,
+    "status": 1
+  },
+  "batch": {
+    "batchCode": "BATCH-QI-TOM-20260512-001",
+    "productName": "圣女果",
+    "productCategory": "茄果类",
+    "plantingDate": "2026-02-10",
+    "expectedHarvestDate": "2026-05-15",
+    "actualHarvestDate": "2026-05-12",
+    "quantity": 5600,
+    "unit": "kg",
+    "batchStatus": 1,
+    "remark": "温室滴灌种植批次，适合演示标准全流程导入。"
+  },
+  "itemGeneration": {
+    "quantity": 24
+  },
+  "productionRecords": [
+    {
+      "recordType": "育苗定植",
+      "operationTime": "2026-02-12T09:00:00",
+      "operatorName": "王建国",
+      "materialName": "樱桃番茄种苗",
+      "dosage": "18000 株",
+      "content": "完成温室番茄育苗定植，苗情整齐，建立批次标识。",
+      "attachmentUrl": ""
+    },
+    {
+      "recordType": "追肥管理",
+      "operationTime": "2026-03-05T08:30:00",
+      "operatorName": "刘德海",
+      "materialName": "水溶肥 20-20-20",
+      "dosage": "25 kg",
+      "content": "滴灌追肥一次，促进坐果与均匀生长。",
+      "attachmentUrl": ""
+    },
+    {
+      "recordType": "病虫防治",
+      "operationTime": "2026-04-06T07:40:00",
+      "operatorName": "刘德海",
+      "materialName": "黄板与生物菌剂",
+      "dosage": "黄板 60 张",
+      "content": "开展白粉虱绿色防控并补充生物菌剂喷施。",
+      "attachmentUrl": ""
+    },
+    {
+      "recordType": "采收分拣",
+      "operationTime": "2026-05-12T05:10:00",
+      "operatorName": "王建国",
+      "materialName": "人工分拣筐",
+      "dosage": "120 个",
+      "content": "清晨分批采收并完成一级果分拣与装箱。",
+      "attachmentUrl": ""
+    }
+  ],
+  "logisticsRecords": [
+    {
+      "nodeType": "采后处理",
+      "nodeName": "分拣包装中心出库",
+      "operationTime": "2026-05-12T15:40:00",
+      "operatorName": "王建国",
+      "contactPhone": "13800010001",
+      "location": "山东省潍坊市寿光市分拣包装中心",
+      "temperature": "12C",
+      "humidity": "68%",
+      "attachmentUrl": "",
+      "remark": "完成分级装箱并贴码出库。"
+    },
+    {
+      "nodeType": "干线运输",
+      "nodeName": "潍坊至济南冷链运输",
+      "operationTime": "2026-05-12T20:10:00",
+      "operatorName": "徐永强",
+      "contactPhone": "13800011001",
+      "location": "山东省济南市历城区冷链途中",
+      "temperature": "8C",
+      "humidity": "72%",
+      "attachmentUrl": "",
+      "remark": "车辆定位正常，中途未开厢。"
+    },
+    {
+      "nodeType": "仓储",
+      "nodeName": "济南区域仓入库",
+      "operationTime": "2026-05-13T01:20:00",
+      "operatorName": "赵彤",
+      "contactPhone": "13800011002",
+      "location": "山东省济南市历城区生鲜仓",
+      "temperature": "6C",
+      "humidity": "70%",
+      "attachmentUrl": "",
+      "remark": "完成到仓抽样与入库扫描。"
+    },
+    {
+      "nodeType": "门店配送",
+      "nodeName": "社区门店上架",
+      "operationTime": "2026-05-13T08:40:00",
+      "operatorName": "郭峰",
+      "contactPhone": "13800011003",
+      "location": "山东省济南市市中区阳光社区店",
+      "temperature": "10C",
+      "humidity": "65%",
+      "attachmentUrl": "",
+      "remark": "门店签收后完成陈列。"
+    }
+  ],
+  "inspectionReport": {
+    "reportNo": "IR-QI-TOM-20260512-001",
+    "agencyName": "山东农检中心",
+    "inspectorName": "陈思远",
+    "inspectionTime": "2026-05-12T11:30:00",
+    "resultStatus": 1,
+    "conclusion": "农残、重金属与感官指标均符合标准，可正常销售。",
+    "reportFileName": "report-pass-sample.md"
+  }
+}

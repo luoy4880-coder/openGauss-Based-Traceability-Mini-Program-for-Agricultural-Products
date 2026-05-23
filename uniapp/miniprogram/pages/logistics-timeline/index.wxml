@@ -1,1 +1,37 @@
-﻿<view class="page"><view wx:if="{{list.length === 0}}" class="state-card yj-state-card"><view class="state-title">暂无物流记录</view><view class="state-desc">当前没有可展示的流通节点。</view></view><view wx:for="{{list}}" wx:key="id" class="card yj-card"><view class="timeline-time">{{item.operationTimeText}}</view><view class="timeline-title">{{item.nodeType}} / {{item.nodeName}}</view><view class="timeline-desc">地点：{{item.location || '未填写'}}</view><view class="timeline-desc">操作人：{{item.operatorName || '未填写'}}</view><view class="timeline-desc">温湿度：{{item.temperature || '-'}} / {{item.humidity || '-'}}</view><view wx:if="{{item.remark}}" class="timeline-desc">备注：{{item.remark}}</view></view></view>
+<view class="page">
+  <view wx:if="{{loading}}" class="state-card yj-state-card">
+    <view class="state-title">正在加载物流时间线</view>
+    <view class="state-desc">请稍候，系统正在整理运输与流通节点。</view>
+  </view>
+
+  <view wx:elif="{{errorMessage}}" class="state-card yj-state-card error">
+    <view class="state-title">加载失败</view>
+    <view class="state-desc">{{errorMessage}}</view>
+    <button class="retry-btn yj-btn-danger" bindtap="retryLoad">重新加载</button>
+  </view>
+
+  <block wx:else>
+    <view class="hero yj-card">
+      <view class="hero-title">{{productName}}</view>
+      <view class="hero-desc">批次：{{batchCode || '暂无'}} | 节点数：{{list.length}}</view>
+    </view>
+
+    <view wx:if="{{list.length === 0}}" class="state-card yj-state-card">
+      <view class="state-title">暂无物流记录</view>
+      <view class="state-desc">当前没有可展示的流通节点。</view>
+    </view>
+
+    <view wx:for="{{list}}" wx:key="id" class="card yj-card">
+      <view class="timeline-time">{{item.operationTimeText}}</view>
+      <view class="timeline-title">{{item.nodeType}} / {{item.nodeName}}</view>
+      <view class="timeline-desc">地点：{{item.location || '未填写'}}</view>
+      <view class="timeline-desc">操作人：{{item.operatorName || '未填写'}}</view>
+      <view class="timeline-desc">联系电话：{{item.contactPhone || '未填写'}}</view>
+      <view class="timeline-desc">温湿度：{{item.temperature || '-'}} / {{item.humidity || '-'}}</view>
+      <view wx:if="{{item.remark}}" class="timeline-desc">备注：{{item.remark}}</view>
+      <view wx:if="{{item.attachmentFullUrl}}" class="timeline-actions">
+        <text class="report-preview-link" data-url="{{item.attachmentFullUrl}}" data-name="{{item.nodeName}}" bindtap="previewAttachment">查看附件</text>
+      </view>
+    </view>
+  </block>
+</view>

@@ -1,0 +1,126 @@
+{
+  "base": {
+    "baseCode": "BASE-QI-STRAWBERRY-001",
+    "baseName": "丹东莓香种植合作社",
+    "managerName": "赵海峰",
+    "contactPhone": "13800010003",
+    "province": "辽宁省",
+    "city": "丹东市",
+    "district": "东港市",
+    "address": "椅圈镇草莓采后处理中心",
+    "acreage": 210.0,
+    "status": 1
+  },
+  "batch": {
+    "batchCode": "BATCH-QI-STR-20260512-001",
+    "productName": "草莓",
+    "productCategory": "浆果类",
+    "plantingDate": "2026-01-18",
+    "expectedHarvestDate": "2026-05-10",
+    "actualHarvestDate": "2026-05-12",
+    "quantity": 3100,
+    "unit": "kg",
+    "batchStatus": 1,
+    "remark": "包含质检异常与冷链波动场景，用于测试风险任务自动生成。"
+  },
+  "itemGeneration": {
+    "quantity": 16
+  },
+  "productionRecords": [
+    {
+      "recordType": "定植",
+      "operationTime": "2026-01-20T10:00:00",
+      "operatorName": "赵海峰",
+      "materialName": "章姬草莓苗",
+      "dosage": "12500 株",
+      "content": "高架基质槽定植完成，开始温湿度联控。",
+      "attachmentUrl": ""
+    },
+    {
+      "recordType": "施肥",
+      "operationTime": "2026-02-28T08:10:00",
+      "operatorName": "赵海峰",
+      "materialName": "腐殖酸水溶肥",
+      "dosage": "18 kg",
+      "content": "花期前补肥一次，提高坐果率。",
+      "attachmentUrl": ""
+    },
+    {
+      "recordType": "品质管理",
+      "operationTime": "2026-04-15T09:00:00",
+      "operatorName": "于佳宁",
+      "materialName": "糖度抽检工具",
+      "dosage": "3 套",
+      "content": "采前抽检糖度与果径，执行分级标准。",
+      "attachmentUrl": ""
+    },
+    {
+      "recordType": "采收",
+      "operationTime": "2026-05-12T05:00:00",
+      "operatorName": "于佳宁",
+      "materialName": "冷藏周转箱",
+      "dosage": "110 个",
+      "content": "草莓分棚采收并立即入冷库预冷。",
+      "attachmentUrl": ""
+    }
+  ],
+  "logisticsRecords": [
+    {
+      "nodeType": "采后处理",
+      "nodeName": "预冷分拣中心出库",
+      "operationTime": "2026-05-12T08:10:00",
+      "operatorName": "于佳宁",
+      "contactPhone": "13800010003",
+      "location": "辽宁省丹东市东港市草莓预冷中心",
+      "temperature": "2C",
+      "humidity": "88%",
+      "attachmentUrl": "",
+      "remark": "按等级分筐包装并打包贴码。"
+    },
+    {
+      "nodeType": "干线运输",
+      "nodeName": "丹东至沈阳冷链运输",
+      "operationTime": "2026-05-12T12:50:00",
+      "operatorName": "董鹏",
+      "contactPhone": "13800013001",
+      "location": "辽宁省沈阳市苏家屯区运输途中",
+      "temperature": "10C",
+      "humidity": "86%",
+      "attachmentUrl": "",
+      "remark": "途中冷机出现异常波动，温度偏高。"
+    },
+    {
+      "nodeType": "仓储",
+      "nodeName": "沈阳中转冷库入库",
+      "operationTime": "2026-05-12T17:40:00",
+      "operatorName": "林爽",
+      "contactPhone": "13800013002",
+      "location": "辽宁省沈阳市苏家屯区中转冷库",
+      "temperature": "11C",
+      "humidity": "84%",
+      "attachmentUrl": "",
+      "remark": "入库抽检发现部分箱体表面温度偏高。"
+    },
+    {
+      "nodeType": "门店配送",
+      "nodeName": "精品门店签收",
+      "operationTime": "2026-05-13T07:30:00",
+      "operatorName": "林爽",
+      "contactPhone": "13800013002",
+      "location": "辽宁省沈阳市和平区精品水果店",
+      "temperature": "12C",
+      "humidity": "82%",
+      "attachmentUrl": "",
+      "remark": "签收后反馈部分果面状态不稳，触发复检。"
+    }
+  ],
+  "inspectionReport": {
+    "reportNo": "IR-QI-STR-20260512-001",
+    "agencyName": "辽宁省食品质量检验院",
+    "inspectorName": "冯超",
+    "inspectionTime": "2026-05-12T09:00:00",
+    "resultStatus": 0,
+    "conclusion": "复检发现个别包装箱冷链波动明显，存在品质衰减风险，建议立即复核并暂停流通。",
+    "reportFileName": "report-fail-sample.md"
+  }
+}

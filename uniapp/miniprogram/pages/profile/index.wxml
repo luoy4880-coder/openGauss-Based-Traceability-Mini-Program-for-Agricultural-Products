@@ -1,17 +1,78 @@
 <view class="page">
   <view class="user-card yj-user-card">
-    <view class="user-avatar yj-user-avatar"><view class="avatar-text">{{isLoggedIn ? '已' : '游'}}</view></view>
-    <view class="user-info"><view class="user-name">{{displayName}}</view><view class="user-desc">{{displayDesc}}</view></view>
+    <view class="user-avatar yj-user-avatar">
+      <view class="avatar-text">{{isLoggedIn ? '已' : '游客'}}</view>
+    </view>
+    <view class="user-info">
+      <view class="user-name">{{displayName}}</view>
+      <view class="user-desc">{{displayDesc}}</view>
+    </view>
     <button wx:if="{{!isLoggedIn}}" class="login-btn" bindtap="handleLogin">微信登录</button>
     <button wx:if="{{isLoggedIn}}" class="logout-btn" bindtap="handleLogout">退出</button>
   </view>
+
   <view class="main-section">
-    <view class="feature-card yj-feature-card" wx:if="{{!isLoggedIn}}" bindtap="goToAccountLogin"><view class="feature-icon yj-feature-icon"><text class="icon">🔐</text></view><view class="feature-content"><view class="feature-title">账号密码登录</view><view class="feature-desc">使用用户名与密码登录</view></view><view class="feature-arrow">→</view></view>
-    <view class="feature-card yj-feature-card" wx:if="{{!isLoggedIn}}" bindtap="goToRegister"><view class="feature-icon yj-feature-icon"><text class="icon">📝</text></view><view class="feature-content"><view class="feature-title">注册账号</view><view class="feature-desc">注册后可绑定微信并同步记录</view></view><view class="feature-arrow">→</view></view>
-    <view class="feature-card yj-feature-card" wx:if="{{isLoggedIn && loginType === 'wechat'}}" bindtap="goToBindAccount"><view class="feature-icon yj-feature-icon"><text class="icon">🔗</text></view><view class="feature-content"><view class="feature-title">绑定账号</view><view class="feature-desc">给当前微信登录绑定用户名密码</view></view><view class="feature-arrow">→</view></view>
-    <view class="feature-card yj-feature-card" bindtap="goToHistory"><view class="feature-icon yj-feature-icon"><text class="icon">🕘</text></view><view class="feature-content"><view class="feature-title">查询记录</view><view class="feature-desc">{{history.length}} 条历史记录</view></view><view class="feature-arrow">→</view></view>
-    <view class="feature-card yj-feature-card" bindtap="goToCollection"><view class="feature-icon yj-feature-icon"><text class="icon">⭐</text></view><view class="feature-content"><view class="feature-title">我的收藏</view><view class="feature-desc">{{favoriteCount}} 个已收藏溯源码</view></view><view class="feature-arrow">→</view></view>
-    <view class="feature-card yj-feature-card" bindtap="goToMyFeedback"><view class="feature-icon yj-feature-icon"><text class="icon">📋</text></view><view class="feature-content"><view class="feature-title">反馈进度</view><view class="feature-desc">{{myFeedbackCount}} 条反馈记录</view></view><view class="feature-arrow">→</view></view>
-    <view class="feature-card yj-feature-card" bindtap="goToFeedbackPage"><view class="feature-icon yj-feature-icon"><text class="icon">💬</text></view><view class="feature-content"><view class="feature-title">意见反馈</view><view class="feature-desc">{{isLoggedIn ? '提交并跟踪处理结果' : '未登录时仅本地保存反馈'}}</view></view><view class="feature-arrow">→</view></view>
+    <view class="feature-card yj-feature-card" wx:if="{{!isLoggedIn}}" bindtap="goToAccountLogin">
+      <view class="feature-icon yj-feature-icon"><text class="icon">账</text></view>
+      <view class="feature-content">
+        <view class="feature-title">账号密码登录</view>
+        <view class="feature-desc">使用用户名与密码登录</view>
+      </view>
+      <view class="feature-arrow">→</view>
+    </view>
+
+    <view class="feature-card yj-feature-card" wx:if="{{!isLoggedIn}}" bindtap="goToRegister">
+      <view class="feature-icon yj-feature-icon"><text class="icon">注</text></view>
+      <view class="feature-content">
+        <view class="feature-title">注册账号</view>
+        <view class="feature-desc">注册后可绑定微信并同步记录</view>
+      </view>
+      <view class="feature-arrow">→</view>
+    </view>
+
+    <view class="feature-card yj-feature-card" wx:if="{{isLoggedIn && loginType === 'wechat'}}" bindtap="goToBindAccount">
+      <view class="feature-icon yj-feature-icon"><text class="icon">绑</text></view>
+      <view class="feature-content">
+        <view class="feature-title">绑定账号</view>
+        <view class="feature-desc">给当前微信登录绑定用户名密码</view>
+      </view>
+      <view class="feature-arrow">→</view>
+    </view>
+
+    <view class="feature-card yj-feature-card" bindtap="goToHistory">
+      <view class="feature-icon yj-feature-icon"><text class="icon">查</text></view>
+      <view class="feature-content">
+        <view class="feature-title">查询记录</view>
+        <view class="feature-desc">{{history.length}} 条历史记录</view>
+      </view>
+      <view class="feature-arrow">→</view>
+    </view>
+
+    <view class="feature-card yj-feature-card" bindtap="goToCollection">
+      <view class="feature-icon yj-feature-icon"><text class="icon">藏</text></view>
+      <view class="feature-content">
+        <view class="feature-title">我的收藏</view>
+        <view class="feature-desc">{{favoriteCount}} 个已收藏溯源码</view>
+      </view>
+      <view class="feature-arrow">→</view>
+    </view>
+
+    <view class="feature-card yj-feature-card" bindtap="goToMyFeedback">
+      <view class="feature-icon yj-feature-icon"><text class="icon">反</text></view>
+      <view class="feature-content">
+        <view class="feature-title">反馈进度</view>
+        <view class="feature-desc">{{myFeedbackCount}} 条反馈记录</view>
+      </view>
+      <view class="feature-arrow">→</view>
+    </view>
+
+    <view class="feature-card yj-feature-card" bindtap="goToFeedbackPage">
+      <view class="feature-icon yj-feature-icon"><text class="icon">意</text></view>
+      <view class="feature-content">
+        <view class="feature-title">意见反馈</view>
+        <view class="feature-desc">{{isLoggedIn ? '提交并跟踪处理结果' : '未登录时仅本地保存反馈'}}</view>
+      </view>
+      <view class="feature-arrow">→</view>
+    </view>
   </view>
 </view>

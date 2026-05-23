@@ -24,8 +24,10 @@ public class RiskOverviewService {
     private final ScanLogMapper scanLogMapper;
     private final UserFeedbackMapper userFeedbackMapper;
     private final CompanyScopeService companyScopeService;
+    private final SystemTaskService systemTaskService;
 
     public RiskOverviewVO overview() {
+        systemTaskService.refreshAutoTasks();
         Long companyId = companyScopeService.currentCompanyScopeOrNull();
 
         List<BatchRiskHolder> batchRiskHolders = productBatchService.list(null, null, null).stream()
@@ -52,9 +54,9 @@ public class RiskOverviewService {
 
         int avgCompleteness = batchRisks.isEmpty() ? 0
                 : (int) Math.round(batchRisks.stream()
-                        .mapToInt(RiskBatchVO::getCompletenessScore)
-                        .average()
-                        .orElse(0));
+                .mapToInt(RiskBatchVO::getCompletenessScore)
+                .average()
+                .orElse(0));
 
         List<RiskBatchVO> lowCompleteness = batchRisks.stream()
                 .filter(batch -> batch.getCompletenessScore() < 70)

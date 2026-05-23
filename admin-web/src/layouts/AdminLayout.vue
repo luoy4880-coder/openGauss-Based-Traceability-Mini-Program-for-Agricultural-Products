@@ -10,10 +10,28 @@
       </div>
 
       <nav class="menu-list">
-        <RouterLink v-for="item in visibleMenuItems" :key="item.path" class="menu-item" :to="item.path">
-          <span class="menu-icon">{{ item.icon }}</span>
-          {{ item.label }}
-        </RouterLink>
+        <el-menu
+          :default-active="activeMenuPath"
+          :default-openeds="openedGroupIndexes"
+          class="admin-menu"
+          router
+        >
+          <el-sub-menu
+            v-for="(group, groupIndex) in visibleMenuGroups"
+            :key="group.label"
+            :index="String(groupIndex)"
+          >
+            <template #title>
+              <span class="menu-icon">{{ group.icon }}</span>
+              <span>{{ group.label }}</span>
+            </template>
+
+            <el-menu-item v-for="item in group.children" :key="item.path" :index="item.path">
+              <span class="menu-icon menu-icon-child">{{ item.icon }}</span>
+              <span>{{ item.label }}</span>
+            </el-menu-item>
+          </el-sub-menu>
+        </el-menu>
       </nav>
     </aside>
 
@@ -48,24 +66,89 @@ const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
 
-const menuItems = [
-  { path: '/dashboard', label: '仪表盘', icon: '📊' },
-  { path: '/task-workbench', label: '智能工作台', icon: '🧭' },
-  { path: '/risk-center', label: '风险中心', icon: '🚨' },
-  { path: '/bases', label: '基地管理', icon: '🌱' },
-  { path: '/batches', label: '批次管理', icon: '📦' },
-  { path: '/product-items', label: '一物一码', icon: '🔖' },
-  { path: '/logistics', label: '流通链路', icon: '🚚' },
-  { path: '/production-records', label: '生产记录', icon: '📝' },
-  { path: '/inspection-reports', label: '质检报告', icon: '✅' },
-  { path: '/crop-quick-import', label: '导入信息', icon: '⚡' },
-  { path: '/feedback-tasks', label: '反馈追踪', icon: '📬' },
-  { path: '/recalls', label: '召回管理', icon: '♻️' },
-  { path: '/users', label: '用户管理', icon: '👥' },
-  { path: '/profile', label: '个人信息', icon: '🪪' },
+type MenuItem = {
+  path: string
+  label: string
+  icon: string
+  staffOnly?: boolean
+}
+
+type MenuGroup = {
+  label: string
+  icon: string
+  children: MenuItem[]
+}
+
+const menuGroups: MenuGroup[] = [
+  {
+    label: '总览工作台',
+    icon: '📊',
+    children: [
+      { path: '/dashboard', label: '仪表盘', icon: '📈' },
+      { path: '/task-workbench', label: '智能工作台', icon: '🧭' },
+      { path: '/risk-center', label: '风险中心', icon: '🚨' },
+    ],
+  },
+  {
+    label: '种植生产',
+    icon: '🌱',
+    children: [
+      { path: '/bases', label: '基地管理', icon: '🌿' },
+      { path: '/batches', label: '批次管理', icon: '📦' },
+      { path: '/production-records', label: '生产记录', icon: '📝' },
+      { path: '/inspection-reports', label: '质检报告', icon: '✅' },
+      { path: '/crop-quick-import', label: '导入信息', icon: '⚡' },
+    ],
+  },
+  {
+    label: '流通追溯',
+    icon: '🚚',
+    children: [
+      { path: '/product-items', label: '一物一码', icon: '🔖' },
+      { path: '/logistics', label: '流通链路', icon: '🚛' },
+      { path: '/recalls', label: '召回管理', icon: '♻️' },
+    ],
+  },
+  {
+    label: '智能服务',
+    icon: '🤖',
+    children: [
+      { path: '/ai-assistant', label: 'AI助手', icon: '💡' },
+      { path: '/feedback-tasks', label: '反馈追踪', icon: '📬' },
+    ],
+  },
+  {
+    label: '系统设置',
+    icon: '⚙️',
+    children: [
+      { path: '/users', label: '用户管理', icon: '👥', staffOnly: true },
+      { path: '/profile', label: '个人信息', icon: '🪪' },
+    ],
+  },
 ]
 
-const visibleMenuItems = computed(() => menuItems.filter((item) => item.path !== '/users' || authStore.isStaff))
+const visibleMenuGroups = computed(() =>
+  menuGroups
+    .map((group) => ({
+      ...group,
+      children: group.children.filter((item) => !item.staffOnly || authStore.isStaff),
+    }))
+    .filter((group) => group.children.length > 0),
+)
+
+const activeMenuPath = computed(() => {
+  if (route.path.startsWith('/batches/') && route.path.endsWith('/archive')) {
+    return '/batches'
+  }
+  return route.path
+})
+
+const openedGroupIndexes = computed(() => {
+  const activeGroupIndex = visibleMenuGroups.value.findIndex((group) =>
+    group.children.some((item) => item.path === activeMenuPath.value),
+  )
+  return activeGroupIndex >= 0 ? [String(activeGroupIndex)] : ['0']
+})
 
 const titleMap: Record<string, string> = {
   '/dashboard': '仪表盘',
@@ -77,6 +160,7 @@ const titleMap: Record<string, string> = {
   '/logistics': '流通链路',
   '/production-records': '生产记录',
   '/inspection-reports': '质检报告',
+  '/ai-assistant': 'AI 助手',
   '/crop-quick-import': '快速导入作物信息',
   '/feedback-tasks': '用户反馈追踪',
   '/recalls': '召回管理',

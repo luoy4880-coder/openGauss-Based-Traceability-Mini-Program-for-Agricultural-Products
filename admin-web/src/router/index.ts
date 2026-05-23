@@ -31,6 +31,7 @@ const router = createRouter({
         { path: 'logistics', name: 'logistics', component: () => import('../views/logistics/LogisticsView.vue') },
         { path: 'production-records', name: 'production-records', component: () => import('../views/record/ProductionRecordView.vue') },
         { path: 'inspection-reports', name: 'inspection-reports', component: () => import('../views/report/InspectionReportView.vue') },
+        { path: 'ai-assistant', name: 'ai-assistant', component: () => import('../views/ai/StaffAiAssistantView.vue') },
         { path: 'crop-quick-import', name: 'crop-quick-import', component: () => import('../views/import/CropQuickImportView.vue') },
         { path: 'feedback-tasks', name: 'feedback-tasks', component: () => import('../views/feedback/FeedbackTrackView.vue') },
         { path: 'recalls', name: 'recalls', component: () => import('../views/recall/RecallView.vue') },

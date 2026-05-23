@@ -2,6 +2,7 @@ package com.yujia.backend.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +22,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class FeedbackAiClassifierService {
 
-    private static final String FALLBACK_SUMMARY = "建议先确认反馈证据并联系处理人跟进闭环。";
+    private static final String FALLBACK_SUMMARY = "建议先核实反馈内容和相关凭证，再安排人员跟进处理。";
 
     private final ObjectMapper objectMapper;
 
@@ -49,34 +50,48 @@ public class FeedbackAiClassifierService {
     @Value("${app.ai.feedback.system-prompt}")
     private String systemPrompt;
 
+    @PostConstruct
+    public void logConfigStatus() {
+        if (!enabled) {
+            log.warn("Feedback AI classify is disabled. System will only use rule-based classification.");
+            return;
+        }
+        if (apiKey == null || apiKey.isBlank()) {
+            log.error("Feedback AI classify is enabled, but DEEPSEEK_API_KEY is missing. System will fallback to rule-based classification.");
+            return;
+        }
+        log.info("Feedback AI classify is enabled. provider=DeepSeek, model={}, baseUrl={}", model, baseUrl);
+    }
+
     public AiClassifyResult classify(String type, String content) {
         AiClassifyResult result;
         if (enabled && apiKey != null && !apiKey.isBlank()) {
             try {
                 result = classifyWithDeepSeek(type, content);
+                log.info("Feedback classified by DeepSeek. category={}, priority={}, riskLevel={}",
+                        result.category(), result.priority(), result.riskLevel());
             } catch (Exception ex) {
-                log.warn("DeepSeek classify failed, fallback to rule-based: {}", ex.getMessage());
+                log.warn("DeepSeek classify failed, fallback to rule-based. reason={}", ex.getMessage());
                 result = classifyByRule(type, content);
             }
         } else {
+            log.warn("Feedback classify fallback to rule-based because AI is disabled or API key is missing.");
             result = classifyByRule(type, content);
         }
         return rectifyByRiskKeywords(type, content, result);
     }
 
     private AiClassifyResult classifyWithDeepSeek(String type, String content) throws Exception {
-        String endpoint = (baseUrl == null || baseUrl.isBlank() ? "https://api.deepseek.com" : baseUrl).replaceAll("/+$", "")
-                + "/chat/completions";
-
-        Map<String, Object> payload = Map.of(
+        String endpoint = normalizeBaseUrl() + "/chat/completions";
+        String payloadJson = objectMapper.writeValueAsString(Map.of(
                 "model", model,
                 "temperature", temperature,
+                "response_format", Map.of("type", "json_object"),
                 "messages", new Object[]{
                         Map.of("role", "system", "content", systemPrompt),
                         Map.of("role", "user", "content", buildUserPrompt(type, content))
                 }
-        );
-        String payloadJson = objectMapper.writeValueAsString(payload);
+        ));
 
         HttpClient client = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofMillis(connectTimeoutMs))
@@ -92,15 +107,19 @@ public class FeedbackAiClassifierService {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         if (response.statusCode() < 200 || response.statusCode() >= 300) {
-            throw new IllegalStateException("DeepSeek status=" + response.statusCode());
+            throw new IllegalStateException("DeepSeek status=" + response.statusCode() + ", body=" + response.body());
         }
 
         JsonNode contentNode = objectMapper.readTree(response.body())
                 .path("choices").path(0).path("message").path("content");
         if (contentNode.isMissingNode() || contentNode.asText().isBlank()) {
-            throw new IllegalStateException("DeepSeek content missing");
+            throw new IllegalStateException("DeepSeek response content missing");
         }
         return parseModelResult(contentNode.asText());
+    }
+
+    private String normalizeBaseUrl() {
+        return (baseUrl == null || baseUrl.isBlank() ? "https://api.deepseek.com" : baseUrl).replaceAll("/+$", "");
     }
 
     private String buildUserPrompt(String type, String content) {
@@ -118,7 +137,7 @@ public class FeedbackAiClassifierService {
         if (summary.isEmpty()) {
             summary = FALLBACK_SUMMARY;
         }
-        if (riskLevel == null || riskLevel.isBlank()) {
+        if (riskLevel.isBlank()) {
             riskLevel = inferRiskLevel(category, priority);
         }
         return new AiClassifyResult(category, priority, riskLevel, summary);
@@ -130,7 +149,7 @@ public class FeedbackAiClassifierService {
         int priority = input.priority() == null ? 3 : input.priority();
         String summary = input.summary() == null || input.summary().isBlank() ? FALLBACK_SUMMARY : input.summary();
 
-        if (containsAny(text, "变质", "异味", "霉", "不合格", "农残", "中毒", "过敏", "腐坏", "发霉")) {
+        if (containsAny(text, "变质", "异味", "发霉", "不合格", "农残", "中毒", "过敏", "腐坏")) {
             category = "质量";
             priority = 1;
             if (!summary.contains("批次") && !summary.contains("质检")) {
@@ -208,7 +227,7 @@ public class FeedbackAiClassifierService {
     private AiClassifyResult classifyByRule(String type, String content) {
         String text = (safeText(type) + " " + safeText(content)).toLowerCase(Locale.ROOT);
         if (containsAny(text, "质量", "变质", "异味", "发霉", "坏", "不合格", "农残", "中毒", "过敏")) {
-            return new AiClassifyResult("质量", 1, "HIGH", "建议优先核查批次质量与检验记录，并联系用户回访。");
+            return new AiClassifyResult("质量", 1, "HIGH", "建议优先核查批次质量与检验记录，并尽快联系用户回访。");
         }
         if (containsAny(text, "物流", "快递", "配送", "延迟", "破损", "丢件", "冷链")) {
             return new AiClassifyResult("物流", 2, "MEDIUM", "建议核对物流轨迹与签收节点，确认补发或赔付方案。");
@@ -219,46 +238,25 @@ public class FeedbackAiClassifierService {
         return new AiClassifyResult("其他", 3, "LOW", FALLBACK_SUMMARY);
     }
 
-    private boolean containsAny(String source, String... keywords) {
+    private boolean containsAny(String text, String... keywords) {
+        if (text == null || text.isBlank()) {
+            return false;
+        }
         for (String keyword : keywords) {
-            if (source.contains(keyword)) {
+            if (keyword != null && !keyword.isBlank() && text.contains(keyword.toLowerCase(Locale.ROOT))) {
                 return true;
             }
         }
         return false;
     }
 
-    private String safeText(String text) {
-        return text == null ? "" : text.trim();
+    private String safeText(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value.trim();
     }
 
-    public static class AiClassifyResult {
-        private final String category;
-        private final Integer priority;
-        private final String riskLevel;
-        private final String summary;
-
-        public AiClassifyResult(String category, Integer priority, String riskLevel, String summary) {
-            this.category = category;
-            this.priority = priority;
-            this.riskLevel = riskLevel;
-            this.summary = summary;
-        }
-
-        public String category() {
-            return category;
-        }
-
-        public Integer priority() {
-            return priority;
-        }
-
-        public String riskLevel() {
-            return riskLevel;
-        }
-
-        public String summary() {
-            return summary;
-        }
+    public record AiClassifyResult(String category, Integer priority, String riskLevel, String summary) {
     }
 }

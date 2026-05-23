@@ -327,6 +327,20 @@
   background: transparent;
 }
 
+.el-menu--inline {
+  background: transparent;
+}
+
+.el-sub-menu .el-menu-item,
+.el-sub-menu__title {
+  background: transparent;
+}
+
+.el-sub-menu__title:hover,
+.el-menu-item:hover {
+  background: transparent;
+}
+
 /* ===== Empty ===== */
 .el-empty__description {
   color: #8a9aa8;

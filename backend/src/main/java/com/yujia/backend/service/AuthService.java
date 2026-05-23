@@ -5,7 +5,6 @@ import com.yujia.backend.common.auth.PasswordUtil;
 import com.yujia.backend.common.auth.TokenUtil;
 import com.yujia.backend.common.exception.BusinessException;
 import com.yujia.backend.dto.auth.BindAccountRequest;
-import com.yujia.backend.dto.auth.BootstrapAdminRequest;
 import com.yujia.backend.dto.auth.LoginRequest;
 import com.yujia.backend.dto.auth.ProfileUpdateRequest;
 import com.yujia.backend.dto.auth.RegisterRequest;
@@ -15,7 +14,6 @@ import com.yujia.backend.vo.LoginVO;
 import com.yujia.backend.vo.RoleVO;
 import com.yujia.backend.vo.UserVO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -29,9 +27,6 @@ public class AuthService {
     private final SysUserService sysUserService;
     private final SysRoleService sysRoleService;
     private final TokenUtil tokenUtil = new TokenUtil();
-
-    @Value("${app.auth.bootstrap-enabled:false}")
-    private boolean bootstrapEnabled;
 
     public LoginVO login(LoginRequest request) {
         SysUser sysUser = sysUserService.findByUsername(request.getUsername());
@@ -116,13 +111,6 @@ public class AuthService {
                 request.getPhone()
         );
         return sysUserService.detail(authUser.getUserId());
-    }
-
-    public UserVO bootstrapAdmin(BootstrapAdminRequest request) {
-        if (!bootstrapEnabled) {
-            throw new BusinessException(403, "管理员初始化入口已关闭");
-        }
-        return sysUserService.bootstrapAdmin(request);
     }
 
     public UserVO updateProfile(ProfileUpdateRequest request) {

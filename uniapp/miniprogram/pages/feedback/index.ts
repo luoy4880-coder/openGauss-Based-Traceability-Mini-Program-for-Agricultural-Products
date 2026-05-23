@@ -1,12 +1,7 @@
 import { fetchMyFeedback, getTraceHistory, saveFeedbackLocal, submitFeedbackToServer } from '../../services/trace'
 import type { TraceHistoryItem } from '../../types/trace'
 
-const FEEDBACK_TYPES = [
-  '\u529f\u80fd\u5efa\u8bae',
-  '\u754c\u9762\u4f53\u9a8c',
-  '\u9519\u8bef\u53cd\u9988',
-  '\u5176\u4ed6\u610f\u89c1',
-]
+const FEEDBACK_TYPES = ['产品质量', '物流配送', '使用体验', '功能建议', '其他问题']
 
 Page({
   data: {
@@ -83,8 +78,8 @@ Page({
   async submitFeedback() {
     if (!wx.getStorageSync('token')) {
       wx.showModal({
-        title: '需要登录',
-        content: '登录后才可以提交反馈，是否前往登录？',
+        title: '需要先登录',
+        content: '登录后才能提交反馈，是否前往登录？',
         success: ({ confirm }) => {
           if (!confirm) {
             return
@@ -98,7 +93,7 @@ Page({
     const content = this.data.content.trim()
     if (!content) {
       wx.showToast({
-        title: '\u8bf7\u586b\u5199\u53cd\u9988\u5185\u5bb9',
+        title: '请先填写反馈内容',
         icon: 'none',
       })
       return
@@ -106,7 +101,7 @@ Page({
 
     if (content.length < 5) {
       wx.showToast({
-        title: '\u53cd\u9988\u5185\u5bb9\u81f3\u5c11 5 \u4e2a\u5b57',
+        title: '反馈内容至少 5 个字',
         icon: 'none',
       })
       return
@@ -134,7 +129,7 @@ Page({
       })
 
       wx.showToast({
-        title: '\u63d0\u4ea4\u6210\u529f',
+        title: '提交成功',
         icon: 'success',
       })
 
@@ -144,7 +139,7 @@ Page({
     } catch (error) {
       saveFeedbackLocal(payload, 'failed')
       wx.showToast({
-        title: error instanceof Error ? error.message : '\u63d0\u4ea4\u5931\u8d25',
+        title: error instanceof Error ? error.message : '提交失败',
         icon: 'none',
         duration: 2500,
       })

@@ -40,7 +40,7 @@
         <el-table-column prop="completenessScore" label="完整度" width="110" />
         <el-table-column prop="riskScore" label="风险分" width="100" />
         <el-table-column label="风险等级" width="110"><template #default="{ row }"><el-tag :type="riskType(row.riskLevel)">{{ riskText(row.riskLevel) }}</el-tag></template></el-table-column>
-        <el-table-column prop="summary" label="系统摘要" min-width="320" show-overflow-tooltip />
+        <el-table-column prop="summary" label="系统摘要" min-width="320" />
         <el-table-column label="操作" width="120"><template #default="{ row }"><el-button link type="primary" @click="router.push(`/batches/${row.batchId}/archive`)">查看档案</el-button></template></el-table-column>
       </el-table>
     </el-card>

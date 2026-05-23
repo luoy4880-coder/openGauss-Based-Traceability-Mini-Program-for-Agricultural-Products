@@ -5,7 +5,7 @@
       <div class="toolbar">
         <el-input
           v-model="query.keyword"
-          placeholder="搜索批次编码或产品名称"
+          placeholder="搜索批次编号或产品名称"
           clearable
           style="max-width: 280px"
           @keyup.enter="loadData"
@@ -18,7 +18,7 @@
       </div>
 
       <el-table :data="records" stripe v-loading="loading">
-        <el-table-column prop="batchCode" label="批次编码" min-width="180" />
+        <el-table-column prop="batchCode" label="批次编号" min-width="180" />
         <el-table-column prop="productName" label="产品名称" min-width="160" />
         <el-table-column prop="productCategory" label="品类" width="120" />
         <el-table-column prop="baseName" label="所属基地" min-width="160" />
@@ -67,7 +67,7 @@
 
     <el-dialog v-model="dialogVisible" :title="dialogMode === 'create' ? '新增批次' : '编辑批次'" width="820px">
       <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="批次编码">
+        <el-form-item label="批次编号">
           <el-input v-model="form.batchCode" :disabled="dialogMode === 'edit'" placeholder="留空则系统自动生成" />
         </el-form-item>
         <el-form-item label="所属基地" prop="baseId">
@@ -171,7 +171,7 @@ const rules: FormRules = {
 }
 
 async function loadBases() {
-  bases.value = await getBaseList() as any[]
+  bases.value = await (getBaseList() as any)
 }
 
 async function loadData() {
@@ -181,13 +181,15 @@ async function loadData() {
     const rows = res.records || []
     records.value = rows
     total.value = res.total || 0
-    await Promise.all(rows.map(async (row: any) => {
-      try {
-        row._insight = await getBatchInsight(row.id)
-      } catch {
-        row._insight = null
-      }
-    }))
+    await Promise.all(
+      rows.map(async (row: any) => {
+        try {
+          row._insight = await getBatchInsight(row.id)
+        } catch {
+          row._insight = null
+        }
+      }),
+    )
   } finally {
     loading.value = false
   }

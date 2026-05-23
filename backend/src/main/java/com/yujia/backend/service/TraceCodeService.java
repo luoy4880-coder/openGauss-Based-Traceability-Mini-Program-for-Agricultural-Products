@@ -44,21 +44,37 @@ public class TraceCodeService {
         return traceCodeMapper.selectByTraceId(traceCode.getTraceId());
     }
 
-    public TraceDetailVO getTraceDetail(String traceId) {
-        ProductItem productItem = productItemService.getByTraceId(traceId);
-        if (productItem != null) {
-            return buildItemTraceDetail(productItem);
-        }
-        return buildLegacyBatchTraceDetail(traceId);
+    public TraceDetailVO getTraceDetail(String traceId, String signValue, String ipAddress, String userAgent) {
+        return getTraceDetail(traceId, signValue, ipAddress, userAgent, true);
     }
 
-    private TraceDetailVO buildItemTraceDetail(ProductItem productItem) {
+    public TraceDetailVO getTraceSnapshot(String traceId, String signValue) {
+        return getTraceDetail(traceId, signValue, null, null, false);
+    }
+
+    private TraceDetailVO getTraceDetail(String traceId, String signValue, String ipAddress, String userAgent, boolean recordScan) {
+        ProductItem productItem = productItemService.getByTraceId(traceId);
+        if (productItem != null) {
+            return buildItemTraceDetail(productItem, signValue, ipAddress, userAgent, recordScan);
+        }
+        return buildLegacyBatchTraceDetail(traceId, signValue, ipAddress, userAgent, recordScan);
+    }
+
+    private TraceDetailVO buildItemTraceDetail(ProductItem productItem, String signValue, String ipAddress, String userAgent, boolean recordScan) {
         var batchInfo = productBatchService.detail(productItem.getBatchId());
         boolean signValid = traceSecurityService.verify(
-                batchInfo.getBatchCode(), productItem.getTraceId(), productItem.getItemCode(), productItem.getSignValue());
+                batchInfo.getBatchCode(),
+                productItem.getTraceId(),
+                productItem.getItemCode(),
+                normalizeSignValue(signValue)
+        );
         boolean recallWarning = batchInfo.getRecallStatus() != null && batchInfo.getRecallStatus() == 1;
-        var verifyInfo = scanLogService.recordItemScan(productItem, signValid, recallWarning, null, null);
-        productItemService.recordScan(productItem);
+        var verifyInfo = recordScan
+                ? scanLogService.recordItemScan(productItem, signValid, recallWarning, ipAddress, userAgent)
+                : scanLogService.buildItemVerifyPreview(productItem, signValid, recallWarning);
+        if (recordScan) {
+            productItemService.recordScan(productItem);
+        }
 
         TraceDetailVO detail = new TraceDetailVO();
         TraceCode traceCode = new TraceCode();
@@ -80,14 +96,24 @@ public class TraceCodeService {
         return detail;
     }
 
-    private TraceDetailVO buildLegacyBatchTraceDetail(String traceId) {
+    private TraceDetailVO buildLegacyBatchTraceDetail(String traceId, String signValue, String ipAddress, String userAgent, boolean recordScan) {
         TraceCode traceCode = traceCodeMapper.selectByTraceId(traceId);
         if (traceCode == null) {
             throw new BusinessException(404, "溯源码不存在");
         }
 
         var batchInfo = productBatchService.detail(traceCode.getBatchId());
+        boolean signValid = traceSecurityService.verify(
+                batchInfo.getBatchCode(),
+                traceCode.getTraceId(),
+                "",
+                normalizeSignValue(signValue)
+        );
         boolean recallWarning = batchInfo.getRecallStatus() != null && batchInfo.getRecallStatus() == 1;
+        var verifyInfo = recordScan
+                ? scanLogService.legacyTraceVerify(traceCode, signValid, recallWarning, ipAddress, userAgent)
+                : scanLogService.buildLegacyVerifyPreview(traceCode, signValid, recallWarning);
+
         TraceDetailVO detail = new TraceDetailVO();
         detail.setTraceCode(traceCode);
         detail.setBatchInfo(batchInfo);
@@ -96,8 +122,12 @@ public class TraceCodeService {
         detail.setInspectionReports(inspectionReportService.list(batchInfo.getId(), null));
         detail.setRecallRecord(recallRecordService.latestByBatchId(batchInfo.getId()));
         detail.setRecallWarning(recallWarning);
-        detail.setVerifyInfo(scanLogService.legacyTraceVerify(traceId, recallWarning));
+        detail.setVerifyInfo(verifyInfo);
         detail.setLogisticsRecords(logisticsRecordService.list(batchInfo.getId(), null));
         return detail;
+    }
+
+    private String normalizeSignValue(String signValue) {
+        return signValue == null ? "" : signValue.trim();
     }
 }

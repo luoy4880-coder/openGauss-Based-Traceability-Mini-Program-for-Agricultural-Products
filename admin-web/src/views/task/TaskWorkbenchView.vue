@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <section class="page-section">
     <PageHeader title="智能工作台" description="查看系统自动生成的待办任务，优先处理高风险事项。" />
     <el-card shadow="never">
@@ -9,12 +9,13 @@
           <el-option label="待处理" :value="0" />
           <el-option label="处理中" :value="1" />
           <el-option label="已完成" :value="2" />
+          <el-option label="已失效" :value="3" />
         </el-select>
         <el-button type="primary" @click="loadData">查询</el-button>
       </div>
       <el-table :data="records" stripe v-loading="loading">
         <el-table-column prop="title" label="任务标题" min-width="220" />
-        <el-table-column prop="description" label="任务描述" min-width="320" show-overflow-tooltip />
+        <el-table-column prop="description" label="任务描述" min-width="320" />
         <el-table-column label="优先级" width="100">
           <template #default="{ row }">
             <el-tag :type="priorityType(row.priority)">{{ priorityText(row.priority) }}</el-tag>
@@ -37,12 +38,15 @@
         <el-table-column label="完成时间" min-width="170">
           <template #default="{ row }">{{ formatDateTime(row.completedAt) }}</template>
         </el-table-column>
-        <el-table-column prop="dueAt" label="截止时间" min-width="170" />
-        <el-table-column label="操作" width="240" fixed="right">
+        <el-table-column label="截止时间" min-width="170">
+          <template #default="{ row }">{{ formatDateTime(row.dueAt) }}</template>
+        </el-table-column>
+        <el-table-column label="操作" width="260" fixed="right">
           <template #default="{ row }">
             <el-button v-if="row.status === 0" link type="warning" @click="handleClaim(row)">认领</el-button>
-            <el-button v-if="row.status !== 2" link type="success" @click="handleComplete(row)">完成</el-button>
+            <el-button v-if="row.status === 0 || row.status === 1" link type="success" @click="handleComplete(row)">完成</el-button>
             <el-button v-if="row.status === 2" link type="info" @click="handleReopen(row)">重新打开</el-button>
+            <el-tag v-if="row.status === 3" type="info" effect="plain">条件已恢复</el-tag>
             <el-button v-if="row.bizType === 'BATCH'" link type="primary" @click="openBatch(row.bizId)">查看批次</el-button>
             <el-button v-if="row.bizType === 'FEEDBACK'" link type="primary" @click="openFeedbackPage()">查看反馈</el-button>
           </template>
@@ -91,12 +95,14 @@ function priorityType(priority?: number) {
 function statusText(status?: number) {
   if (status === 1) return '处理中'
   if (status === 2) return '已完成'
+  if (status === 3) return '已失效'
   return '待处理'
 }
 
 function statusType(status?: number) {
   if (status === 1) return 'warning'
   if (status === 2) return 'success'
+  if (status === 3) return 'info'
   return 'info'
 }
 

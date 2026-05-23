@@ -27,7 +27,7 @@ public interface LogisticsRecordMapper {
                     AND lr.batch_id = #{batchId}
                 </if>
                 <if test="itemId != null">
-                    AND lr.item_id = #{itemId}
+                    AND (lr.item_id = #{itemId} OR lr.item_id IS NULL)
                 </if>
             </where>
             ORDER BY lr.operation_time ASC, lr.id ASC

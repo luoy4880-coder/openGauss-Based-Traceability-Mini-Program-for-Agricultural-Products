@@ -8,6 +8,7 @@ import com.yujia.backend.service.TraceCodeService;
 import com.yujia.backend.service.TraceSummaryService;
 import com.yujia.backend.vo.TraceDetailVO;
 import com.yujia.backend.vo.TraceSummaryVO;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,12 +41,20 @@ public class TraceCodeController {
     }
 
     @GetMapping("/api/trace/{traceId}")
-    public ApiResponse<TraceDetailVO> traceDetail(@PathVariable String traceId) {
-        return ApiResponse.success(traceCodeService.getTraceDetail(traceId));
+    public ApiResponse<TraceDetailVO> traceDetail(@PathVariable String traceId,
+                                                  @RequestParam(required = false) String sign,
+                                                  HttpServletRequest request) {
+        return ApiResponse.success(traceCodeService.getTraceDetail(
+                traceId,
+                sign,
+                request.getRemoteAddr(),
+                request.getHeader("User-Agent")
+        ));
     }
 
     @GetMapping("/api/trace/{traceId}/summary")
-    public ApiResponse<TraceSummaryVO> traceSummary(@PathVariable String traceId) {
-        return ApiResponse.success(traceSummaryService.summary(traceId));
+    public ApiResponse<TraceSummaryVO> traceSummary(@PathVariable String traceId,
+                                                    @RequestParam(required = false) String sign) {
+        return ApiResponse.success(traceSummaryService.summary(traceId, sign));
     }
 }

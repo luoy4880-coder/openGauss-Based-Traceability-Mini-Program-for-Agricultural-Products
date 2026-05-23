@@ -26,11 +26,7 @@
       <input class="input yj-input" placeholder="请输入手机号" value="{{phone}}" bindinput="onPhoneInput" />
     </view>
 
-    <view wx:if="{{mode === 'register'}}">
-      <view class="field-title">公司名称</view>
-      <input class="input yj-input" placeholder="请输入所属公司名称" value="{{companyName}}" bindinput="onCompanyNameInput" />
-      <view class="tip">公开注册默认创建消费者账号，不授予管理后台权限。</view>
-    </view>
+    <view class="tip" wx:if="{{mode === 'register'}}">公开注册默认创建消费者账号，无需绑定公司即可扫码查溯源。</view>
 
     <button class="primary-btn yj-btn-primary" loading="{{submitting}}" bindtap="submit">
       {{mode === 'login' ? '登录' : (mode === 'register' ? '注册并登录' : '绑定账号')}}

@@ -24,7 +24,7 @@
         <el-table-column label="召回级别" min-width="100">
           <template #default="{ row }">级别 {{ row.recallLevel }}</template>
         </el-table-column>
-        <el-table-column prop="reason" label="召回原因" min-width="260" show-overflow-tooltip />
+        <el-table-column prop="reason" label="召回原因" min-width="260" />
         <el-table-column label="状态" min-width="110">
           <template #default="{ row }">
             <el-tag :type="row.recallStatus === 1 ? 'danger' : 'success'">
@@ -177,8 +177,19 @@ async function handleDelete(row: RecallRecord) {
   loadData()
 }
 
-function handleCurrentChange(pageNum: number) { query.pageNum = pageNum; loadData() }
-function handleSizeChange(pageSize: number) { query.pageSize = pageSize; query.pageNum = 1; loadData() }
+function handleCurrentChange(pageNum: number) {
+  query.pageNum = pageNum
+  loadData()
+}
 
-onMounted(async () => { await loadBatchOptions(); await loadData() })
+function handleSizeChange(pageSize: number) {
+  query.pageSize = pageSize
+  query.pageNum = 1
+  loadData()
+}
+
+onMounted(async () => {
+  await loadBatchOptions()
+  await loadData()
+})
 </script>

@@ -1,0 +1,36 @@
+<view class="page">
+  <view class="hero yj-card">
+    <view class="hero-title">AI 问答</view>
+    <view class="hero-desc">围绕当前商品的公开溯源信息回答问题，不读取企业内部经营数据。</view>
+    <view class="context-pill">{{contextTitle}}</view>
+    <button wx:if="{{history.length}}" class="clear-btn" bindtap="clearHistory">清空记录</button>
+  </view>
+
+  <view class="composer yj-card">
+    <view class="composer-label">你想了解什么？</view>
+    <textarea
+      class="composer-input yj-textarea"
+      placeholder="例如：这个商品现在有没有明显风险？"
+      maxlength="200"
+      value="{{question}}"
+      bindinput="onQuestionInput"
+    ></textarea>
+    <view class="suggest-list">
+      <view wx:for="{{suggestions}}" wx:key="*this" class="suggest-chip" data-question="{{item}}" bindtap="useSuggestion">{{item}}</view>
+    </view>
+    <button class="ask-btn yj-btn-primary" loading="{{loading}}" disabled="{{loading || !canSubmit}}" bindtap="submitQuestion">发送提问</button>
+  </view>
+
+  <view wx:if="{{history.length === 0}}" class="empty-box yj-card">
+    <view class="empty-title">还没有提问记录</view>
+    <view class="empty-desc">你可以直接问风险、质检、召回、物流这些问题。</view>
+  </view>
+
+  <view wx:for="{{history}}" wx:key="id" class="chat-card yj-card {{item.role === 'assistant' ? 'assistant' : 'user'}}">
+    <view class="chat-role">{{item.role === 'assistant' ? 'AI 助手' : '我的问题'}}</view>
+    <view class="chat-text">{{item.text}}</view>
+    <view wx:if="{{item.references && item.references.length}}" class="ref-list">
+      <view wx:for="{{item.references}}" wx:key="*this" class="ref-tag">{{item}}</view>
+    </view>
+  </view>
+</view>
