@@ -15,6 +15,7 @@ public class SchemaInitializationConfig {
 
     @PostConstruct
     public void initializeSchema() {
+        createSequenceIfMissing("seq_company_code");
         createSequenceIfMissing("seq_logistics_code");
         createTableIfMissing("product_item", """
                 CREATE TABLE product_item (

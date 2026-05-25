@@ -188,6 +188,14 @@ BEGIN
 END
 $$;
 
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_class WHERE relkind = 'S' AND relname = 'seq_company_code') THEN
+        CREATE SEQUENCE seq_company_code START 1;
+    END IF;
+END
+$$;
+
 CREATE TABLE IF NOT EXISTS product_item (
     id BIGSERIAL PRIMARY KEY,
     batch_id BIGINT NOT NULL,

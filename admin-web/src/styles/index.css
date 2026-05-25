@@ -152,10 +152,13 @@ a {
 .menu-icon {
   width: 22px;
   height: 22px;
-  display: grid;
-  place-items: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
   font-size: 15px;
+  line-height: 1;
+  vertical-align: middle;
   opacity: 0.85;
   transition: transform 0.25s ease;
 }

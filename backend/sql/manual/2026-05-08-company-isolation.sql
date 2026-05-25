@@ -217,3 +217,24 @@ BEGIN
     END IF;
 END
 $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_class WHERE relkind = 'S' AND relname = 'seq_company_code'
+    ) THEN
+        EXECUTE 'CREATE SEQUENCE seq_company_code START 1';
+    END IF;
+END
+$$;
+
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM information_schema.sequences
+        WHERE sequence_name = 'seq_company_code'
+    ) THEN
+        EXECUTE 'GRANT USAGE, SELECT, UPDATE ON SEQUENCE seq_company_code TO yujia';
+    END IF;
+END
+$$;
