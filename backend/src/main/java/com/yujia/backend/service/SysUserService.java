@@ -86,7 +86,7 @@ public class SysUserService {
         user.setCompanyId(resolveConsumerCompanyId(companyName));
         user.setStatus(1);
         sysUserMapper.insert(user);
-        assignRoleByCode(user.getId(), "USER");
+        assignRoleByCode(user.getId(), resolveRegistrationRoleCode(companyName));
         return sysUserMapper.selectById(user.getId());
     }
 
@@ -262,6 +262,13 @@ public class SysUserService {
             return null;
         }
         return companyService.resolveOrCreateCompanyId(companyName);
+    }
+
+    private String resolveRegistrationRoleCode(String companyName) {
+        if (companyName != null && !companyName.isBlank()) {
+            return "OPERATOR";
+        }
+        return "USER";
     }
 
     private UserVO toVO(SysUser sysUser) {
